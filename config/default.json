@@ -1,0 +1,6 @@
+{
+  "frontend": {						// all regarding WebUI and WebUI access
+  	"webuiport": 3001,				// the port the browser can access the WebUI
+  
+  } 								// END of frontend configuration
+}  									// EOF

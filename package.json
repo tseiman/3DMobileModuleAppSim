@@ -1,0 +1,31 @@
+{
+  "name": "3dmobilemoduleappsim",
+  "version": "1.0.0",
+  "description": "A 3D simulator for Mobile module (such as Sierra Wireless) applications",
+  "main": "src/services/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tseiman/3DMobileModuleAppSim.git"
+  },
+  "keywords": [
+    "Mobile",
+    "module",
+    "simulator"
+  ],
+  "author": "Thomas Schmidt",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/tseiman/3DMobileModuleAppSim/issues"
+  },
+  "homepage": "https://github.com/tseiman/3DMobileModuleAppSim#readme",
+  "dependencies": {
+    "express": ">=4.17.3",
+    "ejs": ">=3.1.7",
+    "config": ">=3.3.1",
+    "console-stamp": ">=3.0.4"
+  }
+}
+  
