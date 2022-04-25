@@ -2,6 +2,7 @@
 const bodyParser 								= require('body-parser');
 const express 									= require('express');
 const fs 												= require("fs");
+const path 											= require('path');
 
 const viewerApp = express();
 
@@ -15,11 +16,21 @@ module.exports = {
 
 
 		viewerApp.set('view engine', 'ejs');
-//		viewerApp.use(express.static('static'));
-//			viewerApp.use(bodyParser.urlencoded({ extended: false }));
-//		viewerApp.use(bodyParser.json());
-		viewerApp.use(express.static("views/static"));
 
+		const resourceFolders = [
+			{ 'name': 'pictures'	, 'url': '/pic/static/'			, 'folder' : '../../static/pic'},
+			{ 'name': 'javascript', 'url': '/js/static/'			, 'folder' : '../../static/js'},
+			{ 'name': 'css'				, 'url': '/css/static/'			, 'folder' : '../../static/css'},
+			{ 'name': 'blender'		, 'url': '/blender/static/'	, 'folder' : '../../static/blender'}, 
+			{ 'name': 'tree'			, 'url': '/js/three/build/'	, 'folder' : '../../node_modules/three/build'},
+			{ 'name': 'tree jsm'	, 'url': '/js/three/jsm/'		, 'folder' : '../../node_modules/three/examples/jsm'},
+			{ 'name': 'jquery'		, 'url': '/js/jquery/'			, 'folder' : '../../node_modules/jquery/dist'}
+		]; 
+
+		resourceFolders.forEach(function (item, index) {
+			console.debug('Current "' + item.name + '" with URL="' + item.url + '" Path="' + path.join(__dirname, item.folder ) + '"');
+			viewerApp.use(item.url, express.static(path.join(__dirname, item.folder)));
+		});
 
 
 		viewerApp.get("/app/*", (req, res, next) => {
@@ -50,12 +61,6 @@ module.exports = {
 		});
 
 
-/*	viewerApp.get('/', function(req, res) {
-	  Logger.info(`Client access for index page ${req.connection.remoteAddress}`);
-	  res.render('index');
-	});
-
-*/
 
 		viewerApp.listen(frontendConf.webuiport, ()=>console.info(`viewer listening to port ${frontendConf.webuiport}`));
 

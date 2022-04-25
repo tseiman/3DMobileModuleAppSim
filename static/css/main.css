@@ -1,0 +1,24 @@
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Titillium Web',sans-serif;
+	font-weight: 200;
+}
+
+.headline  {
+	width: 100%;
+}
+
+.headline img {
+	vertical-align:middle;
+	float: left;
+	margin-top: 0px;
+}
+
+.headline h1 {
+	color:  #555;
+	margin-left: -237px;
+	width: 100%;
+	text-align: center;
+	font-size: 3em;
+	vertical-align:middle;
+	position: relative;
+}

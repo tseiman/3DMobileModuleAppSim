@@ -22,10 +22,11 @@
   },
   "homepage": "https://github.com/tseiman/3DMobileModuleAppSim#readme",
   "dependencies": {
-    "express": ">=4.17.3",
-    "ejs": ">=3.1.7",
     "config": ">=3.3.1",
-    "console-stamp": ">=3.0.4"
+    "console-stamp": ">=3.0.4",
+    "ejs": ">=3.1.7",
+    "express": ">=4.17.3",
+    "three": "^0.139.2",
+    "jquery": "3.6.0"
   }
 }
-  
