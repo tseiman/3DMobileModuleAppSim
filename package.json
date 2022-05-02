@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "description": "A 3D simulator for Mobile module (such as Sierra Wireless) applications",
   "main": "src/services/app.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "src/services/app.js",
+    "test": "mocha --exit test/*.test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tseiman/3DMobileModuleAppSim.git"
+  },
+  "engines": {
+    "node": "16.x.x"
   },
   "keywords": [
     "Mobile",
@@ -27,6 +33,10 @@
     "ejs": ">=3.1.7",
     "express": ">=4.17.3",
     "three": "^0.139.2",
-    "jquery": "3.6.0"
+    "jquery": "3.6.0",
+    "threejs-meshline":">=2.0.12"
+  },
+  "devDependencies": {
+    "mocha": "^9.0.0"
   }
 }

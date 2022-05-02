@@ -9,8 +9,22 @@ import { GLTFLoader } from '/js/three/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from '/js/three/jsm/controls/OrbitControls.js';
 import { TWEEN } from '/js/three/jsm/libs/tween.module.min.js';
 
+import { SceneLoader } 		from '/js/static/SceneLoader.js';
+import { AnimationManager } from '/js/static/AnimationManager.js';
 
-window.getCameraState = function(camera, controls) {
+
+
+var camera;
+var controls;
+
+var raycaster, mouse;	
+var info = true;
+
+
+
+
+
+window.getCameraState = function() {
 	return {"pos" : camera.position, "rotation": camera.rotation, "target": controls.target};
 }
 
@@ -28,130 +42,197 @@ function setCam(camera,controls,state) {
 
 
 	const scene = new THREE.Scene();
-	var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight , 0.001, 1000 );
+	camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight , 0.001, 1000 );
 
-	const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, autoSize: true  });
+	var mainCanvas = document.getElementById("mainCanvas")
+	const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, autoSize: true ,canvas: mainCanvas });
 	renderer.setSize( window.innerWidth, window.innerHeight );
 //	renderer.setClearColor(0x808080);
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.shadowMap.enabled = true;
+	document.body.appendChild( renderer.domElement );
+
+  	raycaster = new THREE.Raycaster();
+  	mouse = new THREE.Vector2();
+
+  	renderer.domElement.addEventListener('click', mousedown, false);
+
+// const axesHelper = new THREE.AxesHelper( 5 );
+// scene.add( axesHelper );
+  	function mousedown(event) {
+
+		event.preventDefault();
+
+
+		raycaster.setFromCamera(mouse, camera);
+		var intersects = raycaster.intersectObjects(scene.children, true);
+
+		if (intersects.length > 0) {
+			if(intersects[0].object.userData.clickable && intersects[0].object.name === 'LuggageTagPlane') {
+		//		controls.enabled = false;
+			console.log('Found clickable:', intersects[0].object.name);
+			animationManager.getItem("suitcase").traverse(child => {
+					if (child.material && child.material.name === 'TagField') {
+			
+			var oldOpacity = {'x': 1, 'y': 0};
+			var newOpacity = {'x': 0, 'y': 0};
+
+			new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {
+
+				child.material = new THREE.MeshPhongMaterial({
+				    color: 0xFFFFFF,
+				    opacity: oldOpacity.x,
+				    transparent: true,
+				  });
+
+				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+				var oldOpacity = {'x': 0, 'y': 0};
+				var newOpacity = {'x': 1, 'y': 0};
+				
+				new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {
+
+				
+					child.material = new THREE.MeshPhongMaterial({
+				    color: 0xFFFFFF,
+				    opacity: oldOpacity.x,
+				    transparent: true,
+				  });
+
+					}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+						child.material = new THREE.MeshPhongMaterial({
+				   		color: 0xc0c0c0,
+				    	opacity: 0,
+				    	transparent: false,
+				  	});
+						child.material.map = new THREE.TextureLoader().load('/pic/static/suitcase/FlightTag_YYZ.png');
+					child.material.map.flipY = false;
+
+					});
+			});
+
+				//	child.material.map = new THREE.TextureLoader().load('/pic/static/suitcase/FlightTag_YYZ.png');
+				//	child.material.map.flipY = false;
+				//	child.material.map.encoding = THREE.sRGBEncoding;
+					}
+			});
+			}
+		}
+
+	//  this is to give a position on the earth sphere to build the animation
+		var mouseSphereClick = {
+		  x: ((event.clientX - 1) / window.innerWidth ) * 2 - 1,
+		  y: -((event.clientY - 1) / window.innerHeight) * 2 + 1
+		};
+		var vector = new THREE.Vector3();
+		vector.set(mouseSphereClick.x, mouseSphereClick.y, 0.5);
+		vector.unproject(camera);
+		raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
+		let target = raycaster.intersectObjects([animationManager.getItem("earth")]);
+		console.log(target[0].point);
+
+	}
+
+ // 	renderer.domElement.addEventListener('mouseup', mouseup, false);
+
+  //	function mouseup() {
+//		controls.enabled = true;
+//	}
+
 
 
 //	renderer.outputEncoding = THREE.sRGBEncoding;
 	document.body.appendChild( renderer.domElement );
 
-	var controls = new OrbitControls( camera , renderer.domElement);
+	controls = new OrbitControls( camera , renderer.domElement);
+//	controls.minDistance = 4.8;
+window.controls = controls;
+//	controls.maxZoom = 1;
+	
 
 	controls.update();
 
+	var animationManager = new AnimationManager(camera, controls);
+	animationManager.pushNewItem("camera",camera);
+ window.animationManager = animationManager;
 	//controls.addEventListener( 'change', function(){ onCameraChange(camera); } ); // use if there is no animation loop
 
-	const light = new THREE.AmbientLight(0xFFFFFF, 1.0);
-	scene.add( light );
+	function itemLoadedCallback(item) {
+		animationManager.pushNewItem(item.name,item.item);
 
-	var posizioneLuce1 = [0, 0, 40];
-	
-	var light2 = new THREE.PointLight(0xFFFFFF, 0.5, 600);
-	light2.castShadow = true;			
-	light2.position.set (posizioneLuce1[0], posizioneLuce1[1], posizioneLuce1[2]);
-	scene.add(light2);
-	light2.shadow.mapSize.width = 512;
-	light2.shadow.mapSize.height = 512;
-	light2.shadow.camera.near = 0.5;
-	light2.shadow.camera.far = 500;
-	
-	var posizioneLuce2 = [-50, 50, -40];
-	
-	var light3 = new THREE.PointLight(0xFFFFFF, 0.5, 600);
-	light3.castShadow = true;			
-	light3.position.set (posizioneLuce2[0], posizioneLuce2[1], posizioneLuce2[2]);
-	scene.add(light3);
-	light3.shadow.mapSize.width = 512;
-	light3.shadow.mapSize.height = 512;
-	light3.shadow.camera.near = 0.5;
-	light3.shadow.camera.far = 500;
+	}
+	var sceneLoader = new SceneLoader(scene,itemLoadedCallback);
 
 
-	const loader = new GLTFLoader(); 
 
-	loader.load( '/blender/static/suitcase.gltf', 
-		function ( gltf ) { 
-			gltf.scene.position.set( -0.18, 0.35,3.66 );
-			gltf.scene.rotation.set( 0.9, 1, 0 );
+	$.getJSON( "/js/static/baggagetag_animation.json", function( data ) {
+		data.load.forEach(function(item) {
+			var newItem = sceneLoader.load(item);
+		});
+		animationManager.animation = data.animation;
+		
+	/*	animationManager.getItem("suitcase").traverse(child => {
+  			if (child.material) {
+    			console.log(child.material.name);
+  			}
+		});
+*/
+	});
 
-			scene.add( gltf.scene ); 
-		}, 	
-		function ( xhr ) {
-			console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-		},
-		function ( error ) { 
-			console.error( error ); 
-		}
-	);
+//	async function
 
+   	 $(document).on('keydown', function(e){ //console.log(e.shiftKey)} );
 
-	
+  // 	 $(window).keypress(function(e) {
+   	 	console.log("shift",e.which);
+   	 if(info) return;
+   	 if(e.which == 78) { // 'n' = next pressed
+       		var loadNextAnim = true;
+       		while(loadNextAnim) {
+				var nextAnim = animationManager.getNextAnimation();
 
-	loader.load( '/blender/static/earth.gltf', 
-		function ( gltf ) { 
-			gltf.scene.position.set( 0, -2, 0 );
-			gltf.scene.scale.set( 4, 4, 4 );
-			gltf.scene.rotation.set( 0.5, -1.9, 0 );
-			scene.add( gltf.scene ); 
-		}, 	
-		function ( xhr ) {
-			console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-		},
-		function ( error ) { 
-			console.error( error ); 
-		}
-	);
+				if(typeof nextAnim.continue !== 'undefined') {
+					loadNextAnim = nextAnim.continue;					
+				} else {
+					loadNextAnim = true; 
+				}
+				
+				if(!nextAnim) {
+					animationManager.resetAnimation();
+		//			nextAnim = animationManager.getNextAnimation();
+					break;
+				}
+				if(nextAnim.item === 'camera') {
+					animationManager.animateCamera(nextAnim);
+				} else {
+					animationManager.animateItem(nextAnim);
+				}
+			}
 
-	$(window).keypress(function(e) {
-       	if(e.which == 110) { // 'n' = next pressed
-			// setCam(camera,controls,{"pos":{"x":-0.17103507754535174,"y":-0.3793038252939638,"z":4.476904015523391},"rotation":{"_x":0.5827314285723717,"_y":-0.011191753246801665,"_z":0.007375965589797122,"_order":"XYZ"},"target":{"x":-0.12880347511685897,"y":1.6971680076105373,"z":1.3263397242339794}});
+    	} else if(e.which == 32) {
 
-									// {"pos":{"x":-0.17103507754535174,"y":-0.3793038252939638,"z":4.476904015523391},"rotation":{"_x":0.5827314285723717,"_y":-0.011191753246801665,"_z":0.007375965589797122,"_order":"XYZ"},"target":{"x":-0.12880347511685897,"y":1.6971680076105373,"z":1.3263397242339794}};
-			var actualCamState =  getCameraState(camera,controls);
-			var posCoords = { 'x': actualCamState.pos.x ,'y': actualCamState.pos.y, 'z': actualCamState.pos.z};
-    		var newPosCoords = {'x':-0.17103507754535174,'y':-0.3793038252939638,'z':4.476904015523391}; 
-  
-    		new TWEEN.Tween(posCoords).to(newPosCoords).onUpdate(() => {
-        		//	console.log(posCoords);
-        		camera.position.set(posCoords.x, posCoords.y, posCoords.z)
-    		}).start();
-
-  			var rotCoords = { 'x': actualCamState.rotation.x ,'y': actualCamState.rotation.y, 'z': actualCamState.rotation.z};
-    		var newRotCoords = {'x': 0.5827314285723717,'y': -0.011191753246801665,'z':0.007375965589797122}; 
-  
-    		new TWEEN.Tween(rotCoords).to(newRotCoords).onUpdate(() => {
-        		//	console.log(posCoords);
-        		camera.rotation.set(rotCoords.x, rotCoords.y, rotCoords.z)
-    		}).easing(TWEEN.Easing.Quartic.InOut).start();
+    		// var luggageTagGroup = animationManager.getItem("suitcase").children.filter(obj => { return obj.name === 'LuggageTag'});
+    		// luggageTagGroup.on( 'click',function(ev){console.log("juhuuuuuu", ev); }  );
+    		// console.log(luggageTagGroup);
 
 
-  			var targetCoords = { 'x': actualCamState.target.x ,'y': actualCamState.target.y, 'z': actualCamState.target.z};
-    		var newTargetCoords = {'x': -0.12880347511685897,'y': 1.6971680076105373,'z':1.3263397242339794}; 
-  
-    		new TWEEN.Tween(targetCoords).to(newTargetCoords).onUpdate(() => {
-        		//	console.log(posCoords);
-        		controls.target.set(targetCoords.x, targetCoords.y, targetCoords.z)
-    		}).easing(TWEEN.Easing.Quartic.InOut).start();
-
+    	} else if( e.shiftKey) { 
+    		controls.enabled = false;
 
     	}
-   	});
 
+   	 });
+   	 $(document).on('keyup', function(e){ //console.log(e.shiftKey)} );
+		if(! e.shiftKey) { 
+    		controls.enabled = true;
+    	}
+   	 });
 	 camera.position.z = 10;
-//	camera.position.set( 1, 1, 2 );
+
+
 
 	function animate() {
 		requestAnimationFrame( animate );
-
 		TWEEN.update();
-//		cube.rotation.x += 0.01;
-//		cube.rotation.y += 0.01;
-
 		renderer.render( scene, camera );
 	};
 
@@ -159,6 +240,15 @@ function setCam(camera,controls,state) {
 
 
 
-
+	var url = new URL(window.location.href);
+	var noinfo = (url.searchParams.get("noinfo") === 'true');
+	if(info && (!noinfo)) {
+		$("#info-overlay").show();
+		$( "#info-overlay" ).click(function() {
+			info = false;
+  			$("#info-overlay").hide();
+		});
+	}
+	if(noinfo) info = false;
 
 });

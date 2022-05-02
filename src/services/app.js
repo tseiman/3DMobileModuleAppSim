@@ -1,5 +1,11 @@
+#!/usr/bin/node
 
-'use strict';
+'use strict'; 
+
+
+// [START app]
+
+
 const chalk               = require('chalk');
 const server              = require('./server.js');
 

@@ -1,0 +1,134 @@
+{ 
+	"title": "Demo Application: Smart baggage tag",
+	"scenesetup": "baggagetag_animation",
+	"load": [
+		{
+			"name": "ambientlight",
+			"type": "fragment",
+			"file": "suitcase/AmbientLight.js"
+		},
+		{
+			"name": "light1",
+			"type": "fragment",
+			"file": "suitcase/Light1.js"
+		},
+		{
+			"ignore": true,
+			"name": "light2",
+			"type": "fragment",
+			"file": "suitcase/Light2.js"
+		},
+		{"ignore": false,
+			"name": "earth",
+			"type": "fragment",
+			"file": "suitcase/Earth.js"
+		},
+		{"ignore": false,
+			"name": "spline1",
+			"type": "fragment",
+			"file": "suitcase/Spline1.js"
+		},
+		{"ignore": false,
+			"name": "spline2",
+			"type": "fragment",
+			"file": "suitcase/Spline2.js"
+		},	
+		{
+			"ignore": true,
+			"name": "earth",
+			"type": "gltf",
+			"file": "/blender/static/earth.gltf",
+			"rotation": {"x": 0.5,"y": -1.9, "z": 0}, 
+			"scale": {"x": 4,"y": 4, "z": 4}
+		},		
+		{
+			"name": "suitcase",
+			"type": "gltf",
+			"file": "/blender/static/suitcase.gltf",
+			"position": {"x": -0.38,"y": 1.78, "z": 4.02}, 
+			"rotation": {"x": 1.0,"y": -2, "z": -0.15}
+		},
+		{
+			"name": "flight",
+			"type": "gltf",
+			"opacity": 0,
+			"file": "/blender/static/flight.gltf",
+			"position": {"x": -2.12,"y": 2, "z": 2.85}, 
+			"rotation": {"x": 0,"y": -0.8, "z": -0.36}, 
+			"scale": {"x": 3,"y": 3, "z": 3}
+		
+		},
+		{
+			"name": "Munich",
+			"type": "gltf",
+			"file": "/blender/static/Munich.gltf",
+			"position": {"x": -0.38,"y": 1.42, "z": 3.78},
+			"rotation": {"x": 1.3,"y": 0, "z": 0},
+			"scale": {"x": 0.15,"y": 0.15, "z":0.15}
+		
+		},
+		{
+			"name": "Toronto",
+			"type": "gltf",
+			"file": "/blender/static/Toronto.gltf",
+			"position": {"x": -2.91, "y": 2.675, "z": 0.955},
+			"rotation": {"x": 1.6,"y": -0.8, "z": 1.26},
+			"scale": {"x": 0.15,"y": 0.15, "z":0.15}
+		
+		},
+		{
+			"name": "Vancouver",
+			"type": "gltf",
+			"file": "/blender/static/Vancouver.gltf",
+			"position": {"x": -1.69,"y": 3.67, "z": -0.36},
+			"rotation": {"x": 1.6,"y": -1.2, "z": 1.58},
+			"scale": {"x": 0.15,"y": 0.15, "z":0.15}
+		}
+	],
+	"animation": [
+		{	"item": "camera",
+			"position"	: {"x": -0.5091632927752632, "y": 1.85, "z": 4.45},
+			"rotation"	: {"x": -0.23902381090101115, "y": -0.03637480578060653, "z": -0.21081324118020318},
+			"target"	: {"x": 0, "y": 0, "z": 0},
+			"continue": false
+		},
+		{	"item": "camera",
+			"position"	: {"x": -18.269381003533997, "y": 1.1858553267814593, "z": 19.15963616901225},
+			"rotation"	: {"x": -0.061814563237932094, "y": -0.7606627430091135, "z": -0.04264355687095585},
+			"target"	: {"x": 0, "y": 0, "z": 0}
+		},
+		{	"item": "camera",
+			"position"	: {"x": -18.269381003533997, "y": 1.1858553267814593, "z": 19.15963616901225},
+			"rotation"	: {"x": -0.061814563237932094, "y": -0.7606627430091135, "z": -0.04264355687095585},
+			"target"	: {"x": 0, "y": 0, "z": 0}
+		},
+		{	"item": "camera",
+			"position"	: {"x": -5.419219065876996, "y": 5.48813121716363, "z": 0.6214293065725759},
+			"rotation"	: {"x": -1.458045069731102, "y": -0.7758957277001483, "z": -1.410506236732835},
+			"target"	: {"x": 0, "y": 0, "z": 0},
+			"continue": false
+		},
+		{	"item": "spline1",
+			"opacity": 0.9,
+			"continue": false
+		},
+		{	"item": "suitcase",
+			"position"	: {"x": -1.2691553184587454, "y": 3.610683186024481, "z": 3.022399747439268},
+			"rotation"	: {"x": 0.4,"y": -2, "z": -0.4},
+			"continue": false
+		},
+		{	"item": "suitcase",
+			"position"	: {"x": -1.483413494869174, "y": 3.81, "z": -0.09182686968755394},
+			"rotation"	: {"x": 0.4,"y": -2, "z": -0.4},
+			"continue": false
+		},
+		{	"item": "spline1",
+			"opacity": 0
+		},
+		{	"item": "camera",
+			"position"	: {"x": 0, "y": 0, "z": 10},
+			"rotation"	: {"x": 0, "y": 0, "z": 0},
+			"target"	: {"x": 0, "y": 0, "z": 0}
+		}
+	]
+}
