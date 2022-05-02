@@ -128,7 +128,9 @@ function setCam(camera,controls,state) {
 		vector.unproject(camera);
 		raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
 		let target = raycaster.intersectObjects([animationManager.getItem("earth")]);
-		console.log(target[0].point);
+		if(target[0]) {
+			console.log(target[0].point);
+		}
 
 	}
 
@@ -178,8 +180,10 @@ window.controls = controls;
 */
 	});
 
-//	async function
+/*	async function animateNext() {
 
+	}
+*/
    	 $(document).on('keydown', function(e){ //console.log(e.shiftKey)} );
 
   // 	 $(window).keypress(function(e) {
