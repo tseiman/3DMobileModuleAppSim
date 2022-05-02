@@ -87,45 +87,77 @@
 	],
 	"animation": [
 		{	"item": "camera",
+			"type": "camera",
 			"position"	: {"x": -0.5091632927752632, "y": 1.85, "z": 4.45},
 			"rotation"	: {"x": -0.23902381090101115, "y": -0.03637480578060653, "z": -0.21081324118020318},
 			"target"	: {"x": 0, "y": 0, "z": 0},
 			"continue": false
 		},
 		{	"item": "camera",
+			"type": "camera",
 			"position"	: {"x": -18.269381003533997, "y": 1.1858553267814593, "z": 19.15963616901225},
 			"rotation"	: {"x": -0.061814563237932094, "y": -0.7606627430091135, "z": -0.04264355687095585},
 			"target"	: {"x": 0, "y": 0, "z": 0}
 		},
 		{	"item": "camera",
+			"type": "camera",
 			"position"	: {"x": -18.269381003533997, "y": 1.1858553267814593, "z": 19.15963616901225},
 			"rotation"	: {"x": -0.061814563237932094, "y": -0.7606627430091135, "z": -0.04264355687095585},
 			"target"	: {"x": 0, "y": 0, "z": 0}
 		},
 		{	"item": "camera",
+			"type": "camera",
 			"position"	: {"x": -5.419219065876996, "y": 5.48813121716363, "z": 0.6214293065725759},
 			"rotation"	: {"x": -1.458045069731102, "y": -0.7758957277001483, "z": -1.410506236732835},
 			"target"	: {"x": 0, "y": 0, "z": 0},
 			"continue": false
 		},
 		{	"item": "spline1",
+			"type": "mesh",
+			"opacity": 0.9,
+			"continue": false
+		},
+		{	"item": "spline2",
+			"type": "mesh",
 			"opacity": 0.9,
 			"continue": false
 		},
 		{	"item": "suitcase",
+			"type": "mesh",
 			"position"	: {"x": -1.2691553184587454, "y": 3.610683186024481, "z": 3.022399747439268},
 			"rotation"	: {"x": 0.4,"y": -2, "z": -0.4},
 			"continue": false
 		},
 		{	"item": "suitcase",
+			"type": "mesh",
 			"position"	: {"x": -1.48, "y": 4.15, "z": -0.1},
 			"rotation"	: {"x": -0.3,"y": -2.5, "z": -0.4},
 			"continue": false
 		},
 		{	"item": "spline1",
+			"type": "mesh",
 			"opacity": 0
 		},
+		{	"item": "suitcase",
+			"type": "mesh",			
+			"position"	: {"x": -1.2691553184587454, "y": 3.610683186024481, "z": 3.022399747439268},
+			"rotation"	: {"x": 0.4,"y": -2, "z": -0.4},
+			"continue": true
+		},
+		{	"item": "suitcase",
+			"type": "mesh",
+			"position": {"x": -0.38,"y": 1.78, "z": 4.02}, 
+			"rotation": {"x": 1.0,"y": -2, "z": -0.15},
+			"continue": true
+		},
+		{	"item": "suitcase",
+			"type": "texture",
+			"materialName": "TagField",
+			"newTexture": "/pic/static/suitcase/FlightTag_MUC.png",
+			"continue": true
+		},
 		{	"item": "camera",
+			"type": "camera",
 			"position"	: {"x": 0, "y": 0, "z": 10},
 			"rotation"	: {"x": 0, "y": 0, "z": 0},
 			"target"	: {"x": 0, "y": 0, "z": 0}

@@ -69,52 +69,10 @@ function setCam(camera,controls,state) {
 
 		if (intersects.length > 0) {
 			if(intersects[0].object.userData.clickable && intersects[0].object.name === 'LuggageTagPlane') {
-		//		controls.enabled = false;
-			console.log('Found clickable:', intersects[0].object.name);
-			animationManager.getItem("suitcase").traverse(child => {
-					if (child.material && child.material.name === 'TagField') {
-			
-			var oldOpacity = {'x': 1, 'y': 0};
-			var newOpacity = {'x': 0, 'y': 0};
 
-			new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {
+				console.log('Found clickable:', intersects[0].object.name);
+				animationManager.animateTexture("suitcase","TagField","/pic/static/suitcase/FlightTag_YYZ.png"	);
 
-				child.material = new THREE.MeshPhongMaterial({
-				    color: 0xFFFFFF,
-				    opacity: oldOpacity.x,
-				    transparent: true,
-				  });
-
-				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
-				var oldOpacity = {'x': 0, 'y': 0};
-				var newOpacity = {'x': 1, 'y': 0};
-				
-				new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {
-
-				
-					child.material = new THREE.MeshPhongMaterial({
-				    color: 0xFFFFFF,
-				    opacity: oldOpacity.x,
-				    transparent: true,
-				  });
-
-					}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
-						child.material = new THREE.MeshPhongMaterial({
-				   		color: 0xc0c0c0,
-				    	opacity: 0,
-				    	transparent: false,
-				  	});
-						child.material.map = new THREE.TextureLoader().load('/pic/static/suitcase/FlightTag_YYZ.png');
-					child.material.map.flipY = false;
-
-					});
-			});
-
-				//	child.material.map = new THREE.TextureLoader().load('/pic/static/suitcase/FlightTag_YYZ.png');
-				//	child.material.map.flipY = false;
-				//	child.material.map.encoding = THREE.sRGBEncoding;
-					}
-			});
 			}
 		}
 
@@ -205,10 +163,14 @@ window.controls = controls;
 		//			nextAnim = animationManager.getNextAnimation();
 					break;
 				}
-				if(nextAnim.item === 'camera') {
+				if(nextAnim.type === 'camera') {
 					animationManager.animateCamera(nextAnim);
-				} else {
+				} else if (nextAnim.type === 'mesh') {
 					animationManager.animateItem(nextAnim);
+				} else if (nextAnim.type === 'texture') {
+					animationManager.animateTexture(nextAnim.item,nextAnim.materialName,nextAnim.newTexture);
+				} else {
+					console.error(`unknown item type to animate: "${nextAnim.type}" for item "${nextAnim.item}"`);
 				}
 			}
 

@@ -22,7 +22,7 @@ export default class Spline2 {
 
        const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
-        const material = new THREE.LineBasicMaterial({ color: 0xff0000,transparent: true, opacity: 1 });
+        const material = new THREE.LineBasicMaterial({ color: 0xff0000,transparent: true, opacity: 0 });
         // Create the final object to add to the scene
         const curveObject = new THREE.Line( geometry, material );
         this.scene.add(curveObject);

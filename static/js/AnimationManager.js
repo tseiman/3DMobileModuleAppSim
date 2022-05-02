@@ -130,6 +130,50 @@ class AnimationManager {
 
 
 	}
+	animateTexture(itemToUpdate,materialNameToUpdate,newTexture) {
+
+		this.getItem(itemToUpdate).traverse(child => {
+
+			if (child.material && child.material.name === materialNameToUpdate) {
+
+				var oldOpacity = {'x': 1, 'y': 0};
+				var newOpacity = {'x': 0, 'y': 0};
+
+				new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {
+
+					child.material = new THREE.MeshPhongMaterial({
+						color: 0xFFFFFF,
+					    opacity: oldOpacity.x,
+					    transparent: true,
+					});
+
+				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+					var oldOpacity = {'x': 0, 'y': 0};
+					var newOpacity = {'x': 1, 'y': 0};
+				
+					new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {		
+						child.material = new THREE.MeshPhongMaterial({
+						    color: 0xFFFFFF,
+						    opacity: oldOpacity.x,
+						    transparent: true,
+			 			});
+
+					}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+						child.material = new THREE.MeshPhongMaterial({
+			   				color: 0xc0c0c0,
+			    			opacity: 0,
+			    			transparent: false,
+			  			});
+						child.material.map = new THREE.TextureLoader().load(newTexture);
+						child.material.name = materialNameToUpdate;
+						child.material.map.flipY = false;
+					});
+				});
+
+
+			}
+		});
+	}
 
 
 
