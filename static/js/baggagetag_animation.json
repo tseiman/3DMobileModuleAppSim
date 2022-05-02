@@ -117,11 +117,6 @@
 			"opacity": 0.9,
 			"continue": false
 		},
-		{	"item": "spline2",
-			"type": "mesh",
-			"opacity": 0.9,
-			"continue": false
-		},
 		{	"item": "suitcase",
 			"type": "mesh",
 			"position"	: {"x": -1.2691553184587454, "y": 3.610683186024481, "z": 3.022399747439268},
