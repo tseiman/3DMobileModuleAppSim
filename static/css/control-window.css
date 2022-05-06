@@ -1,0 +1,164 @@
+
+body {
+	color: #fff!important;
+	background: rgb(0,0,50) !important;
+	background: linear-gradient(180deg, rgba(0,0,50,1) 59%, rgba(2,161,253,1) 91%, rgba(2,161,253,1) 100%) !important;
+	overflow: hidden;
+  	font-family: 'Lato',sans-serif;
+}
+body::after {
+	background: url(/pic/static/pcb-background.png);
+ 	background-size: cover;
+  	content: "";
+  	opacity: 0.1;
+  	position: absolute;
+  	top: 0;
+  	bottom: 0;
+  	right: 0;
+  	left: 0;
+  	z-index: -100;   
+}
+
+.headline  {
+	width: 100%;
+	z-index: 2;
+	margin-bottom: 3em;
+}
+
+.headline img {
+	z-index: 3;
+	vertical-align:middle;
+	float: left;
+	margin-top: 0px;
+	position: relative;
+    z-index: 2;
+}
+.headline-button {
+	float: right;
+	top: -60px;
+    position: relative;
+}
+
+.headline h1 {
+	z-index: 3;
+	color:  #ddd;
+	margin-left: -237px;
+	width: 100%;
+	text-align: center;
+	font-size: 3em;
+	vertical-align:middle;
+	position: relative;
+}
+
+#bodyframe {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4em;
+}
+
+.indicator  {
+    font-size: 1.5em;
+    color: black;
+	width: 100%;
+	border-collapse: separate; 
+	border-color: white;
+	text-align: center;
+	margin-bottom: 3em;
+}
+.indicator > * > tr > * {
+	padding:  5px;
+	border:solid white 1px;
+	border-radius: 6px;
+	color: black;
+}
+.indicator-neutral {
+	background-color: #ccc;
+}
+.indicator-ok {
+	background-color: #0ed60e;
+}
+.indicator-error {
+	background-color: #f03636;
+}
+.indicator-tentative {
+	background-color: #dede21;
+}
+
+#logtext {
+    background-color: rgba(237, 255, 255, .5);
+    box-sizing: border-box;
+    border-radius: 6px;
+    color: #333;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    font-size: 1.3em;
+    line-height: 1.3;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    overflow-y: scroll;
+    height: 402px;
+    font-family: "Letter Gothic", monospace !important;
+}
+.logLineSpan {
+	display: block;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.logLineSpanNorm {
+	color: #000;
+}
+
+.logLineSpanSystem {
+	color: #dabd00;
+}
+.logLineSpanWarn {
+	color: #b42424	;
+	font-weight: bolder;
+}
+.logLineSpanRX {
+	color: #3fcc3f	;
+}
+.logLineSpanTX {
+	color: #b2e844	;
+}
+
+.logLineSpanInfo {
+	color: #c6c3c3;
+}
+#input-at-wrap {
+	font-size: 1.5em;
+	width: 100%;
+}
+#input-at-wrap>i {
+	font-size: 1em;
+	font-family: Icons!important;
+}
+
+.prompt {
+	    border-radius: 6px 0px 0 6px!important;
+}
+.promptbutton {
+	font-family: Icons!important;
+
+}
+
+div.results.transition.visible {
+	overflow-y: scroll;
+    overflow-x: hidden;
+    bottom: 10px;
+    height: 300%;
+    width: 100%;
+}
+div.results.transition.visible >a {
+	border-bottom: rgba(0,0,0,0.1) 1px solid !important;
+}
+.content {
+	color:  black;
+}
+.icon {
+	font-family: 'FontAwesome'!important;
+}
+
+
+

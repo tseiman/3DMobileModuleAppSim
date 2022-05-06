@@ -5,14 +5,14 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
 	
-	background: rgb(0,0,50);
-	background: linear-gradient(180deg, rgba(0,0,50,1) 59%, rgba(2,161,253,1) 91%, rgba(2,161,253,1) 100%);
+	background: rgb(0,0,50) !important;
+	background: linear-gradient(180deg, rgba(0,0,50,1) 59%, rgba(2,161,253,1) 91%, rgba(2,161,253,1) 100%)!important;
  /*
 	background-image: url("/pic/static/sierra-background.jpg");
 */
-	height: 100vh;
-	z-index: -2;
- 	overflow: hidden;
+	height: 100vh!important;
+	z-index: -2!important;
+ 	overflow: hidden!important;
 }
 
 .headline  {
@@ -39,6 +39,22 @@ body {
 	vertical-align:middle;
 	position: relative;
 }
+.headline-button {
+    float: right;
+    top: -52px;
+    position: relative;
+    right: 33px;
+    opacity: 0.6;
+    z-index: 10;
+}
+.headline-button:hover { 
+  opacity: 1!important;
+}
+/*.headline-button>i:hover { 
+  opacity: 1!important;
+ background-color: #4CAF50!important; 
+}
+*/
 
 #mainCanvas {
 /*	top:  0;
@@ -118,4 +134,17 @@ box-shadow: 2px 2px 2px 1px silver;
 }
 #info-overlay-box >ul>li {
 	margin-top:  0.8em;
+}
+.icon {
+font-family: 'FontAwesome'!important;
+    font-weight: bolder!important;
+    vertical-align: baseline!important;
+}
+#progressbar {
+	left: 30px;
+    right: 30px;
+    height: 10px;
+    z-index: 20;
+    bottom: 70px;
+    position: absolute;
 }

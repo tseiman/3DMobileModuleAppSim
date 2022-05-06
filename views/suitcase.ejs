@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('partials/std-header'); %>
+	<title>Demo Application</title>
+	<script type="module"  src="/js/static/suitcase/suitcase-main.js"></script>
+
+</head>
+<body>
+	<div id='stars'></div>
+	<div class="headline">
+		<img alt="sierra logo" src="/pic/static/sierra-logo-h_whitetext.png" />
+		<h1 class="headline-text">Demo Application: Smart baggage tag</h1>
+		
+		<button class="ui circular terminal icon button headline-button" id="btn-ctrl-window">
+			<i class="terminal icon"></i>
+		</button>
+	</div>
+	<canvas id="mainCanvas"></canvas>
+
+	<%- include('partials/info-overlay'); %>
+
+	<div id="progressbar"></div>
+
+	<%- include('partials/footer'); %>
+
+</body>
+</html>

@@ -5,9 +5,8 @@
   "main": "src/services/app.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "src/services/app.js",
-    "test": "mocha --exit test/*.test.js"
+    "test": "mocha --exit test/*.test.js",
+    "start": "src/services/app.js"
   },
   "repository": {
     "type": "git",
@@ -32,9 +31,13 @@
     "console-stamp": ">=3.0.4",
     "ejs": ">=3.1.7",
     "express": ">=4.17.3",
-    "three": "^0.139.2",
+    "fomantic-ui": "^2.9.0-beta.286",
     "jquery": "3.6.0",
-    "threejs-meshline":">=2.0.12"
+    "three": "^0.139.2",
+    "moment": "^2.29.3",
+    "lato-font":"^3.0.0",
+    "font-awesome": "^4.7.0",
+    "jsbarcode": "^3.11.5"
   },
   "devDependencies": {
     "mocha": "^9.0.0"

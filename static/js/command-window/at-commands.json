@@ -1,0 +1,68 @@
+{
+	"items": [
+		{
+			"title": "AT+CREG=1",
+			"description": "sets URCs for general attach status"
+		},
+		{
+			"title": "AT+CREG?",
+			"description": "checks (LPWA) attach status"
+		},
+		{
+			"title": "AT+CEREG=1",
+			"description": "sets URCs for enhanced (LPWA) attach status"
+		},
+		{
+			"title": "AT+CEREG?",
+			"description": "checks enhanced (LPWA) attach status"
+		},
+		{
+			"title": "AT+COPS=?",
+			"description": "scans the network"
+		},
+		{
+			"title": "AT+COPS?",
+			"description": "displays the actual operator"
+		},
+		{
+			"title": "AT+CPIN?",
+			"description": "checks the SIM and PIN was OK"
+		},
+		{
+			"title": "AT+CFUN=1,1",
+			"description": "reboots the modem and gets online after"
+		},
+		{
+			"title": "ATI9",
+			"description": "Informs about the modem FW version etc."
+		},
+		{
+			"title": "ATE0",
+			"description": "Disable command echo"
+		},
+		{
+			"title": "ATE1",
+			"description": "Enable command echo"
+		},
+		{
+			"title": "AT+KSRAT?",
+			"description": "Get the Radio Access Network Type"
+		},
+		{
+			"title": "AT+GNSSNMEA=4",
+			"description": "Modem writes NMEA sentences to UART (exit with +++)"
+		},
+		{
+			"title": "AT+GNSSSTART=0",
+			"description": "Auto start of GNSS"
+		},
+		{
+			"title": "AT+GNSSLOC?",
+			"description": "get the last position reading"
+		},
+		{
+			"title": "AT+GNSSCONF?",
+			"description": "This command configures various GNSS configurations such as satellite constellations."
+		}
+	]
+}
