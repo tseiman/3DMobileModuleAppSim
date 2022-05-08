@@ -1,0 +1,23 @@
+{
+	"version": "1.0",
+	"name": "suitcase",
+	"items": [
+		{
+			"name"			: "apn",
+			"caption" 		: "APN",
+			"help"			: "please set here the APN related to your SIM card and operator",
+			"placeholder"	: "internet",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "test",
+			"caption" 		: "My super Duper test",
+			"help"			: "Some test",
+			"placeholder"	: "123",
+			"type"			: "text",
+			"check"			: "^[0-9]+$"
+		}
+
+	]
+}

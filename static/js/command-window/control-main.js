@@ -2,15 +2,24 @@ import { Logger } from '/js/static/command-window/Logger.js';
 import { SerialIO } from '/js/static/command-window/SerialIO.js';
 import { URCHandler } from '/js/static/command-window/URCHandler.js';
 import { Indicator } from '/js/static/command-window/Indicator.js';
+import { ATProcedures } from '/js/static/command-window/ATProcedures.js';
+import { Configurator } from '/js/static/command-window/Configurator.js';
+
 
 var serialPresent = false;
 
-
+jQuery.event.special.touchstart = {
+        setup: function( _, ns, handle ){
+            this.addEventListener("touchstart", handle, { passive: true });
+        }
+	};
 
 $(document).ready(function() {
 	var logger = new Logger();
 	logger.system("Starting command window");
 	logger.setMaxLog(200);
+
+	var configurator = new Configurator(logger);
 
 // setup the indicator on the screen
 	var indicator = new Indicator([
@@ -22,6 +31,20 @@ $(document).ready(function() {
 		],
 		"indicator"
 	);
+
+
+// checking serial API
+	if (! "serial" in navigator) {
+  		logger.warn("Serial API missing");
+  		$('#modal-serialapi').modal('show');
+	} else {
+  		serialPresent = true;
+		logger.system("Serial API detected");
+	}
+	if (! window.Worker) {
+		logger.warn("Web Worker missing - please use a browser with this feature");
+	}
+
 
 // serial handler setup
 	var serialIO = new SerialIO({
@@ -69,18 +92,8 @@ $(document).ready(function() {
 	}, null);
 
 
-
-// checking serial API
-	if (! "serial" in navigator) {
-  		logger.warn("Serial API missing");
-  		$('#modal-serialapi').modal('show');
-	} else {
-  		serialPresent = true;
-		logger.system("Serial API detected");
-	}
-	if (! window.Worker) {
-		logger.warn("Web Worker missing - please use a browser with this feature");
-	}
+	var atProcedures = new ATProcedures(serialIO, logger);
+	atProcedures.init();
 
 
 // command input command suggestion list loader and OnEnterKey handler
@@ -117,6 +130,12 @@ $(document).ready(function() {
 
   	
 	});
+	$( "#btn-config" ).click(function() {
+//		$('#configuration-modal').modal('show');
+
+		configurator.open();
+	});
+
 // button at the end of the AT comamnd input to send data without line break	
 	$( "#btn-send-witout-linebreak" ).click(function() {
   		serialIO.send($( "#input-at" ).val());

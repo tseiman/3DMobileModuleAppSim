@@ -37,6 +37,7 @@ class LuggageTagRenderer {
 		    baggageTagCtx.drawImage(canvasBackgroundImage,xoffset , 0);
 
 			baggageTagCtx.font  = "20px monospace";
+			baggageTagCtx.textAlign = "left";
 			baggageTagCtx.fillStyle = "black";
 			baggageTagCtx.fillText("Weight: " + that.flightWeight + "Kg", xoffset + 60, 50);
 			baggageTagCtx.fillText("Final Flight No.: " + that.flightNo, xoffset + 60, 90);
@@ -110,5 +111,5 @@ class LuggageTagRenderer {
 		$(`#${that.name}-baggageTag-canvas`).remove();
 	}
 }
-//export { LuggageTagRenderer };
+export { LuggageTagRenderer };
 

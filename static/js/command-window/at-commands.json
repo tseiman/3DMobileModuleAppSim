@@ -63,6 +63,10 @@
 		{
 			"title": "AT+GNSSCONF?",
 			"description": "This command configures various GNSS configurations such as satellite constellations."
+		},
+		{
+			"title": "AT+GNSSSTOP",
+			"description": "Stop GNSS aquisition"
 		}
 	]
 }

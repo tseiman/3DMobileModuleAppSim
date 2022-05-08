@@ -12,6 +12,7 @@ import { TWEEN } from '/js/three/jsm/libs/tween.module.min.js';
 import { SceneLoader } 		from '/js/static/shared/SceneLoader.js';
 import { AnimationManager } from '/js/static/shared/AnimationManager.js';
 import { Progressbar } from '/js/static/shared/Progressbar.js';
+import { LuggageTagRenderer } from '/js/static/suitcase/LuggageTagRenderer.js';
 
 
 
@@ -70,7 +71,27 @@ function setCam(camera,controls,state) {
 			if(intersects[0].object.userData.clickable && intersects[0].object.name === 'LuggageTagPlane') {
 
 				console.log('Found clickable:', intersects[0].object.name);
-				animationManager.animateTexture("suitcase","TagField","/pic/static/suitcase/FlightTag_YYZ.png"	);
+				// animationManager.animateTexture("suitcase","TagField","/pic/static/suitcase/FlightTag_YYZ.png"	);
+
+
+				new LuggageTagRenderer({
+					'name'				: "luggageTag",
+					'barcodeString'		: new Date().valueOf(),
+					'flightWeight'		: 15,
+					'flightNo'			: "XY 1234",
+					'passengerName'		: "Jean Doe",
+					'destinationShort'	: "YYZ",
+					'destinationLong'	: "Toronto",
+					'destinationInfo1'	: "43.6766°N, 79.6305°W",
+					'destinationInfo2'	: "569FT  UTC -4:00HR",
+					'backgroudImage'	: "/pic/static/suitcase/LuggageTag.svg",
+					'callback'			: function(url) {
+						animationManager.animateTexture("suitcase","TagField", url, function(url) {
+							URL.revokeObjectURL(url);
+						});	
+					}
+				});
+
 
 			}
 		}
@@ -140,8 +161,8 @@ window.controls = controls;
    	 $(document).on('keydown', function(e){ //console.log(e.shiftKey)} );
 
    	
-   	 if(info) return;
-   	 if(e.which == 78) { // 'n' = next pressed
+   	 	if(info) return;
+   	 	if(e.which == 78) { // 'n' = next pressed
        		var loadNextAnim = true;
        		while(loadNextAnim) {
 				var nextAnim = animationManager.getNextAnimation();
@@ -180,15 +201,17 @@ window.controls = controls;
 
     	}
 
-   	 });
+   	 }); // on keydown
    	 $(document).on('keyup', function(e){ //console.log(e.shiftKey)} );
 		if(! e.shiftKey) { 
     		controls.enabled = true;
     	}
-   	 });
+   	 }); // on keyup
 	 camera.position.z = 10;
 
 
+
+// animation function
 
 	function animate() {
 		requestAnimationFrame( animate );

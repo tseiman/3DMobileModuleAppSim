@@ -130,7 +130,7 @@ class AnimationManager {
 
 
 	}
-	animateTexture(itemToUpdate,materialNameToUpdate,newTexture) {
+	animateTexture(itemToUpdate,materialNameToUpdate,newTexture,callback) {
 
 		this.getItem(itemToUpdate).traverse(child => {
 
@@ -157,16 +157,20 @@ class AnimationManager {
 						    opacity: oldOpacity.x,
 						    transparent: true,
 			 			});
-
 					}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
 						child.material = new THREE.MeshPhongMaterial({
 			   				color: 0xc0c0c0,
 			    			opacity: 0,
 			    			transparent: false,
 			  			});
-						child.material.map = new THREE.TextureLoader().load(newTexture);
+						child.material.map = new THREE.TextureLoader().load(newTexture, function(texture) {
+							if(callback) callback(texture);
+						});
 						child.material.name = materialNameToUpdate;
 						child.material.map.flipY = false;
+						child.material.map.repeat.set(1.25, 1.25);
+						child.material.map.offset.set(-0.115, -0.12);
+						
 					});
 				});
 

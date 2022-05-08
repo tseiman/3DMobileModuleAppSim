@@ -37,6 +37,10 @@ body::after {
 	float: right;
 	top: -60px;
     position: relative;
+    opacity: 0.6;
+}
+.headline-button:hover {
+	opacity: 1;
 }
 
 .headline h1 {
