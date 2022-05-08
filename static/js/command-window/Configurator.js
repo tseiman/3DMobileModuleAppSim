@@ -24,13 +24,20 @@ class Configurator {
 
 
 
+<div class="ui icon big button" id="divUpload">
+        <i class="cloud icon"></i>
+        
+ </div>
+<input type="file" id="hidde-new-file" style="display: none">
 
 
 					
-					<button class="circular ui icon button"  for="embedpollfileinput" style="float: right;" id="btn-config-upload">
+<!--					<button class="circular ui icon button"  for="embedpollfileinput" style="float: right;" id="btn-config-upload">
 					  <i class="icon upload"></i>
 					         <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
 					</button> 
+-->
+
 				</div>
 				<div class="scrolling content">
 					<div class="ui form" id="config-form"></div>
