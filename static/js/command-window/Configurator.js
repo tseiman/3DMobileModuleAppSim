@@ -25,7 +25,7 @@ class Configurator {
 
 
 
-<input type="file" id="hidde-new-file" style="/* display: none */">
+<input type="file" id="hidde-new-file" style="display: none ">
 
 
 					
