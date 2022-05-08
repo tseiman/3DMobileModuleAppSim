@@ -24,8 +24,13 @@ class Configurator {
 
 
 
-
-<input type="file" id="hidde-new-file" style="display: none ">
+  <div>
+      <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
+        <label for="embedpollfileinput" class="ui huge red right floated button">
+    <i class="ui upload icon"></i> 
+    Upload image
+  </label>
+  </div>
 
 
 					
