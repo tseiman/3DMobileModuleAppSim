@@ -24,19 +24,12 @@ class Configurator {
 
 
 
-  <div>
-      <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
-        <label for="embedpollfileinput" class="ui huge red right floated button">
-    <i class="ui upload icon"></i> 
-    Upload image
-  </label>
-  </div>
 
 
 					
 					<button class="circular ui icon button"  for="embedpollfileinput" style="float: right;" id="btn-config-upload">
 					  <i class="icon upload"></i>
-					   <input type="file" id="file" style="display:none" />
+					         <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
 					</button> 
 				</div>
 				<div class="scrolling content">
