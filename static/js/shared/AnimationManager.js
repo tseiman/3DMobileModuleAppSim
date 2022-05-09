@@ -62,7 +62,7 @@ class AnimationManager {
 				var posCoords = { 'x': actualAnimationPoint.position.x ,'y': actualAnimationPoint.position.y, 'z': actualAnimationPoint.position.z};
 				new TWEEN.Tween(posCoords).to(newAnimationPoint.position).onUpdate(() => {
 		    		item.position.set(posCoords.x, posCoords.y, posCoords.z)
-				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+				}).easing(TWEEN.Easing.Quadratic.InOut).start().onComplete(function() {
 							resolve();
 				});
 			}
@@ -70,7 +70,7 @@ class AnimationManager {
 					var rotCoords = { 'x': actualAnimationPoint.rotation.x ,'y': actualAnimationPoint.rotation.y, 'z': actualAnimationPoint.rotation.z};	  
 				new TWEEN.Tween(rotCoords).to(newAnimationPoint.rotation).onUpdate(() => {
 		    		item.rotation.set(rotCoords.x, rotCoords.y, rotCoords.z);
-				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+				}).easing(TWEEN.Easing.Quadratic.InOut).start().onComplete(function() {
 							resolve();
 				});
 			}
@@ -128,8 +128,6 @@ class AnimationManager {
 		  					});
 
 						}).easing(TWEEN.Easing.Quartic.InOut).start().onComplete(function() {
-
-							console.log("here next");
 							resolve();
 						});
 
