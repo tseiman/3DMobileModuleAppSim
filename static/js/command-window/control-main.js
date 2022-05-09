@@ -7,6 +7,7 @@ import { Configurator } from '/js/static/command-window/Configurator.js';
 
 
 var serialPresent = false;
+var modemTimeout;
 
 jQuery.event.special.touchstart = {
         setup: function( _, ns, handle ){
@@ -46,6 +47,16 @@ $(document).ready(function() {
 	}
 
 
+	function modemAliveCB() {
+		clearTimeout(modemTimeout);
+
+		modemTimeout = setTimeout(function() {
+			indicator.setState("modem",Indicator.tentative);
+		} , 5000);
+		console.log("alive");
+		indicator.setState("modem",Indicator.ok);
+	}
+
 // serial handler setup
 	var serialIO = new SerialIO({
 		baudRate: 115200,
@@ -56,7 +67,7 @@ $(document).ready(function() {
 			indicator.setState("uart",Indicator.error);
 		},
 		lineDelimiter: "\r\n",
-	}, logger);
+	}, logger, modemAliveCB);
 
 	var urcHandler = new URCHandler(logger);
 	serialIO.registerCallback('urc-handler','^\\\+.*',urcHandler.handleURC,urcHandler);
@@ -119,6 +130,7 @@ $(document).ready(function() {
 		  		serialIO.open().then(
 		  			function() { 
 		  				indicator.setState("uart",Indicator.ok); 
+	  					indicator.setState("modem",Indicator.tentative);
 		  				serialIO.run();
 		  				atProcedures.init();
 		  			},

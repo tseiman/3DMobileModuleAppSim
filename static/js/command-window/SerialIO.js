@@ -35,7 +35,7 @@ class SerialIO {
 
 
 
-	constructor(config,logger) {
+	constructor(config,logger,modemAliveCB) {
 		var that = this;
 		this.config  =  config;
 		this.callback = new Map();
@@ -43,6 +43,7 @@ class SerialIO {
 
 		this.logger = logger;
 		this.encoder = new TextEncoder();
+		this.modemAliveCB = modemAliveCB;
 
 	/*	this.mqttClient = new SimpleMQTT({
 		    "clientID": 0, 
@@ -121,7 +122,11 @@ class SerialIO {
 			        	break;
 			      	}
 		      		// if(value !== '') 
-		      			that.logger.rx(`<<< ${value}`);
+      				that.logger.rx(`<<< ${value}`);
+		      		if(that.modemAliveCB) {
+								that.modemAliveCB();
+							}
+
 		      		that.triggerCallbacks(value);
 
 			      // Do something with |value|...
