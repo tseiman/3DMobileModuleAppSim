@@ -37,6 +37,38 @@ function setCam(camera,controls,state) {
 	controls.update();
 }
 
+async function callAnimation(animationManager) {
+	console.log("animate");
+	       		var loadNextAnim = true;
+       		while(loadNextAnim) {
+       			
+				var nextAnim = animationManager.getNextAnimation();
+
+				if(typeof nextAnim.continue !== 'undefined') {
+					loadNextAnim = nextAnim.continue;					
+				} else {
+					loadNextAnim = true; 
+				}
+
+				console.log("loadNextAnim:" + loadNextAnim);
+				
+				if(!nextAnim) {
+					animationManager.resetAnimation();
+		//			nextAnim = animationManager.getNextAnimation();
+					break;
+				}
+				if(nextAnim.type === 'camera') {
+					await animationManager.animateCamera(nextAnim);
+				} else if (nextAnim.type === 'mesh') {
+					await animationManager.animateItem(nextAnim);
+				} else if (nextAnim.type === 'texture') {
+					await animationManager.animateTexture(nextAnim.item,nextAnim.materialName,nextAnim.newTexture);
+				} else {
+					console.error(`unknown item type to animate: "${nextAnim.type}" for item "${nextAnim.item}"`);
+				}
+			}
+}
+
  $( document ).ready(function() {
 
 
@@ -163,32 +195,8 @@ window.controls = controls;
    	
    	 	if(info) return;
    	 	if(e.which == 78) { // 'n' = next pressed
-       		var loadNextAnim = true;
-       		while(loadNextAnim) {
-				var nextAnim = animationManager.getNextAnimation();
 
-				if(typeof nextAnim.continue !== 'undefined') {
-					loadNextAnim = nextAnim.continue;					
-				} else {
-					loadNextAnim = true; 
-				}
-				
-				if(!nextAnim) {
-					animationManager.resetAnimation();
-		//			nextAnim = animationManager.getNextAnimation();
-					break;
-				}
-				if(nextAnim.type === 'camera') {
-					animationManager.animateCamera(nextAnim);
-				} else if (nextAnim.type === 'mesh') {
-					animationManager.animateItem(nextAnim);
-				} else if (nextAnim.type === 'texture') {
-					animationManager.animateTexture(nextAnim.item,nextAnim.materialName,nextAnim.newTexture);
-				} else {
-					console.error(`unknown item type to animate: "${nextAnim.type}" for item "${nextAnim.item}"`);
-				}
-			}
-
+   	 		callAnimation(animationManager);
     	} else if(e.which == 32) {
 
     		// var luggageTagGroup = animationManager.getItem("suitcase").children.filter(obj => { return obj.name === 'LuggageTag'});

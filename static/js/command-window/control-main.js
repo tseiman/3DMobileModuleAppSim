@@ -104,8 +104,8 @@ $(document).ready(function() {
 
 
 	var atProcedures = new ATProcedures(serialIO, logger, configurator);
-//	atProcedures.init();
 
+window.atProcedures;
 
 // command input command suggestion list loader and OnEnterKey handler
 	$.getJSON( "/js/static/command-window/at-commands.json", function( data ) {

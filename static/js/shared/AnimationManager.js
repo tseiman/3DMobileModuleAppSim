@@ -56,81 +56,99 @@ class AnimationManager {
 		return result;
 	}
 
-	animate(item,actualAnimationPoint,newAnimationPoint) {
-		if(newAnimationPoint.position) {
-			var posCoords = { 'x': actualAnimationPoint.position.x ,'y': actualAnimationPoint.position.y, 'z': actualAnimationPoint.position.z};
-			new TWEEN.Tween(posCoords).to(newAnimationPoint.position).onUpdate(() => {
-	    		item.position.set(posCoords.x, posCoords.y, posCoords.z)
-			}).easing(TWEEN.Easing.Sinusoidal.InOut).start();
-		}
-
-		if(newAnimationPoint.rotation) {
-				var rotCoords = { 'x': actualAnimationPoint.rotation.x ,'y': actualAnimationPoint.rotation.y, 'z': actualAnimationPoint.rotation.z};	  
-			new TWEEN.Tween(rotCoords).to(newAnimationPoint.rotation).onUpdate(() => {
-	    		item.rotation.set(rotCoords.x, rotCoords.y, rotCoords.z)
-			}).easing(TWEEN.Easing.Sinusoidal.InOut).start();
-		}
+	async animate(item,actualAnimationPoint,newAnimationPoint) {
+		return new Promise(function(resolve, reject) {
+			if(newAnimationPoint.position) {
+				var posCoords = { 'x': actualAnimationPoint.position.x ,'y': actualAnimationPoint.position.y, 'z': actualAnimationPoint.position.z};
+				new TWEEN.Tween(posCoords).to(newAnimationPoint.position).onUpdate(() => {
+		    		item.position.set(posCoords.x, posCoords.y, posCoords.z)
+				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+							resolve();
+				});
+			}
+			if(newAnimationPoint.rotation) {
+					var rotCoords = { 'x': actualAnimationPoint.rotation.x ,'y': actualAnimationPoint.rotation.y, 'z': actualAnimationPoint.rotation.z};	  
+				new TWEEN.Tween(rotCoords).to(newAnimationPoint.rotation).onUpdate(() => {
+		    		item.rotation.set(rotCoords.x, rotCoords.y, rotCoords.z);
+				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+							resolve();
+				});
+			}
+			if((!newAnimationPoint.rotation) && (! newAnimationPoint.position)) resolve();
+			
+		});
 	} 
 
 
 
-	animateCamera(newAnimationPoint) {
+	async animateCamera(newAnimationPoint) {
+		var that = this;
+		return new Promise(function(resolve, reject) {
+			var actualAnimationPoint = {"position" : that.camera.position, "rotation": that.camera.rotation, "target": that.controls.target};
 
-		var actualAnimationPoint = {"position" : this.camera.position, "rotation": this.camera.rotation, "target": this.controls.target};
+			that.animate(that.camera,actualAnimationPoint,newAnimationPoint);
 
-		this.animate(this.camera,actualAnimationPoint,newAnimationPoint);
+			if(newAnimationPoint.target) {
+					var targetCoords = { 'x': actualAnimationPoint.target.x ,'y': actualAnimationPoint.target.y, 'z': actualAnimationPoint.target.z};
+				new TWEEN.Tween(targetCoords).to(newAnimationPoint.target).onUpdate(() => {
+		    		that.controls.target.set(targetCoords.x, targetCoords.y, targetCoords.z)
+				}).easing(TWEEN.Easing.Quartic.InOut).start().onComplete(function() {
+							resolve();
+				});
+			}
 
-		if(newAnimationPoint.target) {
-				var targetCoords = { 'x': actualAnimationPoint.target.x ,'y': actualAnimationPoint.target.y, 'z': actualAnimationPoint.target.z};
-			new TWEEN.Tween(targetCoords).to(newAnimationPoint.target).onUpdate(() => {
-	    		this.controls.target.set(targetCoords.x, targetCoords.y, targetCoords.z)
-			}).easing(TWEEN.Easing.Quartic.InOut).start();
-		}
+		});
 
 	}
-	animateItem(item) {
+	async animateItem(item) {
 		var that = this;
 
-		var actualAnimationPoint = {"position" : this.animateableItems[item.item].position, "rotation": this.animateableItems[item.item].rotation};
+		return new Promise(async function(resolve, reject) {
+			var actualAnimationPoint = {"position" : that.animateableItems[item.item].position, "rotation": that.animateableItems[item.item].rotation};
 
-		if(typeof item.opacity !== 'undefined') {
-			var opacity = 1;
-			this.animateableItems[item.item].traverse(child => {
-	    		if (child instanceof THREE.Mesh) {
-	      			opacity = child.material.opacity;
-	      			child.material.transparent = true;
-	    		}
-	  		});
-			this.animateableItems[item.item].traverse(child => {
-	    		if (child instanceof THREE.Mesh) {
-	    			var oldOpacity = {'x': opacity, 'y': 0};
-	    			new TWEEN.Tween(oldOpacity).to({'x': item.opacity, 'y': 0}).onUpdate(() => {
+			await that.animate(that.animateableItems[item.item],actualAnimationPoint,{"position" : item.position, "rotation": item.rotation});
 
-	    				that.animateableItems[item.item].traverse(child => {
-	    					if (child instanceof THREE.Mesh) {
-	      						child.material.opacity = oldOpacity.x;
-	    					}
-	  					});
+			if(typeof item.opacity !== 'undefined') {
+				var opacity = 1;
+				that.animateableItems[item.item].traverse(child => {
+		    		if (child instanceof THREE.Mesh) {
+		      			opacity = child.material.opacity;
+		      			child.material.transparent = true;
+		    		}
+		  		});
+				that.animateableItems[item.item].traverse(child => {
+		    		if (child instanceof THREE.Mesh) {
+		    			var oldOpacity = {'x': opacity, 'y': 0};
+		    			new TWEEN.Tween(oldOpacity).to({'x': item.opacity, 'y': 0}).onUpdate(() => {
 
-					}).easing(TWEEN.Easing.Quartic.InOut).start().onComplete(function() {
+		    				that.animateableItems[item.item].traverse(child => {
+		    					if (child instanceof THREE.Mesh) {
+		      						child.material.opacity = oldOpacity.x;
+		    					}
+		  					});
 
-						console.log("here next");
-					});
+						}).easing(TWEEN.Easing.Quartic.InOut).start().onComplete(function() {
 
-	    		}
-	  		});
+							console.log("here next");
+							resolve();
+						});
 
-		}
+		    		}
+		  		});
+			} else {
+				resolve();
+			}
+
+		});
 		
 
 
-		this.animate(this.animateableItems[item.item],actualAnimationPoint,{"position" : item.position, "rotation": item.rotation});
 
 
 
 
 	}
-	animateTexture(itemToUpdate,materialNameToUpdate,newTexture,callback) {
+	async animateTexture(itemToUpdate,materialNameToUpdate,newTexture,callback) {
 
 		this.getItem(itemToUpdate).traverse(child => {
 
@@ -138,43 +156,43 @@ class AnimationManager {
 
 				var oldOpacity = {'x': 1, 'y': 0};
 				var newOpacity = {'x': 0, 'y': 0};
+				return new Promise(function(resolve, reject) {
+					new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {
 
-				new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {
-
-					child.material = new THREE.MeshPhongMaterial({
-						color: 0xFFFFFF,
-					    opacity: oldOpacity.x,
-					    transparent: true,
-					});
-
-				}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
-					var oldOpacity = {'x': 0, 'y': 0};
-					var newOpacity = {'x': 1, 'y': 0};
-				
-					new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {		
 						child.material = new THREE.MeshPhongMaterial({
-						    color: 0xFFFFFF,
+							color: 0xFFFFFF,
 						    opacity: oldOpacity.x,
 						    transparent: true,
-			 			});
-					}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
-						child.material = new THREE.MeshPhongMaterial({
-			   				color: 0xc0c0c0,
-			    			opacity: 0,
-			    			transparent: false,
-			  			});
-						child.material.map = new THREE.TextureLoader().load(newTexture, function(texture) {
-							if(callback) callback(texture);
 						});
-						child.material.name = materialNameToUpdate;
-						child.material.map.flipY = false;
-						child.material.map.repeat.set(1.25, 1.25);
-						child.material.map.offset.set(-0.115, -0.12);
-						
+
+					}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+						var oldOpacity = {'x': 0, 'y': 0};
+						var newOpacity = {'x': 1, 'y': 0};
+					
+						new TWEEN.Tween(oldOpacity).to(newOpacity).onUpdate(() => {		
+							child.material = new THREE.MeshPhongMaterial({
+							    color: 0xFFFFFF,
+							    opacity: oldOpacity.x,
+							    transparent: true,
+				 			});
+						}).easing(TWEEN.Easing.Sinusoidal.InOut).start().onComplete(function() {
+							child.material = new THREE.MeshPhongMaterial({
+				   				color: 0xc0c0c0,
+				    			opacity: 0,
+				    			transparent: false,
+				  			});
+							child.material.map = new THREE.TextureLoader().load(newTexture, function(texture) {
+								if(callback) callback(texture);
+							});
+							child.material.name = materialNameToUpdate;
+							child.material.map.flipY = false;
+							child.material.map.repeat.set(1.25, 1.25);
+							child.material.map.offset.set(-0.115, -0.12);
+							resolve();
+						});
 					});
+
 				});
-
-
 			}
 		});
 	}
