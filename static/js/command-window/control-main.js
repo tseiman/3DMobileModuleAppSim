@@ -92,8 +92,8 @@ $(document).ready(function() {
 	}, null);
 
 
-	var atProcedures = new ATProcedures(serialIO, logger);
-	atProcedures.init();
+	var atProcedures = new ATProcedures(serialIO, logger, configurator);
+//	atProcedures.init();
 
 
 // command input command suggestion list loader and OnEnterKey handler
@@ -120,6 +120,7 @@ $(document).ready(function() {
 		  			function() { 
 		  				indicator.setState("uart",Indicator.ok); 
 		  				serialIO.run();
+		  				atProcedures.init();
 		  			},
 		  			function() { indicator.setState("uart",Indicator.error); }
 		  		);

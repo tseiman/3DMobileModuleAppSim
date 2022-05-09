@@ -9,15 +9,6 @@
 			"placeholder"	: "internet",
 			"type"			: "text",
 			"check"			: ".+"
-		},
-		{
-			"name"			: "test",
-			"caption" 		: "My super Duper test",
-			"help"			: "Some test",
-			"placeholder"	: "123",
-			"type"			: "text",
-			"check"			: "^[0-9]+$"
 		}
-
 	]
 }

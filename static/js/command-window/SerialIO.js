@@ -52,8 +52,8 @@ class SerialIO {
 		    "privateKeyFile" : "./google-keys/rsa_private.pem"
 		});
 */
-console.log(navigator);
-console.log(navigator.serial);
+// console.log(navigator);
+// console.log(navigator.serial);
 
 
 		navigator.serial.addEventListener("connect", (event) => {

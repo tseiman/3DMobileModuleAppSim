@@ -18,10 +18,10 @@ class Configurator {
 			<div class="ui large modal" id="configuration-modal" style="border-radius: .28571429rem;">
 				<i class="close icon" style="font-family: 'Icons'!important;"></i>
 				<div class="header" style="border-bottom: 1px solid rgba(34,36,38,.15); border-radius: 0.285714rem;">Configuration
-					<button class="circular ui icon button" style="float: right;" id="btn-config-download">
+	
+<!--				<button class="circular ui icon button" style="float: right;" id="btn-config-download">
 					  <i class="icon download"></i>
 					</button>
-
 
 
 <div class="ui icon big button" id="divUpload">
@@ -32,7 +32,7 @@ class Configurator {
 
 
 					
-<!--					<button class="circular ui icon button"  for="embedpollfileinput" style="float: right;" id="btn-config-upload">
+					<button class="circular ui icon button"  for="embedpollfileinput" style="float: right;" id="btn-config-upload">
 					  <i class="icon upload"></i>
 					         <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
 					</button> 
@@ -151,9 +151,12 @@ class Configurator {
 		//	ui fullscreen modal
 	}
 
-	/* get config() {
+	getConfig() {
 		return this.config;
 	}
-	*/
+	getValue(name) {
+		return this.config[name].value;
+	}
+
 }
 export { Configurator };
