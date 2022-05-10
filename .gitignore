@@ -2,3 +2,5 @@ node_modules/*
 static/blender/*temp.blend
 *.blend1
 /google-keys/*
+!/google-keys/Readme.md
+!/google-keys/.gitkeep
