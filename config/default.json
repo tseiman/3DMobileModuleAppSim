@@ -1,6 +1,6 @@
 {
   "frontend": {						// all regarding WebUI and WebUI access
   	"webuiport": 8080,				// the port the browser can access the WebUI
-  
+    "domainfilter": ".*.*"
   } 								// END of frontend configuration
 }  									// EOF

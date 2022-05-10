@@ -37,7 +37,9 @@
     "moment": "^2.29.3",
     "lato-font":"^3.0.0",
     "font-awesome": "^4.7.0",
-    "jsbarcode": "^3.11.5"
+    "jsbarcode": "^3.11.5",
+    "vhost": "3.0.2",
+    "connect": "3.7.0"
   },
   "devDependencies": {
     "mocha": "^9.0.0"

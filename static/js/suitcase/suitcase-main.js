@@ -55,7 +55,6 @@ async function callAnimation(animationManager) {
 
 		if(!nextAnim) {
 			animationManager.resetAnimation();
-	//			nextAnim = animationManager.getNextAnimation();
 			break;
 		}
 		if(nextAnim.type === 'camera') {

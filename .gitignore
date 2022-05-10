@@ -1,3 +1,4 @@
 node_modules/*
 static/blender/*temp.blend
 *.blend1
+/google-keys/*
