@@ -67,6 +67,11 @@
 		{
 			"title": "AT+GNSSSTOP",
 			"description": "Stop GNSS aquisition"
+		},
+		{
+			"title": "AT+KTCPDEL=1",
+			"description": "Delete a TCP configuration"
 		}
+
 	]
 }

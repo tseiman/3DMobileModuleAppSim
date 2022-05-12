@@ -21,34 +21,36 @@ class Logger {
 	}
 */
 
-	rx(message) {
-		this.log( {time:  this.getTimeStamp(), type: 'rx', msg : message});
+	rx(message,lb) {
+		this.log( {time:  this.getTimeStamp(), type: 'rx', msg : message},lb);
 		
 	}
-	tx(message) {
-		this.log( {time:  this.getTimeStamp(), type: 'tx', msg : message});
+	tx(message,lb) {
+		this.log( {time:  this.getTimeStamp(), type: 'tx', msg : message},lb);
 		
 	}
 
-	system(message) {
-		this.log( {time:  this.getTimeStamp(), type: 'system', msg : message});
+	system(message,lb) {
+		this.log( {time:  this.getTimeStamp(), type: 'system', msg : message},lb);
 		
 	}
-	norm(message) {
-		this.log( {time:  this.getTimeStamp(), type: 'norm', msg : message});
+	norm(message,lb) {
+		this.log( {time:  this.getTimeStamp(), type: 'norm', msg : message},lb);
 		
 	}
-	info(message) {
-		this.log( {time:  this.getTimeStamp(), type: 'info', msg : message});
+	info(message,lb) {
+		this.log( {time:  this.getTimeStamp(), type: 'info', msg : message},lb);
 		
 	}
-	warn(message) {
-		this.log( {time:  this.getTimeStamp(), type: 'warn', msg : message});
+	warn(message,lb) {
+		this.log( {time:  this.getTimeStamp(), type: 'warn', msg : message},lb);
 		
 	}
 	
-	log(data) {
+	log(data,lb) {
 		
+		if(lb) data.msg = data.msg.replace(/(\n|\r)/g, "<br />");
+
 		var msgString = "";
 		
 		switch (data.type) {

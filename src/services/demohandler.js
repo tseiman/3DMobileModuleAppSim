@@ -35,7 +35,9 @@ module.exports = {
     { 'name': 'semantic-dist'   , 'url': '/dist/'                 , 'folder' : '../../static/semantic/dist'},
     { 'name': 'moment'          , 'url': '/js/moment/'            , 'folder' : '../../node_modules/moment/min'},
     { 'name': 'lato'            , 'url': '/fnt/lato-font/'        , 'folder' : '../../node_modules/lato-font/'},
-    { 'name': 'font-awesome'    , 'url': '/fnt/font-awesome/'     , 'folder' : '../../node_modules/font-awesome/'}
+    { 'name': 'font-awesome'    , 'url': '/fnt/font-awesome/'     , 'folder' : '../../node_modules/font-awesome/'},
+    { 'name': 'jose'            , 'url': '/js/jose/'              , 'folder' : '../../node_modules/jose/dist/browser'},
+    { 'name': 'buffer'          , 'url': '/js/buffer/'            , 'folder' : '../../node_modules/buffer'}
   ]; 
 
   resourceFolders.forEach(function (item, index) {
@@ -54,7 +56,7 @@ module.exports = {
 
       let fileExists = new Promise((resolve, reject) => {
           // check if file exists
-          fs.stat("views/" + res.filename + ".ejs", (err, stats) => {
+          fs.stat("views/demo/" + res.filename + ".ejs", (err, stats) => {
               if (err) {
                   return reject(err);
               }
@@ -64,7 +66,7 @@ module.exports = {
 
       fileExists.then((stats) => {
           res.stats = stats;
-          res.render(res.filename);
+          res.render('demo/' + res.filename);
 
       }).catch((err) => {
           console.error(err);

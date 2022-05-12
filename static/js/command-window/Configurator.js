@@ -127,6 +127,47 @@ class Configurator {
 
 					});
 
+				} else if(val.type === 'textarea' ) {
+					that.tempConfig[val.name] = {"name" : val.name, "value": ""};
+					if(that.config.hasOwnProperty(val.name)){
+						that.tempConfig[val.name].value = that.config[val.name].value;
+					}
+
+					$("#config-form").append(`
+						<div class="field button" id="${val.name}-config-item">
+							    <label>${val.caption}</label><textarea name="${val.name}-config-item" id="${val.name}-config-item-input" placeholder="${val.placeholder}"  data-content="${val.help}">${that.tempConfig[val.name].value}</textarea>
+						</div>
+					`);
+					$(`#${val.name}-config-item`).on('focus',"textarea",function(e) { $(this).popup({ delay: { show: 100, hide: 800 }, position: 'bottom left'} ); });
+
+					$(`#${val.name}-config-item-input`).bind('input propertychange', function() {
+
+						var re = new RegExp(val.check, 'g');
+						var inputToTest = $(`#${val.name}-config-item-input`).val();
+						
+						if(inputToTest.match(re)) {
+							$(`#${val.name}-config-item`).removeClass("error");
+							that.tempConfig[val.name].value =inputToTest;
+							that.tempConfig[val.name].badConf = false;
+
+							
+							$("#btn-config-ok").removeClass("disabled");
+							Object.keys(that.tempConfig).forEach(key => {
+							    //console.log(key + ' - ' + myObj[key]) // key - value
+							    if(! that.tempConfig[key].badConf) $("#btn-config-ok").addClass("disabled");
+							});
+
+							$("#btn-config-ok").removeClass("disabled");
+						} else {
+							$(`#${val.name}-config-item`).addClass("error");
+							$("#btn-config-ok").addClass("disabled");
+							that.tempConfig[val.name].badConf = true;
+						} 
+				
+
+					});
+
+
 				} else {
 					console.error(`unsupported configuration item "${val.name}", "${val.type}"`);
 				}

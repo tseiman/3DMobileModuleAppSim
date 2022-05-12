@@ -2,7 +2,9 @@ import { Logger } from '/js/static/command-window/Logger.js';
 import { SerialIO } from '/js/static/command-window/SerialIO.js';
 import { URCHandler } from '/js/static/command-window/URCHandler.js';
 import { Indicator } from '/js/static/command-window/Indicator.js';
-import { ATProcedures } from '/js/static/command-window/ATProcedures.js';
+// import { ATProcedures } from '/js/static/command-window/ATProcedures.js';
+import { ConnectionManager } from '/js/static/command-window/ConnectionManager.js';
+
 import { Configurator } from '/js/static/command-window/Configurator.js';
 
 
@@ -53,7 +55,6 @@ $(document).ready(function() {
 		modemTimeout = setTimeout(function() {
 			indicator.setState("modem",Indicator.tentative);
 		} , 5000);
-		console.log("alive");
 		indicator.setState("modem",Indicator.ok);
 	}
 
@@ -65,17 +66,29 @@ $(document).ready(function() {
 		},
 		disconnectCallback: function() {
 			indicator.setState("uart",Indicator.error);
+			indicator.setState("modem",Indicator.tentative); 
+			indicator.setState("attached",Indicator.tentative); 
+			indicator.setState("gnss",Indicator.tentative); 
+			indicator.setState("tcp",Indicator.tentative); 
+			serialIO.close();
 		},
 		lineDelimiter: "\r\n",
 	}, logger, modemAliveCB);
 
+
+//	var atProcedures = new ATProcedures(serialIO, logger, configurator);
+
+
+
 	var urcHandler = new URCHandler(logger);
 	serialIO.registerCallback('urc-handler','^\\\+.*',urcHandler.handleURC,urcHandler);
-	urcHandler.registerURCHandler("cXreg-handler", '^\\\+C.?REG', function(data) {
+	urcHandler.registerURCHandler("cXreg-handler", '^\\\+CE?REG', function(data) {
 		const REG_PATTERN = /^\+C.?REG: *([0-5],)?([0-9]),?.*/g;
 		var param = REG_PATTERN.exec(data);
 		switch (param[2]) {
-		  case '1': case '5': 						indicator.setState("attached",Indicator.ok); indicator.setState("gnss",Indicator.tentative); break;
+		  case '1': case '5': 						indicator.setState("attached",Indicator.ok); 
+		  											indicator.setState("gnss",Indicator.tentative); 
+		  											break;
 		  case '0': case '2': case '3': case '4': 	indicator.setState("attached",Indicator.tentative); break;
 		  default: 									indicator.setState("attached",Indicator.neutral);
 		}
@@ -83,17 +96,17 @@ $(document).ready(function() {
 	urcHandler.registerURCHandler("GNSSEV-handler", '^\\\+GNSSEV: *[0-3]', function(data) {
 		const REG_PATTERN = /^\+GNSSEV: *([0-3]),([0-4])/g;
 		var param = REG_PATTERN.exec(data);
-		console.log(param);
+//		console.log(param);
 		if(param[1] === '3') {
 			if(parseInt(param[2]) > 0 && parseInt(param[2]) < 4) {
 				indicator.setState("gnss",Indicator.ok); 
 			} else {
-				indicator.setState("gnss",Indicator.tentative);
+				setTimeout(() => {indicator.setState("gnss",Indicator.tentative);} ,5000); 
 				return;
 			}
 		} else if(param[1] === '2') {
 			if(parseInt(param[2]) === '1') {
-				indicator.setState("gnss",Indicator.tentative);
+				setTimeout(() => {indicator.setState("gnss",Indicator.tentative);} ,5000); 
 				return;
 			}
 		} else  {
@@ -101,11 +114,16 @@ $(document).ready(function() {
 		}
 
 	}, null);
+	urcHandler.registerURCHandler("TCP-handler", '^\\\+KTCP_NOTIF: *[1-6]', function(data) {
+		const REG_PATTERN = /^\+KTCP_NOTIF: *([1-6]),([0-1]?[0-9])/g;
+		var param = REG_PATTERN.exec(data);
+		console.log("KTCP_NOTIF handler", param);
+
+	}, null);
 
 
-	var atProcedures = new ATProcedures(serialIO, logger, configurator);
-
-window.atProcedures;
+	var connectionManager = new ConnectionManager(serialIO, logger, configurator, urcHandler);
+	window.connectionManager;
 
 // command input command suggestion list loader and OnEnterKey handler
 	$.getJSON( "/js/static/command-window/at-commands.json", function( data ) {
@@ -132,13 +150,25 @@ window.atProcedures;
 		  				indicator.setState("uart",Indicator.ok); 
 	  					indicator.setState("modem",Indicator.tentative);
 		  				serialIO.run();
-		  				atProcedures.init();
+		  				connectionManager.init();
+
 		  			},
-		  			function() { indicator.setState("uart",Indicator.error); }
+		  			function() { 
+		  				indicator.setState("uart",Indicator.error); 
+		  				indicator.setState("modem",Indicator.tentative); 
+		  				indicator.setState("attached",Indicator.tentative); 
+		  				indicator.setState("gnss",Indicator.tentative); 
+		  				indicator.setState("tcp",Indicator.tentative); 
+		  			}
 		  		);
   			},
   			function() { 
-  				indicator.setState("uart",Indicator.error); }
+  				indicator.setState("uart",Indicator.error); 
+  				indicator.setState("modem",Indicator.tentative); 
+ 				indicator.setState("attached",Indicator.tentative); 
+  				indicator.setState("gnss",Indicator.tentative); 
+  				indicator.setState("tcp",Indicator.tentative); 
+  			}
   		);
 
   	

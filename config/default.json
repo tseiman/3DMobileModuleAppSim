@@ -1,6 +1,13 @@
 {
-  "frontend": {						// all regarding WebUI and WebUI access
-  	"webuiport": 8080,				// the port the browser can access the WebUI
-    "domainfilter": ".*.*"
-  } 								// END of frontend configuration
+  "frontend": {						    // all regarding WebUI and WebUI access
+  	"webuiport"       : 8080,				// the port the browser can access the WebUI
+    "domainfilter"    : ".*"
+  }, 								// END of frontend configuration
+  "pubsub": {                 // PubSub listener config
+    "subscriptionName": "devicetocloud-sub2",       
+    "topicName"       : "devicetocloud",
+    "datasetId"       : "locationReports",
+    "tableId"         : "locationReportsTable"
+  }                // END of pubsub configuration
+
 }  									// EOF

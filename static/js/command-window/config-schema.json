@@ -3,12 +3,117 @@
 	"name": "suitcase",
 	"items": [
 		{
+			"name"			: "findmysuitcase-id",
+			"caption" 		: "Find My Suitcase ID",
+			"help"			: "Pleace here the ID which to use as well in the findmysuitcase demo page",
+			"placeholder"	: "someone@somedomain.com",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "flightbooking-id",
+			"caption" 		: "Flightbooking ID",
+			"help"			: "Pleace here the ID of the Flight booking demo page",
+			"placeholder"	: "someone@somedomain.com",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
 			"name"			: "apn",
 			"caption" 		: "APN",
 			"help"			: "please set here the APN related to your SIM card and operator",
 			"placeholder"	: "internet",
 			"type"			: "text",
 			"check"			: ".+"
+		},
+		{
+			"name"			: "google-mqtt-server",
+			"caption" 		: "Google MQTT Server",
+			"help"			: "google MQTT server FQND",
+			"placeholder"	: "mqtt.2030.ltsapis.goog",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "google-mqtt-server-port",
+			"caption" 		: "Google MQTT Server Port",
+			"help"			: "google MQTT server Port Nr",
+			"placeholder"	: "8883",
+			"type"			: "text",
+			"check"			: "^[0-9]+"
+		},
+		{
+			"name"			: "use-cert",
+			"caption" 		: "Use Certificate",
+			"help"			: "Checked if TLS shall be used",
+			"placeholder"	: "true",
+			"type"			: "text",
+			"check"			: "^(true|false)$"
+		},
+		{
+			"name"			: "google-project",
+			"caption" 		: "Google project ID",
+			"help"			: "place here the project ID of the Google IoT Core MQTT broker",
+			"placeholder"	: "sierrademo",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "google-regions",
+			"caption" 		: "Google region",
+			"help"			: "Google region of MQTT Server project",
+			"placeholder"	: "europe-west1",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "google-iotcore-registry",
+			"caption" 		: "Google IoT Core Registry Name",
+			"help"			: "place here the registry name of the MQTT IoT core service",
+			"placeholder"	: "myIoTCoreRegistry",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "googleIoTClientID",
+			"caption" 		: "Google IoT Core Client ID",
+			"help"			: "place here the client ID registered to Google IoT Core",
+			"placeholder"	: "MyClient",
+			"type"			: "text",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "google-certificate",
+			"caption" 		: "Google Certificate",
+			"help"			: "Please place here the google MQTT server public certificate",
+			"placeholder"	: "-----BEGIN CERTIFICATE-----\n-----END CERTIFICATE-----",
+			"type"			: "textarea",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "google-client-priv-key",
+			"caption" 		: "Google MQTT Client private key",
+			"help"			: "Please place here the google MQTT private key part where the public part was configured to google cloud client managment before",
+			"placeholder"	: "-----BEGIN PUBLIC KEY-----\n-----END PUBLIC KEY-----",
+			"type"			: "textarea",
+			"check"			: ".+"
+		},
+		{
+			"name"			: "mqtt-keep-alive",
+			"caption" 		: "MQTT Keep Alive",
+			"help"			: "How long the server should keep the connection open without closeing",
+			"placeholder"	: "250",
+			"type"			: "text",
+			"check"			: "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+		},
+		{
+			"name"			: "alive-message",
+			"caption" 		: "Max time to reconnect",
+			"help"			: "The maximum time to wait until the device comes back and sends a keep alive",
+			"placeholder"	: "240",
+			"type"			: "text",
+			"check"			: "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
 		}
+
 	]
 }

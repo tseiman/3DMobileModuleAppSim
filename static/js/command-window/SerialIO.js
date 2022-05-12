@@ -12,15 +12,20 @@ class LineBreakTransformer {
   constructor() {
     // A container for holding stream data until a new line.
     this.chunks = "";
+//    	this.chunks = buffer.Buffer.from("");
   }
 
   transform(chunk, controller) {
+//  	this.chunks = buffer.Buffer.concat([this.chunks, buffer.Buffer.from(chunk)]);
+
     // Append new chunks to existing chunks.
     this.chunks += chunk;
     // For each line breaks in chunks, send the parsed lines out.
     const lines = this.chunks.split("\r\n");
     this.chunks = lines.pop();
     lines.forEach((line) => controller.enqueue(line));
+
+
   }
 
   flush(controller) {
@@ -43,6 +48,10 @@ class SerialIO {
 
 		this.logger = logger;
 		this.encoder = new TextEncoder();
+//		this.encoder = new TextEncoderStream();
+		// var outputDone = encoder.readable.pipeTo(port.writable);
+		this.outputStream = this.encoder.writable;
+
 		this.modemAliveCB = modemAliveCB;
 
 	/*	this.mqttClient = new SimpleMQTT({
@@ -93,6 +102,7 @@ class SerialIO {
 	}
 	async close() {
 		this.logger.system("Removing UARTS");
+		this.port.writable.getWriter().releaseLock();
 		await this.port.close();
 		if ("serial" in navigator && "forget" in SerialPort.prototype) {
 			await this.port.forget();
@@ -141,15 +151,25 @@ class SerialIO {
 	}
 
 	async sendln(data) {
-		await this.send(data + this.config.lineDelimiter);
+		if(typeof data === 'string') {
+			data = data + this.config.lineDelimiter;
+			data = new buffer.Buffer(data);
+		} else {
+			data = await buffer.Buffer.concat([data,buffer.Buffer.from(this.config.lineDelimiter)]);
+		}
+		await this.send(data );
 	}
+
 	async send(data) {
+
+		if(typeof data === 'string') {
+			data = new buffer.Buffer(data);
+		} 
+
 		this.logger.tx(`>>> ${data}`);
 		const writer = this.port.writable.getWriter();
-		await writer.write(this.encoder.encode(data));
+		await writer.write(data);
 		writer.releaseLock();
-	/*	await this.writer.write(new TextEncoder().encode(data));
-		this.writer.releaseLock(); */
 	}
 
 	registerCallback(name,expect,callback,callbackObj) {
@@ -157,8 +177,8 @@ class SerialIO {
 			console.warn("Callback with thename " + name + " exists already. Callback ignored !!!");
 			return;
 		}
-			console.log("setting callback with name: \"" + name + "\" and expect:\"" + expect +"\n");
-	    this.callback.set(name, {'name': name, 're': new RegExp(expect), 'expect': expect, 'callback':  callback, 'callbackObj': callbackObj});
+	//		console.log("setting callback with name: \"" + name + "\" and expect:\"" + expect +"\n");
+	    this.callback.set(name, {'name': name, 're': new RegExp(expect), 'expect': expect, 'callback':  callback, 'callbackObj': callbackObj, 'recordedLines': [] });
 	}
 
 
@@ -173,8 +193,10 @@ class SerialIO {
 	//		console.log("we're on callback", callback);
 			if (callback.re.test(data)) { 
 		//		console.log("Matching callback found for RegEx:\"" + callback.expect +"\" - calling:\"" + callback.name + "\"");
-				callback.callback(data,callback.callbackObj);
+				callback.callback(data,callback.callbackObj,callback.recordedLines);
 
+			} else {
+				callback.recordedLines.push(data);
 			}
 		});
 	}
@@ -188,7 +210,7 @@ class SerialIO {
 			console.error("Callback \"" + name + "\" is not defined, nothing removed !");
 			return;
 		}
-		console.log("removing callback \"" + name + "\"");
+	//	console.log("removing callback \"" + name + "\"");
 		this.callback.delete(name);
 	}
 
@@ -201,10 +223,18 @@ class SerialIO {
     return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	async sendAndExpect(cmd,expect,timeout,noNewLine) {
-			await this.sleep(100);
+	async sendAndExpect(cmd,expect,timeout,options) {
+			var noNewLine = false;
+
+			if(options) {
+				if(options.noNewLine) noNewLine = true;
+			}
+
+			if(typeof cmd === 'string') {
+				cmd = new buffer.Buffer(cmd);
+			} 
+			await this.sleep(10);
 	    if(typeof noNewLine !== 'undefined' && noNewLine ) {
-				console.log("sending without delimter"+  typeof cmd);
 				this.send(cmd);
 	    } else { 
 				this.sendln(cmd);
@@ -214,8 +244,8 @@ class SerialIO {
 
 
 	waitResponse(expect,timeout) {
-	  console.log("wait for: " + expect);
 	  var self = this;
+
 	  return new Promise(function(resolve, reject) {
 		// var timeOHandler = this.;
 			if(timeout !== undefined) { 
@@ -225,15 +255,10 @@ class SerialIO {
 						reject({data: "timeout", result: false}); 
 			  }, timeout);
 			}
-			self.registerCallback ( "synchron.waitResponse",expect, function (data) { 
-//		    	var re = new RegExp(expect);    
-//		    	if (re.test(data)) {
-				console.log("found expected Data");
+			self.registerCallback ( "synchron.waitResponse",expect, function (data, callbackObj, recordedLines) { 
 				clearTimeout(self.timeOHandler);
 				self.removeCallback("synchron.waitResponse");
-  			resolve({result: true, "data": data});
-//		    	}  
-
+  			resolve({result: true, "data": data, "recordedLines" : recordedLines});
 			}); 
 	  }); 
 	}
