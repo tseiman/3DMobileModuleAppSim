@@ -8,6 +8,7 @@
 
 const chalk               = require('chalk');
 const server              = require('./server.js');
+const incomingPubSub      = require('./PubSubListener.js');
 
 function labelColorizer(options) {
     return (inp) => {
@@ -63,6 +64,10 @@ require('console-stamp')(console, {
 /* =============== Here the frontend Service starts ============ */
 
 server.setup();
+
+/* =============== Here the backend Service starts ============ */
+
+incomingPubSub.setup();
 
 
 
