@@ -36,14 +36,11 @@ module.exports = {
     console.debug('Current "' + item.name + '" with URL="' + item.url + '" Path="' + path.join(__dirname, item.folder ) + '"');
     app.use(item.url, express.static(path.join(__dirname, item.folder)));
   });
-/*
-  app.get("/", (req, res, next) => {
-    res.send('Hello from App Engine!');
-  });
-  */
 
   app.get("/*", (req, res, next) => {
       res.filename = req.params[0].replace("/","");
+      if(res.filename === "") res.filename = "app";
+
       console.info(`Client access for FindMySuitcase "${res.filename}" page from "${req.connection.remoteAddress}"`);
 
 

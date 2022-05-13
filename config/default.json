@@ -11,7 +11,9 @@
     "tableId"         : "locationReportsTable"
   },               // END of pubsub configuration
   "apiconf": {                 // PubSub listener config
-    "enable"         : false
+    "enable"         : false,
+    "projectId"      : "sierrademo-349012",
+    "region"            : "europe-west1"
   }                // END of apiconf configuration
 
 }  									// EOF
