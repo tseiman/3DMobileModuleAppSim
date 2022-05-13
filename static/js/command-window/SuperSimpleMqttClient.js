@@ -43,12 +43,12 @@ class SimpleMQTT {
 		
 		this.config.algorithm = 'RS256';
 
-	    	if(typeof this.config.privateKey === 'undefined' || this.config.privateKey == null) {
-		    throw "privateKey not set";
+	   if(typeof this.config.privateKey === 'undefined' || this.config.privateKey == null) {
+		 	this.config.privateKey = ""; //   throw "privateKey not set";
 		}
 
-	    	if(typeof this.config.projectId === 'undefined' || this.config.projectId == null) {
-		    throw "google projectId not set";
+	   if(typeof this.config.projectId === 'undefined' || this.config.projectId == null) {
+		  this.config.projectId = ""; // throw "google projectId not set";
 		}
 	    
 

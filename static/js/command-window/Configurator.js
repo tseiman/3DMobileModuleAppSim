@@ -196,7 +196,9 @@ class Configurator {
 		return this.config;
 	}
 	getValue(name) {
-		return this.config[name].value;
+		if(this.config[name] && this.config[name].value) { 
+			return this.config[name].value;
+		} else { return null; }
 	}
 
 }

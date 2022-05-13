@@ -4,6 +4,7 @@
     "domainfilter"    : ".*"
   }, 								// END of frontend configuration
   "pubsub": {                 // PubSub listener config
+    "enable"         : false,
     "subscriptionName": "devicetocloud-sub2",       
     "topicName"       : "devicetocloud",
     "datasetId"       : "locationReports",

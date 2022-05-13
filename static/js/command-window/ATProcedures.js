@@ -26,10 +26,10 @@ window.atProcedures = this;
 			"clientID"			: this.mqttClientId, 
 			"username"			: "ignored",  
 			"password"			: "",
-			"projectId" 		: this.config.getValue("google-project"),
-			"privateKey" 		: this.config.getValue("google-client-priv-key"),
+			"projectId" 		: (typeof this.config.getValue("google-project") !== 'undefined') ? this.config.getValue("google-project") : "",
+			"privateKey" 		: (typeof this.config.getValue("google-client-priv-key") !== 'undefined') ? this.config.getValue("google-client-priv-key") : "",
 			"logger"			: this.logger,
-			"keepAlive"			: this.config.getValue("mqtt-keep-alive")
+			"keepAlive"			: (typeof this.config.getValue("mqtt-keep-alive") !== 'undefined') ? this.config.getValue("mqtt-keep-alive") : "0"
     	});
 	}
 

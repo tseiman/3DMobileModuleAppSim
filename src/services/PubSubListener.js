@@ -3,14 +3,20 @@
 
 require('dotenv').config();
 
-const { PubSub } = require(`@google-cloud/pubsub`);
-const {BigQuery} = require('@google-cloud/bigquery');
 const config     = require('config');
 const pubsubConf = config.get('pubsub');
 
 
 module.exports = {
-  async setup: function () {
+  setup: function () {
+    if(!pubsubConf.enable) {
+      console.log(`PubSubListener disabled`);
+      return;
+    }
+    const { PubSub } = require(`@google-cloud/pubsub`);
+    const {BigQuery} = require('@google-cloud/bigquery');
+
+
     const pubsubClient = new PubSub();
     const bigquery = new BigQuery();
 
@@ -70,5 +76,5 @@ module.exports = {
 
     console.log(`Started PubSub Service for subscription: ${pubsubConf.subscriptionName}, topicName: ${pubsubConf.topicName} to BigQuery datasetId: ${pubsubConf.datasetId}, tableId: ${pubsubConf.tableId}`);
     
-
+  }
 };
