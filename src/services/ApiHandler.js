@@ -13,15 +13,15 @@ const apiConf = config.get('apiconf');
 
 module.exports = {
   setup: function () {
-    if(!apiConf.enable) {
+/*    if(!apiConf.enable) {
       console.log(`API disabled`);
       return;
     }
-
+*/
     var app = express();
 
 
-    app.get("/", (req, res, next) => {
+    app.get("/suitcase", (req, res, next) => {
       res.send('Hello from App Engine!');
     });
 
