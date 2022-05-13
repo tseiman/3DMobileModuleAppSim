@@ -39,7 +39,7 @@ module.exports = {
 
   app.get("/*", (req, res, next) => {
       res.filename = req.params[0].replace("/","");
-      if(res.filename === "") res.filename = "app";
+      if(res.filename === "") res.filename = "findmysuitcase";
 
       console.info(`Client access for FindMySuitcase "${res.filename}" page from "${req.connection.remoteAddress}"`);
 
