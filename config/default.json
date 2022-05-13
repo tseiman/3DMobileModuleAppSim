@@ -9,6 +9,9 @@
     "topicName"       : "devicetocloud",
     "datasetId"       : "locationReports",
     "tableId"         : "locationReportsTable"
-  }                // END of pubsub configuration
+  },               // END of pubsub configuration
+  "apiconf": {                 // PubSub listener config
+    "enable"         : false
+  }                // END of apiconf configuration
 
 }  									// EOF

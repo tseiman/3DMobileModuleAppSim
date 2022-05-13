@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 // const bodyParser 								= require('body-parser');
 const express 									= require('express');
 // const fs 												= require("fs");
@@ -6,6 +6,8 @@ const express 									= require('express');
 // const connect 									= require('connect')
 const vhost 										= require('vhost');
 const Demohandler								= require('./demohandler');
+const FindMySuitcaseHandler			= require('./FindMySuitcaseHandler');
+const ApiHandler								= require('./ApiHandler');
 
 const viewerApp = express();
 
@@ -18,12 +20,26 @@ module.exports = {
   setup: function () {
 
   	var demoserver = Demohandler.setup();
+  	var findMySuitcaseHandler = FindMySuitcaseHandler.setup();
+  	var apiHandler = ApiHandler.setup();
 
-		var domainfilter = ".*.*"
-		if(frontendConf.domainfilter) domainfilter = frontendConf.domainfilter;
-		domainfilter = 'sierrademo' + domainfilter;
-		console.log("setting up VHOST: " + domainfilter);
-		viewerApp.use(vhost( domainfilter, demoserver));
+		var domainfilterDemo = ".*.*"
+		if(frontendConf.domainfilter) domainfilterDemo = frontendConf.domainfilter;
+		domainfilterDemo = 'sierrademo' + domainfilterDemo;
+		console.log("setting up VHOST: " + domainfilterDemo);
+		viewerApp.use(vhost( domainfilterDemo, demoserver));
+
+		var domainfilterFindSuitcase = ".*.*"
+		if(frontendConf.domainfilter) domainfilterFindSuitcase = frontendConf.domainfilter;
+		domainfilterFindSuitcase = 'findmysuitcase' + domainfilterFindSuitcase;
+		console.log("setting up VHOST: " + domainfilterFindSuitcase);
+		viewerApp.use(vhost( domainfilterFindSuitcase, findMySuitcaseHandler));
+
+		var domainfilterApihandler = ".*.*"
+		if(frontendConf.domainfilter) domainfilterApihandler = frontendConf.domainfilter;
+		domainfilterApihandler = 'suitcase-api' + domainfilterApihandler;
+		console.log("setting up VHOST: " + domainfilterApihandler);
+		viewerApp.use(vhost( domainfilterApihandler, apiHandler));
 
 
 		const PORT = parseInt(process.env.PORT) || frontendConf.webuiport;

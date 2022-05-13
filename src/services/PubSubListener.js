@@ -3,8 +3,8 @@
 
 require('dotenv').config();
 
-const config     = require('config');
-const pubsubConf = config.get('pubsub');
+  const config     = require('config');
+  const pubsubConf = config.get('pubsub');
 
 
 module.exports = {
@@ -51,8 +51,6 @@ module.exports = {
             if(gpsTimeTokenized[i].length < 2 ) gpsTimeTokenized[i] = '0' + gpsTimeTokenized[i];
         }
         var strGpsTime = `${gpsTimeTokenized[1]}-${gpsTimeTokenized[2]}-${gpsTimeTokenized[3]} ${gpsTimeTokenized[4]}:${gpsTimeTokenized[5]}:${gpsTimeTokenized[6]}`
-
-        console.log(strGpsTime);
 
         const row = [{
                 'time'          : data.time,
