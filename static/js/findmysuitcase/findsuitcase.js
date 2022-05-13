@@ -1,5 +1,9 @@
+
+'use strict';
+
+
 var map;
-var cicle;
+var circle;
 var username = "";
 
 
@@ -10,9 +14,9 @@ function setMarkerAndMap(coordinates,hepe) {
             console.warn("cant set marker coordinates or hepe not OK:", coordinates, hepe);
             return;
         }
-        if(cicle) {
-                cicle.remove();
-                cicle = null;
+        if(circle) {
+                map.removeLayer(circle);
+                circle = null;
         }
         map.setView(coordinates, 18);
 
