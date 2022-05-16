@@ -81,7 +81,7 @@ $(document).ready(function() {
         });
 
 
-        if((!user) && (!user.name) && user.name !== '') updatePosition();
+        if(user && user.name && user.name !== '') updatePosition();
 
         map = L.map('map').setView([51.505, -0.09], 13);
 
