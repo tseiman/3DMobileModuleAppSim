@@ -45,6 +45,24 @@ module.exports = {
         var data = JSON.parse(message.data);
         message.ack();
 
+        if((!data.data) || (!data.data.gpstime)) return;
+        
+        if(     (!data.data.time)
+              ||(!data.data.id)
+              ||(!data.data.lat)
+              ||(!data.data.lon)
+              ||(!data.data.fixtype)
+              ||(!data.data.HEPE)
+              ||(!data.data.Altitude)
+              ||(!data.data.AltUnc)
+              ||(!data.data.Direction)
+              ||(!data.data.HorSpeed)
+              ||(!data.data.VerSpeed)) {
+
+          console.error("invalid parameter count in PubSubMessage: "+ JSON.stringify(data.data));
+          return;
+        }
+        
         var gpsTimeTokenized = data.data.gpstime.match(/^ *([0-9]{4}) *(1?[0-9]) *([1-3]?[0-9]) *([0-2]?[0-9]):([0-5][0-9]):([0-5][0-9])/);
 
         for(var i = 2; i < 7; ++i) {

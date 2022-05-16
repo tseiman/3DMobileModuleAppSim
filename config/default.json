@@ -15,7 +15,7 @@
     "projectId"      : "sierrademo-349012",
     "region"            : "europe-west1",
     "userTableId"           : "userDB",
-    "bookedFlightTableId"       : "bookedFlights"
+    "bookedFlightsTableId"       : "bookedFlights"
    }                // END of apiconf configuration
 
 }  									// EOF
