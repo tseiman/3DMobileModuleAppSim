@@ -88,7 +88,7 @@ $(document).ready(function() {
 
 
     //    if(window.localStorage.getItem('username')) {
-                username = window.localStorage.getItem('username');
+       //         username = window.localStorage.getItem('username');
         //      console.log(username);
 //                 $("#inp-username").val(username);
      //   }
