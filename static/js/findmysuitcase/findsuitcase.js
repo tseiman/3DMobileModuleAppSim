@@ -46,7 +46,7 @@ function updatePosition() {
         let domain = location.host.match(/^[-_a-zA-Z0-9]*(\.[-_\.a-zA-Z0-9]*)(:.*)?$/i)[1];
         let apiURL = `${location.protocol}//suitcase-api${domain}/suitcase`;
 
-        $.getJSON( apiURL , {'id': username} ).done(function( json ) {
+        $.getJSON( apiURL , {'id': user.name} ).done(function( json ) {
 //    console.log( "Answer: ", json );
             setMarkerAndMap([json.lat,json.lon],json.HEPE);
             setMarkerText(json);
