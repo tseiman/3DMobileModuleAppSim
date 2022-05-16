@@ -37,7 +37,7 @@ function setMarkerText(data) {
 }
 
 function updatePosition() {
-        if(typeof username === 'undefined' || !username || username ==='') {
+        if(typeof user.name === 'undefined' || !user.name || user-name ==='') {
             alert("username must be set");
             return;
         }
