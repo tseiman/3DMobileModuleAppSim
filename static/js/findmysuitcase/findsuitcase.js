@@ -65,33 +65,35 @@ $(document).ready(function() {
         if(window.localStorage.getItem('user')) {
                 user = JSON.parse(window.localStorage.getItem('user'));
                 if(user.name) $('#inputUsername').val(user.name);
-                if(user.pw)   $('#inputPassword').val(user.pw);
+      //          if(user.pw)   $('#inputPassword').val(user.pw);
         } 
-        if((!user) || (!user.name) || (!user.pw)) $('#modal-login').modal('show');
+       // if((!user) || (!user.name) || (!user.pw)) $('#modal-login').modal('show');
+        if((!user) || (!user.name)) $('#modal-login').modal('show');
 
         // window.localStorage.setItem('username', username);
 
         $('#btn-user').click((e) => {
                 $('#modal-login').modal('show');
                 if(user.name) $('#inputUsername').val(user.name);
-        if(user.pw)   $('#inputPassword').val(user.pw);
+//        if(user.pw)   $('#inputPassword').val(user.pw);
         });
 
         $('#btn-save-pw').click((e) => {
                 user.name = $('#inputUsername').val();
-                user.pw = $('#inputPassword').val();
+  //              user.pw = $('#inputPassword').val();
                 window.localStorage.setItem('user',JSON.stringify(user));
                 $('#modal-login').modal('hide');
         });
 
-/*
 
-        if(window.localStorage.getItem('username')) {
+
+    //    if(window.localStorage.getItem('username')) {
                 username = window.localStorage.getItem('username');
         //      console.log(username);
 //                 $("#inp-username").val(username);
-        }
-        if(typeof username !== 'undefined' && username && username !== '') updatePosition();
+     //   }
+    //    if(typeof user.name !== 'undefined' && username && username !== '') updatePosition();
+        if((!user) && (!user.name) && user.name !== '') updatePosition();
 
         map = L.map('map').setView([51.505, -0.09], 13);
 
@@ -105,6 +107,6 @@ $(document).ready(function() {
         $('#btn-refresh').click((e) => {
                 updatePosition();
         });
-*/
+
 
 });
