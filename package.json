@@ -31,6 +31,7 @@
     "console-stamp"             : ">=3.0.4",
     "ejs"                       : ">=3.1.7",
     "express"                   : ">=4.17.3",
+    "body-parser"               : "^1.20.0",
     "fomantic-ui"               : "^2.9.0-beta.286",
     "jquery"                    : "3.6.0",
     "three"                     : "^0.139.2",
@@ -45,7 +46,7 @@
     "@google-cloud/bigquery"    : "^5.12.0",
     "dotenv"                    : "^16.0.1",
     "bootstrap"                 : "^3.3.6",
-    "leaflet"                   : "^1.8.0"
+    "leaflet"                   : "^1.8.0",
   },
   "devDependencies": {
     "jsonwebtoken": "^8.5.1",

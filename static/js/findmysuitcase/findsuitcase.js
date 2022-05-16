@@ -4,7 +4,7 @@
 
 var map;
 var circle;
-var username = "";
+var user = {};
 
 
 
@@ -62,10 +62,34 @@ function updatePosition() {
 $(document).ready(function() {
 
 
+        if(window.localStorage.getItem('user')) {
+                user = JSON.parse(window.localStorage.getItem('user'));
+                if(user.name) $('#inputUsername').val(user.name);
+                if(user.pw)   $('#inputPassword').val(user.pw);
+        } 
+        if((!user) || (!user.name) || (!user.pw)) $('#modal-login').modal('show');
+
+        // window.localStorage.setItem('username', username);
+
+        $('#btn-user').click((e) => {
+                $('#modal-login').modal('show');
+                if(user.name) $('#inputUsername').val(user.name);
+        if(user.pw)   $('#inputPassword').val(user.pw);
+        });
+
+        $('#btn-save-pw').click((e) => {
+                user.name = $('#inputUsername').val();
+                user.pw = $('#inputPassword').val();
+                window.localStorage.setItem('user',JSON.stringify(user));
+                $('#modal-login').modal('hide');
+        });
+
+/*
+
         if(window.localStorage.getItem('username')) {
                 username = window.localStorage.getItem('username');
         //      console.log(username);
-                 $("#inp-username").val(username);
+//                 $("#inp-username").val(username);
         }
         if(typeof username !== 'undefined' && username && username !== '') updatePosition();
 
@@ -81,11 +105,6 @@ $(document).ready(function() {
         $('#btn-refresh').click((e) => {
                 updatePosition();
         });
-
-        $('#inp-username').on("input", function(){
-                username =  $("#inp-username").val();
-
-                window.localStorage.setItem('username', username);
-        });
+*/
 
 });

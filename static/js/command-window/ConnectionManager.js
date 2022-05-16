@@ -13,6 +13,11 @@ const GNSS_STATES = {
     RUNNING		: 'running'
 };
 
+const OPERATIONS_STEPS = {
+    GNSS 		: 'gnss',
+    MOBILE		: 'mobile'
+};
+
 class ConnectionManager {
 
 
@@ -25,6 +30,7 @@ class ConnectionManager {
 		this.urcHandler = urcHandler;
 		this.connectionState = CONNECTION_STATES.DETACHED;
 		this.gnssState = GNSS_STATES.STOPPED;
+		this.operationSteps = OPERATIONS_STEPS.GNSS;
 
 		this.enableTCPCleanup = true;
 
@@ -55,12 +61,67 @@ window.connectionManager = this;
 		this.urcHandler.registerURCHandler("CONMGR-TCP-Con", '^\\\+KTCP_IND: *[0-9],1', function(data) {
 			that.connectionState = CONNECTION_STATES.TCPCONNECTED;
 		}, null);
-		this.urcHandler.registerURCHandler("CONMGR-TCP-Con", '^\\\+KTCP_NOTIF: *1[0-9,[0-9]+', function(data) {
+		this.urcHandler.registerURCHandler("CONMGR-TCP-Discon", '^\\\+KTCP_NOTIF: *[1-6],[0-1]?[0-9]', function(data) {
 			that.connectionState = CONNECTION_STATES.ATTACHED;
 			console.log("registerURCHandler CONMGR-TCP-Con:" + that.enableTCPCleanup);
 			if(that.enableTCPCleanup) that.atProcedures.disconnectTCP();
 		}, null);
+
+		this.regularOperationInterval = null;
+
 	}
+
+
+	async regularOperation(that) {
+		that.logger.info("execute regular operations - START");
+		if(that.connectionState === CONNECTION_STATES.DETACHED) {
+			that.logger.norm("cant execute regular operation - SKIPPING");
+		}
+		clearInterval(that.regularOperationInterval);
+
+		switch(that.operationSteps) {
+			case OPERATIONS_STEPS.GNSS: 
+				await that.runGNSS();
+				that.operationSteps = OPERATIONS_STEPS.MOBILE;
+				break;
+			case OPERATIONS_STEPS.MOBILE: 
+				await that.runMqttPublish();
+				that.operationSteps = OPERATIONS_STEPS.GNSS;
+				break;
+			default: that.logger.warn("Operations step not alowed: " + that.operationSteps);
+		}
+		
+		
+		that.regularOperationInterval = setInterval(that.regularOperation, that.interval,that);
+		that.logger.info("execute regular operations - DONE");
+	}
+
+
+	setupRegularOperation() {
+		this.interval = parseInt(this.config.getValue('regular-operation-cycle'));
+		if(this.interval < 10000) {
+			this.logger.warn(`interval can't be set to ${this.interval} - setting to default 10000ms`);
+			this.interval = 10000;
+		}
+		this.logger.info("setting up regular operation with " + this.interval + " delay.");
+		if(this.regularOperationInterval !== null) {
+			console.warn("regular operation already running");
+			return;
+		}
+		this.regularOperationInterval = setInterval(this.regularOperation, this.interval,this);
+
+	}
+	destroyRegularOperation() {
+		this.logger.info("stopping regular operation");
+		if(this.regularOperationInterval === null) {
+			this.logger.info("can't stop the regular operation it is either not started or curently running");
+			return;
+		} 
+		clearInterval(this.regularOperationInterval);
+		this.regularOperationInterval = null;
+
+	}
+
 
 
 	async runMqttPublish() {

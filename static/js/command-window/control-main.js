@@ -112,13 +112,13 @@ $(document).ready(function() {
 		} else  {
 			indicator.setState("gnss",Indicator.tentative);
 		}
+	}, null);
+	urcHandler.registerURCHandler("TCP-handler", '^\\\+KCNX_IND: *[1-6],[0-9],[0-9]', function(data) {
+		indicator.setState("tcp",Indicator.tentative);
 
 	}, null);
-	urcHandler.registerURCHandler("TCP-handler", '^\\\+KTCP_NOTIF: *[1-6]', function(data) {
-		const REG_PATTERN = /^\+KTCP_NOTIF: *([1-6]),([0-1]?[0-9])/g;
-		var param = REG_PATTERN.exec(data);
-		console.log("KTCP_NOTIF handler", param);
-
+	urcHandler.registerURCHandler("TCP-Con", '^\\\+KTCP_IND: *[0-9],1', function(data) {
+		indicator.setState("tcp",Indicator.ok);
 	}, null);
 
 

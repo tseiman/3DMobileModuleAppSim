@@ -7,6 +7,7 @@ const express 									= require('express');
 const vhost 										= require('vhost');
 const Demohandler								= require('./demohandler');
 const FindMySuitcaseHandler			= require('./FindMySuitcaseHandler');
+const SierraFlightHandler				= require('./SierraFlightHandler');
 const ApiHandler								= require('./ApiHandler');
 
 const viewerApp = express();
@@ -21,6 +22,7 @@ module.exports = {
 
   	var demoserver = Demohandler.setup();
   	var findMySuitcaseHandler = FindMySuitcaseHandler.setup();
+  	var sierraFlightHandler = SierraFlightHandler.setup();
   	var apiHandler = ApiHandler.setup();
 
 		var domainfilterDemo = ".*.*"
@@ -34,6 +36,12 @@ module.exports = {
 		domainfilterFindSuitcase = 'findmysuitcase' + domainfilterFindSuitcase;
 		console.log("setting up VHOST: " + domainfilterFindSuitcase);
 		viewerApp.use(vhost( domainfilterFindSuitcase, findMySuitcaseHandler));
+
+		var domainfilterSierraFlightHandler= ".*.*"
+		if(frontendConf.domainfilter) domainfilterSierraFlightHandler = frontendConf.domainfilter;
+		domainfilterSierraFlightHandler = 'sierraflight' + domainfilterSierraFlightHandler;
+		console.log("setting up VHOST: " + domainfilterSierraFlightHandler);
+		viewerApp.use(vhost( domainfilterSierraFlightHandler, sierraFlightHandler));
 
 		var domainfilterApihandler = ".*.*"
 		if(frontendConf.domainfilter) domainfilterApihandler = frontendConf.domainfilter;

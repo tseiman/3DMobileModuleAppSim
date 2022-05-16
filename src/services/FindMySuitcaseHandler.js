@@ -33,7 +33,7 @@ module.exports = {
   ]; 
 
   resourceFolders.forEach(function (item, index) {
-    console.debug('Current "' + item.name + '" with URL="' + item.url + '" Path="' + path.join(__dirname, item.folder ) + '"');
+    console.debug('FindMySuitcaseHandler "' + item.name + '" with URL="' + item.url + '" Path="' + path.join(__dirname, item.folder ) + '"');
     app.use(item.url, express.static(path.join(__dirname, item.folder)));
   });
 
