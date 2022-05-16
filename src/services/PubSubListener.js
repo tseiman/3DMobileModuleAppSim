@@ -45,23 +45,34 @@ module.exports = {
         var data = JSON.parse(message.data);
         message.ack();
 
-        if((!data.data) || (!data.data.gpstime)) return;
-        
-        if(     (!data.data.time)
-              ||(!data.data.id)
-              ||(!data.data.lat)
-              ||(!data.data.lon)
-              ||(!data.data.fixtype)
-              ||(!data.data.HEPE)
-              ||(!data.data.Altitude)
-              ||(!data.data.AltUnc)
-              ||(!data.data.Direction)
-              ||(!data.data.HorSpeed)
-              ||(!data.data.VerSpeed)) {
-
-          console.error("invalid parameter count in PubSubMessage: "+ JSON.stringify(data.data));
-          return;
+     
+        if(!data.data) {
+            console.error("data record missing: "+ JSON.stringify(data));
+            return;
         }
+        if(!data.time) {
+            console.error("time record missing: "+ JSON.stringify(data));
+            return;
+        }
+        if(!data.id) {
+            console.error("id record missing: "+ JSON.stringify(data));
+            return;
+        }
+        if(!data.data.gpstime) {
+            console.error("gpstime record missing: "+ JSON.stringify(data));
+            return;
+        }
+
+        if(!data.data.lat)              data.data.lat           = "";
+        if(!data.data.lon)              data.data.lon           = "";
+        if(!data.data.fixtype)          data.data.fixtype       = "";
+        if(!data.data.HEPE)             data.data.HEPE          = "";
+        if(!data.data.Altitude)         data.data.Altitude      = "";
+        if(!data.data.AltUnc)           data.data.AltUnc        = "";
+        if(!data.data.Direction)        data.data.Direction     = "";
+        if(!data.data.HorSpeed)         data.data.HorSpeed      = "";
+        if(!data.data.VerSpeed)         data.data.VerSpeed      = "";
+
         
         var gpsTimeTokenized = data.data.gpstime.match(/^ *([0-9]{4}) *(1?[0-9]) *([1-3]?[0-9]) *([0-2]?[0-9]):([0-5][0-9]):([0-5][0-9])/);
 
