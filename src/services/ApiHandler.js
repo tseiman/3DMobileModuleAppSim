@@ -127,6 +127,7 @@ module.exports = {
             var data = await queryData();
 
             var msg = {
+                'type'          : "tagupdate", 
                 'firstName'     : firstName,
                 'secondName'    : secondName,                
                 'flightno'      : req.body.flightno,

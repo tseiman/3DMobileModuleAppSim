@@ -1,6 +1,8 @@
 'use strict';
 
 import { Logger } from '/js/static/command-window/Logger.js';
+
+import { SimpleMQTT } from '/js/static/command-window/SuperSimpleMqttClient.js';
 /*
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline')
@@ -11,12 +13,58 @@ const SimpleMQTT       	= require('./superSimpleMqttClient.js');
 class LineBreakTransformer {
   constructor() {
     // A container for holding stream data until a new line.
-    this.chunks = "";
-//    	this.chunks = buffer.Buffer.from("");
+//    this.chunks = "";
+this.chunks = buffer.Buffer.from("")
+    	// this.chunks = [buffer.Buffer.from("")];
   }
+/*
+
+split(a) {
+
+	console.log("Split gets:", a);
+    var result = [];
+    var currentToken = [];
+    for (var i = 0; i < a.length; i++) {
+        console.log(a[i]);
+        if (a[i] === 13 && a[i + 1] === 10 ) {
+            if (currentToken.length !== 0)
+                result.push(currentToken);
+            currentToken = []; // clear array
+        } else if(a[i -1] === 13 && a[i] === 10 ) {
+        	continue;
+// do nothing 
+        } else {
+            currentToken.push(String.fromCharCode(a[i]));
+        }
+    }
+    if (currentToken.length !== 0)
+        result.push(currentToken);
+console.log("Split returns:", result);
+    return result;
+	}
+
 
   transform(chunk, controller) {
 //  	this.chunks = buffer.Buffer.concat([this.chunks, buffer.Buffer.from(chunk)]);
+
+    // Append new chunks to existing chunks.
+ //   this.chunks += chunk;
+console.log(this.chunks, buffer.Buffer.from(chunk));
+ 		this.chunks = buffer.Buffer.concat([buffer.Buffer.from(this.chunks), buffer.Buffer.from(chunk)]);
+window.chunks = this.chunks;
+    // For each line breaks in chunks, send the parsed lines out.
+ //   const lines = this.chunks.split("\r\n");
+ 		const lines = this.split(this.chunks);
+    this.chunks = lines.pop();
+    console.log("Lines ---->" + lines.length, this.chunks, lines);
+    lines.forEach((line) => controller.enqueue(line));
+
+
+  }
+  	*/
+
+
+  transform(chunk, controller) {
 
     // Append new chunks to existing chunks.
     this.chunks += chunk;
@@ -27,13 +75,12 @@ class LineBreakTransformer {
 
 
   }
-
   flush(controller) {
     // When the stream is closed, flush any remaining chunks out.
     controller.enqueue(this.chunks);
   }
 }
-
+window.LineBreakTransformer = LineBreakTransformer;
 
 
 class SerialIO {
@@ -133,6 +180,7 @@ class SerialIO {
 			      	}
 		      		// if(value !== '') 
       				that.logger.rx(`<<< ${value}`);
+      				console.log(SimpleMQTT.buf2hex(value));
 		      		if(that.modemAliveCB) {
 								that.modemAliveCB();
 							}

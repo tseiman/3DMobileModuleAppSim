@@ -375,6 +375,7 @@ class SimpleMQTT {
 //   	var length = payloadBuffer[1];
    	var remainingLengthBytesCount = 0;
 
+
  		var multiplier = 1;
       var totalLen = 0
       do {
@@ -387,9 +388,9 @@ class SimpleMQTT {
       } while ((encodedByte & 128) != 0);
       var lengthFieldLen = remainingLengthBytesCount;
 
-      var highByteTopicLen = payloadBuffer[remainingLengthBytesCount + 1]; console.log("encodedByte" + highByteTopicLen.toString(16));
-      var lowByteTopicLen = payloadBuffer[remainingLengthBytesCount + 2];console.log("encodedByte" + lowByteTopicLen.toString(16));
-      var topicLen = (highByteTopicLen << 8) + lowByteTopicLen;
+      var highByteTopicLen = payloadBuffer[remainingLengthBytesCount + 1]; console.log("encodedByte:" + highByteTopicLen.toString(16));
+      var lowByteTopicLen = payloadBuffer[remainingLengthBytesCount + 2];console.log("encodedByte:" + lowByteTopicLen.toString(16));
+      var topicLen = ((highByteTopicLen & 0xff) << 8) + (lowByteTopicLen & 0xff);
       var topic ="";
       for(var i = 0; i < topicLen; ++i) {
           topic += String.fromCharCode(payloadBuffer[remainingLengthBytesCount + 3]);
@@ -406,6 +407,20 @@ class SimpleMQTT {
       return {'topic': topic, 'msg' : msg};
 
    }
+/* *******************************
+*/
+ decodePublishBadHack(payloadBuffer) { // This is a really bad hack which does not really encode the MQTT packet as there is an issue with the Unicode encoding of the buffer
+ 													// instead of relally encoding thei is just grabbing the conent with illegal assumptions - CRAZY Unicode handling in JS
+//   	var length = payloadBuffer[1];
+   	var remainingLengthBytesCount = 0;
+
+   	const REG_PATTERN = /^.*(\/devices\/.+\/commands)(\{.*\})/;
+		var param = REG_PATTERN.exec(payloadBuffer);
+		var topic = param[1];
+		var msg = param[2];
+      return {'topic': topic, 'msg' : msg};
+
+   }
 
 
 /* *******************************
@@ -416,7 +431,7 @@ class SimpleMQTT {
    parseMessage(msg) {
 		var res= {};
 
-
+		console.log(SimpleMQTT.buf2hex(buffer.Buffer.from(msg)));
 		// this.stringToByteArray(msg);
 
 		var payloadBuffer =  buffer.Buffer.from(msg);
@@ -440,7 +455,7 @@ class SimpleMQTT {
 		} else if(payloadBuffer[0] >= 0x30 && payloadBuffer[0] <= 0x3F) {
 	   	res.type = "PUBLISH";
 	    	res.ret = null;
-	    	res.retMsg = this.decodePublish(payloadBuffer);
+	    	res.retMsg = this.decodePublishBadHack(payloadBuffer);
 		} else {
 			console.log("Unknown message type:" + payloadBuffer[0].toString(16));
 	   	res.type = "UNKNOWN";
