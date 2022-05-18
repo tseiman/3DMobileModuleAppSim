@@ -269,7 +269,7 @@ class SimpleMQTT {
 		         PUBLISH       |      v
 			       v       v  ----------------------------      */
 	/*	var buffer = [publish,0x0,topicLenHiByte,topicLenLoByte]; */
-	/* we merge the langth aferward in as it is generated with dynamic length */
+	/* we merge the length aferward in as it is generated with dynamic length */
 		var playloadBuffer = [publish, /* 0x0,*/ topicLenHiByte,topicLenLoByte];
 
 		playloadBuffer = playloadBuffer.concat(this.stringToByteArray(topic));
@@ -295,6 +295,39 @@ class SimpleMQTT {
 	
     }
 
+/* *******************************
+*/
+    getSubscribeMsg(topic) {
+		var subscribe = 0x82;
+		var topicLenHiByte = this.toBytesInt32(topic.length)[2];
+		var topicLenLoByte = this.toBytesInt32(topic.length)[3];
+
+	/* --------------------------------------------------------------
+                                      len   packet ID
+								   message ID  |   -----------
+                               v       v    v   v    */
+		var playloadBuffer = [subscribe,0x0,0x01,topicLenHiByte,topicLenLoByte];
+
+		playloadBuffer = playloadBuffer.concat(this.stringToByteArray(topic));
+		playloadBuffer = playloadBuffer.concat(0x00); // fire and forget
+
+		var lenFieldArray = this.encodeMqttMesageLen(playloadBuffer.length - 1);  // minus message type and total length byte fields
+		var mergePos = 1;
+		lenFieldArray.forEach(lenByte => {
+		    playloadBuffer.splice(mergePos, 0, this.toBytesInt32(lenByte)[3]);
+		    ++mergePos;
+		});
+
+	//	playloadBuffer[1] = this.toBytesInt32(playloadBuffer - 2 ); // minus message type and total length byte fields
+
+		var message = buffer.Buffer.alloc(playloadBuffer.length,"ascii");
+		for (var i = 0; i < playloadBuffer.length; ++i) {
+		    message[i] = playloadBuffer[i];
+		}
+
+		return {"len" : playloadBuffer.length, "msg": message };
+	
+    }
 
 /* *******************************
 */
@@ -337,6 +370,44 @@ class SimpleMQTT {
 
 
 /* *******************************
+*/
+ decodePublish(payloadBuffer) {
+//   	var length = payloadBuffer[1];
+   	var remainingLengthBytesCount = 0;
+
+ 		var multiplier = 1;
+      var totalLen = 0
+      do {
+            var encodedByte = payloadBuffer[remainingLengthBytesCount + 1];
+         // console.log("encodedByte" + encodedByte.toString(16));
+            totalLen += (encodedByte & 127) * multiplier;
+            multiplier *= 128;
+            ++remainingLengthBytesCount;
+            if (multiplier > (128*128*128)) { throw("Malformed Remaining Length"); }
+      } while ((encodedByte & 128) != 0);
+      var lengthFieldLen = remainingLengthBytesCount;
+
+      var highByteTopicLen = payloadBuffer[remainingLengthBytesCount + 1]; console.log("encodedByte" + highByteTopicLen.toString(16));
+      var lowByteTopicLen = payloadBuffer[remainingLengthBytesCount + 2];console.log("encodedByte" + lowByteTopicLen.toString(16));
+      var topicLen = (highByteTopicLen << 8) + lowByteTopicLen;
+      var topic ="";
+      for(var i = 0; i < topicLen; ++i) {
+          topic += String.fromCharCode(payloadBuffer[remainingLengthBytesCount + 3]);
+          ++remainingLengthBytesCount;
+      }
+      
+      var msg = "";
+      for(var i = 0; i < (totalLen - topicLen -lengthFieldLen -1 ); ++i) {
+          msg += String.fromCharCode(payloadBuffer[remainingLengthBytesCount + 3]);
+          ++remainingLengthBytesCount;
+      }
+
+      return {'topic': topic, 'msg' : msg};
+
+   }
+
+
+/* *******************************
  * This takes an incomming message and checks what kind of message it is.
  * The methos returns a JSOn structure with the return code and the message type
  * An error message  might be additionally additionally with it's String error message
@@ -357,11 +428,20 @@ class SimpleMQTT {
 	    	var mqttRet = parseInt(payloadBuffer[3]);
 	    	res.ret = mqttRet;
 	    	res.retMsg = MQTT_ReturnCodes[mqttRet];
-		} else if(payloadBuffer[0] == 0xFD) { // !!!!!!!! Normally this should be 0x0D ! - but I have here some massive recoding issue !! therefore this is a terrible Hack
+		} else if(payloadBuffer[0] == 0xFD && payloadBuffer[1] == 0x00) { // !!!!!!!! Normally this should be 0x0D ! - but I have here some massive recoding issue !! therefore this is a terrible Hack
 	   	res.type = "PONG";
 	    	res.ret = null;
 	    	res.retMsg = null;
+	   } else if(payloadBuffer[0] == 0xFD && payloadBuffer[1] == 0x03) { // !!!!!!!! Normally this should be 0x0D ! - but I have here some massive recoding issue !! therefore this is a terrible Hack
+	   	res.type = "SUBSCRIBE_ACK";
+	    	res.ret = null;
+	    	res.retMsg = null;
+		} else if(payloadBuffer[0] >= 0x30 && payloadBuffer[0] <= 0x3F) {
+	   	res.type = "PUBLISH";
+	    	res.ret = null;
+	    	res.retMsg = this.decodePublish(payloadBuffer);
 		} else {
+			console.log("Unknown message type:" + payloadBuffer[0].toString(16));
 	   	res.type = "UNKNOWN";
 	    	res.ret = null;
 	    	res.retMsg = null;

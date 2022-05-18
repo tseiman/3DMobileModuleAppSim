@@ -87,7 +87,8 @@ $(document).ready(function() {
 		var param = REG_PATTERN.exec(data);
 		switch (param[2]) {
 		  case '1': case '5': 						indicator.setState("attached",Indicator.ok); 
-		  											indicator.setState("gnss",Indicator.tentative); 
+		  											indicator.setState("gnss",Indicator.tentative);
+		  											indicator.setState("tcp",Indicator.tentative); 
 		  											break;
 		  case '0': case '2': case '3': case '4': 	indicator.setState("attached",Indicator.tentative); break;
 		  default: 									indicator.setState("attached",Indicator.neutral);
@@ -120,7 +121,9 @@ $(document).ready(function() {
 	urcHandler.registerURCHandler("TCP-Con", '^\\\+KTCP_IND: *[0-9],1', function(data) {
 		indicator.setState("tcp",Indicator.ok);
 	}, null);
-
+	urcHandler.registerURCHandler("TCP-Discon", '^\\\+KTCP_NOTIF: *[1-6],[0-1]?[0-9]', function(data) {
+			indicator.setState("tcp",Indicator.tentative);
+	}, null);
 
 	var connectionManager = new ConnectionManager(serialIO, logger, configurator, urcHandler);
 	window.connectionManager;

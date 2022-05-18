@@ -174,7 +174,7 @@ class SerialIO {
 
 	registerCallback(name,expect,callback,callbackObj) {
 		if(name in this.callback) {
-			console.warn("Callback with thename " + name + " exists already. Callback ignored !!!");
+			console.warn("Callback with the name " + name + " exists already. Callback ignored !!!");
 			return;
 		}
 	//		console.log("setting callback with name: \"" + name + "\" and expect:\"" + expect +"\n");

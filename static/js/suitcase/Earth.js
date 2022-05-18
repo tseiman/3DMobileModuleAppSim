@@ -10,9 +10,9 @@ export default class Earth {
 		var material = new THREE.MeshPhongMaterial();
 		var earthmesh = new THREE.Mesh(geometry, material);
 		material.map    = new THREE.TextureLoader().load('/pic/static/suitcase/8081_earthmap4k_2color.png');
-		material.bumpMap   = new THREE.TextureLoader().load('/pic/static/suitcase/8081_earthspec4k.jpg');     
-		material.bumpScale = 0.01; 
-		material.specularMap = new THREE.TextureLoader().load('/pic/static/suitcase/8081_earthspec4k.jpg')
+		material.bumpMap   = new THREE.TextureLoader().load('/pic/static/suitcase/8081_earthspec4k.png');     
+		material.bumpScale = -0.02; 
+		material.specularMap = new THREE.TextureLoader().load('/pic/static/suitcase/8081_earthspec4k.png')
 		material.specular  = new THREE.Color('grey')
 
 		earthmesh.rotation.set(0.5,-1.9, 0);

@@ -8,6 +8,8 @@ require('dotenv').config();
 
 const express                   = require('express');
 const {BigQuery} = require('@google-cloud/bigquery');
+const iot = require('@google-cloud/iot');
+
 const bodyParser = require('body-parser');
 const config = require('config');
 const apiConf = config.get('apiconf');
@@ -15,6 +17,30 @@ const apiConf = config.get('apiconf');
 const pubsubConf = config.get('pubsub');
 
 module.exports = {
+
+    sendCommand: async function (projectId,cloudRegion,registryId,deviceId,data) {
+        const iotClient = new iot.v1.DeviceManagerClient();
+
+        // Construct request
+        const formattedName = iotClient.devicePath(
+            projectId,
+            cloudRegion,
+            registryId,
+            deviceId
+        );
+
+        //  const binaryData = Buffer.from(commandMessage);
+        var myData = {'type':'someTest','time': new Date().getTime()};
+        const request = {
+            name: formattedName,
+            binaryData: Buffer.from(JSON.stringify(data)),
+        };
+
+        const [response] = await iotClient.sendCommandToDevice(request);
+        console.log('Sent command: ', response);
+    }
+
+
     setup: function () {
 
         const bigquery = new BigQuery();
@@ -89,6 +115,9 @@ module.exports = {
                 return res.send(JSON.stringify({'type' : 'error', 'causeid': 30, 'cause': 'user ID not present'}));
                 console.error(`The database does not contain such user: ${req.body.username}`);
             }
+            var deviceID = data[0].DeviceID;
+            console.log("Device ID: ", deviceID);
+
             if((!req.body.destShort )||(!req.body.destination )||(!req.body.origin )||(!req.body.username )||(!req.body.timest )||(!req.body.info1 )||(!req.body.info2 )) {
                 return res.send(JSON.stringify({'type' : 'error', 'causeid': 40, 'cause': 'missing fields', datawas: req.body}));
                 console.error("the request had missing fields:" + JSON.Stringify(req.body));
@@ -114,6 +143,18 @@ module.exports = {
 
             var data = await queryData();
 
+            var msg = {
+                'flightno'      : req.body.flightno,
+                'destShort'     : req.body.destShort,
+                'destination'   : req.body.destination,
+                'origin'        : req.body.origin,
+                'username'      : req.body.username,
+                'timest'        : req.body.timest,
+                'info1'         : req.body.info1,
+                'info2'         : req.body.info2
+            };
+
+            await sendCommand(apiConf.projectId, apiConf.region, apiConf.iotRegistryID, deviceID, msg);
 
             res.send(JSON.stringify({'type' : 'OK'}));
         });

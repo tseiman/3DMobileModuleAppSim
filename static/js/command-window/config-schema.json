@@ -107,18 +107,42 @@
 			"check"			: "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
 		},
 		{
-			"name"			: "alive-message",
-			"caption" 		: "Max time to reconnect",
-			"help"			: "The maximum time to wait until the device comes back and sends a keep alive",
-			"placeholder"	: "240",
+			"name"			: "event-loop-size",
+			"caption" 		: "Event loop size",
+			"help"			: "A counter increased with the delay of - Event cycle step delay",
+			"placeholder"	: "600",
 			"type"			: "text",
-			"check"			: "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+			"check"			: "^[1-9][0-9]*$"
 		},
 		{
-			"name"			: "regular-operation-cycle",
-			"caption" 		: "Regular operations cyclus",
-			"help"			: "Time between regular operations in ms",
-			"placeholder"	: "60000",
+			"name"			: "ping-steps",
+			"caption" 		: "Steps where Ping is executed",
+			"help"			: "Coma separted events the ping should be executed (-1 disables the schedule)",
+			"placeholder"	: "200,400",
+			"type"			: "text",
+			"check"			: "^([-1-9][0-9]*)(,[1-9][0-9]*)*$"
+		},
+		{
+			"name"			: "gnss-steps",
+			"caption" 		: "Steps where GNSS is executed",
+			"help"			: "Coma separted list where GNSS should be executed (-1 disables the schedule)",
+			"placeholder"	: "1",
+			"type"			: "text",
+			"check"			: "^([-1-9][0-9]*)(,[1-9][0-9]*)*$"
+		},
+		{
+			"name"			: "mqtt-pos-push-steps",
+			"caption" 		: "Steps MQTT Position pushed to cloud",
+			"help"			: "Steps where the position is pushed to cloud (-1 disables the schedule)",
+			"placeholder"	: "2",
+			"type"			: "text",
+			"check"			: "^([-1-9][0-9]*)(,[1-9][0-9]*)*$"
+		},
+		{
+			"name"			: "event-cycle-step-delay",
+			"caption" 		: "Event cycle step delay",
+			"help"			: "Time between single event steps in ms, ever spte the event loop is increased up to it's event-loop-size",
+			"placeholder"	: "1000",
 			"type"			: "text",
 			"check"			: "^[1-9][0-9]*$"
 		}

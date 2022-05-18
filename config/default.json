@@ -13,9 +13,10 @@
   "apiconf": {                 // PubSub listener config
     "enable"         : false,
     "projectId"      : "sierrademo-349012",
-    "region"            : "europe-west1",
-    "userTableId"           : "userDB",
-    "bookedFlightsTableId"       : "bookedFlights"
+    "region"         : "europe-west1",
+    "userTableId"    : "userDB",
+    "bookedFlightsTableId"       : "bookedFlights",
+    "iotRegistryID"  : "HL78LugageDemo"
    }                // END of apiconf configuration
 
 }  									// EOF
