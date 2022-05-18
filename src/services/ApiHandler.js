@@ -18,27 +18,7 @@ const pubsubConf = config.get('pubsub');
 
 module.exports = {
 
-    sendCommand: async function (projectId,cloudRegion,registryId,deviceId,data) {
-        const iotClient = new iot.v1.DeviceManagerClient();
-
-        // Construct request
-        const formattedName = iotClient.devicePath(
-            projectId,
-            cloudRegion,
-            registryId,
-            deviceId
-        );
-
-        //  const binaryData = Buffer.from(commandMessage);
-        var myData = {'type':'someTest','time': new Date().getTime()};
-        const request = {
-            name: formattedName,
-            binaryData: Buffer.from(JSON.stringify(data)),
-        };
-
-        const [response] = await iotClient.sendCommandToDevice(request);
-        console.log('Sent command: ', response);
-    }
+        
 
 
     setup: function () {
@@ -116,6 +96,9 @@ module.exports = {
                 console.error(`The database does not contain such user: ${req.body.username}`);
             }
             var deviceID = data[0].DeviceID;
+            var firstName = data[0].FirstName;
+            var secondName = data[0].SecondName;
+
             console.log("Device ID: ", deviceID);
 
             if((!req.body.destShort )||(!req.body.destination )||(!req.body.origin )||(!req.body.username )||(!req.body.timest )||(!req.body.info1 )||(!req.body.info2 )) {
@@ -144,6 +127,8 @@ module.exports = {
             var data = await queryData();
 
             var msg = {
+                'firstName'     : firstName,
+                'secondName'    : secondName,                
                 'flightno'      : req.body.flightno,
                 'destShort'     : req.body.destShort,
                 'destination'   : req.body.destination,
@@ -154,7 +139,34 @@ module.exports = {
                 'info2'         : req.body.info2
             };
 
-            await sendCommand(apiConf.projectId, apiConf.region, apiConf.iotRegistryID, deviceID, msg);
+
+            async function sendCommand(projectId,cloudRegion,registryId,deviceId,data) {
+                const iotClient = new iot.v1.DeviceManagerClient();
+
+                // Construct request
+                const formattedName = iotClient.devicePath(
+                    projectId,
+                    cloudRegion,
+                    registryId,
+                    deviceId
+                );
+
+                //  const binaryData = Buffer.from(commandMessage);
+                var myData = {'type':'someTest','time': new Date().getTime()};
+                const request = {
+                    name: formattedName,
+                    binaryData: Buffer.from(JSON.stringify(data)),
+                };
+
+                const [response] = await iotClient.sendCommandToDevice(request);
+                console.log('Sent command: ', response);
+            }
+
+            try {
+                await sendCommand(apiConf.projectId, apiConf.region, apiConf.iotRegistryID, deviceID, msg);
+            } catch(e) {
+                console.error(e);
+            }
 
             res.send(JSON.stringify({'type' : 'OK'}));
         });

@@ -395,12 +395,13 @@ class SimpleMQTT {
           topic += String.fromCharCode(payloadBuffer[remainingLengthBytesCount + 3]);
           ++remainingLengthBytesCount;
       }
-      
+      console.log(totalLen, topicLen , lengthFieldLen);
       var msg = "";
-      for(var i = 0; i < (totalLen - topicLen -lengthFieldLen -1 ); ++i) {
+      for(var i = 0; i < (totalLen - topicLen -lengthFieldLen  ); ++i) {
           msg += String.fromCharCode(payloadBuffer[remainingLengthBytesCount + 3]);
           ++remainingLengthBytesCount;
       }
+   //   console.log("decodePublish", msg);
 
       return {'topic': topic, 'msg' : msg};
 
@@ -428,11 +429,11 @@ class SimpleMQTT {
 	    	var mqttRet = parseInt(payloadBuffer[3]);
 	    	res.ret = mqttRet;
 	    	res.retMsg = MQTT_ReturnCodes[mqttRet];
-		} else if(payloadBuffer[0] == 0xFD && payloadBuffer[1] == 0x00) { // !!!!!!!! Normally this should be 0x0D ! - but I have here some massive recoding issue !! therefore this is a terrible Hack
+		} else if(payloadBuffer[0] == 0xD0) { // !!!!!!!! Normally this should be 0x0D ! - but I have here some massive recoding issue !! therefore this is a terrible Hack
 	   	res.type = "PONG";
 	    	res.ret = null;
 	    	res.retMsg = null;
-	   } else if(payloadBuffer[0] == 0xFD && payloadBuffer[1] == 0x03) { // !!!!!!!! Normally this should be 0x0D ! - but I have here some massive recoding issue !! therefore this is a terrible Hack
+	   } else if(payloadBuffer[0] == 0x90) { // !!!!!!!! Normally this should be 0x0D ! - but I have here some massive recoding issue !! therefore this is a terrible Hack
 	   	res.type = "SUBSCRIBE_ACK";
 	    	res.ret = null;
 	    	res.retMsg = null;

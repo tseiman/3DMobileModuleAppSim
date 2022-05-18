@@ -120,7 +120,7 @@ class SerialIO {
 		//	const textDecoder = new TextDecoderStream();
 		//	const readableStreamClosed = this.port.readable.pipeTo(textDecoder.writable);
 		//	const reader = textDecoder.readable.pipeThrough(new TransformStream(new LineBreakTransformer())).getReader();
-			const reader = this.port.readable.pipeThrough(new TextDecoderStream()).pipeThrough(new TransformStream(new LineBreakTransformer())).getReader();
+			const reader = this.port.readable.pipeThrough(new TextDecoderStream('ascii')).pipeThrough(new TransformStream(new LineBreakTransformer())).getReader();
 
 	//	  const reader = this.port.readable.getReader();
 		  	try {

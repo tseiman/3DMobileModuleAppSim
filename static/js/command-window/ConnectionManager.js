@@ -79,8 +79,11 @@ window.connectionManager = this;
 		this.atProcedures.registerTcpMqttRecHandler("connMgr.HandleIncommingTCP", 
 			function(mqtt) {return (mqtt.type === 'PUBLISH'); },
 			function(mqtt) { 
-				mqtt.retMsg.msg = JSON.parse(mqtt.retMsg.msg);
-				console.log("General TCP Handler:", mqtt); 
+
+				var mqttStr = mqtt.retMsg.msg.replace(/Â/gi,'');
+	//			console.log("General TCP HandlerStr:", mqttStr); 
+				var mqttObj = JSON.parse(mqttStr);
+				console.log("General TCP Handler:", mqttObj); 
 			}
 		);
 
