@@ -337,7 +337,7 @@ window.atProcedures = this;
 	}
 
 	async wakeupDevice() {
-		while (true)
+		while (true) {
 			try {
 				var res =  await this.serialIO.sendAndExpect('AT','.*OK.*',1000);
 				break;
