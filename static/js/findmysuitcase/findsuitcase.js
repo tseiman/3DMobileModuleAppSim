@@ -26,7 +26,7 @@ function setMarkerAndMap(coordinates,hepe) {
             fillColor: '#f03',
             fillOpacity: 0.3,
             opacity: 0.8,
-            radius: hepe * 75
+            radius: hepe * 20
         }).addTo(map);
 }
 
