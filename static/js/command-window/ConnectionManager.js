@@ -99,40 +99,42 @@ window.connectionManager = this;
 	async regularOperation(that) {
 	//	that.logger.info("execute regular operations - START");
 	//	console.log(that.actualEventStep, that.pingSteps);
-		if(that.connectionState === CONNECTION_STATES.DETACHED) {
+/*		if(that.connectionState === CONNECTION_STATES.DETACHED) {
 			that.logger.info("cant execute regular operation - SKIPPING");
 		}
-
-		if(!that.regularOperationRunning) {
-			clearInterval(that.regularOperationInterval);
-			that.regularOperationInterval = null;
-			that.logger.system("Stopped cyclic operation");
-			return;
-		}
-		if(that.pingSteps.includes(that.actualEventStep)) {
-			that.logger.info("execute Ping");
-			clearInterval(that.regularOperationInterval);
-		//	try {
-				await that.runPing();
-		//	} catch (e) {}
-			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
-		}
-		if(that.gnssSteps.includes(that.actualEventStep)) {
-			that.logger.info("execute GNSS");
-			clearInterval(that.regularOperationInterval);
-		//	try {
-				await that.runGNSS();
-		//	} catch (e) {}
-			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
-		}
-		if(that.mqttPosPushSteps.includes(that.actualEventStep)) {
-			that.logger.info("execute MQTT Position Push");
-			clearInterval(that.regularOperationInterval);
-		//	try {
-				await that.runMqttPublish();
-		//	} catch (e) {}
-			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
-		}
+*/
+		try {
+			if(!that.regularOperationRunning) {
+				clearInterval(that.regularOperationInterval);
+				that.regularOperationInterval = null;
+				that.logger.system("Stopped cyclic operation");
+				return;
+			}
+			if(that.pingSteps.includes(that.actualEventStep)) {
+				that.logger.info("execute Ping");
+				clearInterval(that.regularOperationInterval);
+			//	try {
+					await that.runPing();
+			//	} catch (e) {}
+				that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
+			}
+			if(that.gnssSteps.includes(that.actualEventStep)) {
+				that.logger.info("execute GNSS");
+				clearInterval(that.regularOperationInterval);
+			//	try {
+					await that.runGNSS();
+			//	} catch (e) {}
+				that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
+			}
+			if(that.mqttPosPushSteps.includes(that.actualEventStep)) {
+				that.logger.info("execute MQTT Position Push");
+				clearInterval(that.regularOperationInterval);
+			//	try {
+					await that.runMqttPublish();
+			//	} catch (e) {}
+				that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
+			}
+		} catch (e) { console.warn(e); }
 
 		++that.actualEventStep;
 		if(that.actualEventStep > that.eventLoopSize) that.actualEventStep = 0;
