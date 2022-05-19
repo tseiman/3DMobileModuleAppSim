@@ -161,6 +161,10 @@
 			"continue": true
 		},
 		{	"type": "command",
+			"cmd" : "FLIGHTMODE_OFF",
+			"continue": false
+		},
+		{	"type": "command",
 			"cmd" : "START_CYCLIC_OPERATION",
 			"continue": false
 		},
