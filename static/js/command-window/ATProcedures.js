@@ -374,9 +374,7 @@ console.log(res);
 		var gnssData = {};
 
 		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
-		console.log("asdasdasd");
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3',180000);
-		console.log("2asdasdasd");
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSLOC?','.*OK.*',5000);
 				console.log("3asdasdasd");
 
