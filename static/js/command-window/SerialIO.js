@@ -329,7 +329,7 @@ class SerialIO {
 
 	async setDTR(enable,that) {
 		that.port.setSignals({ dataTerminalReady: enable });
-		if(that.dtrState !== enable) await new Promise(resolve => setTimeout(resolve, 100));
+		if(that.dtrState !== enable) await new Promise(resolve => setTimeout(resolve, 1000));
 		that.dtrState = enable;
 
 	}
