@@ -135,7 +135,7 @@ window.atProcedures = this;
 		}
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*',2000); 
 		this.serialIO.enableSleepHandler(2000);
-		res = await this.serialIO.sendAndExpect( 'AT+KSLEEP=0,2,10' ,'.*OK.*',2000);
+		res = await this.serialIO.sendAndExpect( 'AT+KSLEEP=' + this.config.getValue("ksleep-mode") ,'.*OK.*',2000);
 		this.afterAttach();
 	}
 

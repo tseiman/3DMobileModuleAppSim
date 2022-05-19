@@ -134,7 +134,10 @@ window.connectionManager = this;
 			//	} catch (e) {}
 				that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 			}
-		} catch (e) { console.warn(e); }
+		} catch (e) { 
+			console.warn(e); 
+			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
+		}
 
 		++that.actualEventStep;
 		if(that.actualEventStep > that.eventLoopSize) that.actualEventStep = 0;
