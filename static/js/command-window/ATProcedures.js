@@ -113,16 +113,14 @@ window.atProcedures = this;
 		res =  await this.serialIO.sendAndExpect('AT+CFUN=1','^(.C.?REG: (0|1),(5|1).*|.*OK.*)',12000); // go online
 		await this.serialIO.sleep(1000);
 		res = await this.serialIO.sendAndExpect( 'ATI','.*HL78(00|02|10|12).*',2000); // see we're working wiht the right module
-
-		this.deviceType = res.data.match(/.*HL78(00|02|10|12).*/)[1];
-		if(this.deviceType === '12' || this.deviceType === '10') {
+/*
+		this.deviceType = res.data.match(/.*HL78(00|02|10|12).*-----FIXME-----/)[1];
 			this.logger.system("This is a new device: HL78" + this.deviceType);
-			this.deviceTypeConfNG = true;
 		} else {
 			this.logger.system("This is a legacy device: HL78" + this.deviceType);
 			this.deviceTypeConfNG = false;
 		}
-
+*/
 		res = await this.serialIO.sendAndExpect( 'AT+CMEE=1','.*OK.*',2000); // error reporting on
 		res = await this.serialIO.sendAndExpect( 'AT+CREG=1','.*OK.*',2000); 
 		res = await this.serialIO.sendAndExpect( 'AT+CGREG=1','.*OK.*',2000); 
@@ -180,11 +178,9 @@ window.atProcedures = this;
 	    res = await this.serialIO.sendAndExpect( 'AT+KSSLCFG=2,0','.*OK.*',2000);
 	   
 
-	    if(this.deviceTypeConfNG) {
-			res = await this.serialIO.sendAndExpect( 'AT+KSSLCRYPTO=6,8,2,8192,4,4,1,0','.*OK.*',2000);
-	    } else {
-	    	res = await this.serialIO.sendAndExpect( 'AT+KSSLCRYPTO=1,9,3,25456,12,4,1,0','.*OK.*',2000);
-	    }
+
+
+		res = await this.serialIO.sendAndExpect( 'AT+KSSLCRYPTO=' + this.config.getValue("ksslcrypto-setting"),'.*OK.*',2000);
 
 		var certData = this.config.getValue("google-certificate"); //.replace(/\n/g, "\r");
 
@@ -192,49 +188,18 @@ window.atProcedures = this;
 	    res = await this.serialIO.sendAndExpect( certData ,'.*OK.*',2000,{noNewLine: true});
 
 	}
-/*
-	async setupForHTTP() {
 
-	
-		var res = await this.serialIO.sendAndExpect( 'AT+KSSLCFG=0,3','.*OK.*',2000);
-	    res = await this.serialIO.sendAndExpect( 'AT+KSSLCFG=1,"edge"','.*OK.*',2000);
-	    res = await this.serialIO.sendAndExpect( 'AT+KSSLCFG=2,0','.*OK.*',2000);
-	    res = await this.serialIO.sendAndExpect( 'AT+KSSLCRYPTO=1,9,3,25456,12,4,1,0','.*OK.*',2000);
-
-		var certData = this.config.getValue("letsencypt-certificate"); //.replace(/\n/g, "\r");
-
-	    res = await this.serialIO.sendAndExpect( 'AT+KCERTSTORE=0,' + (certData.length ) + ',0','.*CONNECT.*',5000);
-	    res = await this.serialIO.sendAndExpect( certData ,'.*OK.*',12000,{noNewLine: true});
-
-	}
-
-	async getFlightTicketViaHTTP() {
-
-		var res = await this.serialIO.sendAndExpect( 'AT+KIPOPT=0,"HTTP",1,1460','.*OK.*',2000);
-		res = await this.serialIO.sendAndExpect( 'AT+KCNXPROFILE=1','.*OK.*',2000);
-		res = await this.serialIO.sendAndExpect( 'AT+KHTTPCFG=1,"https://suitcase-api.cloud.tseiman.de",443,2','.*KHTTP_IND: *[0-9]+,1',10000);
-
-		this.httpSessionID = parseInt(res.data.match(/.*KHTTP_IND: *([0-9]+),.* /)[1]);
-
-		this.logger.system("extracted HTTPS session ID: " + this.httpSessionID);
-		res = await this.serialIO.sendAndExpect( 'AT+KHTTPGET=' + this.httpSessionID + ',"/suitcase?id=' + this.config.getValue("flightbooking-id") + '"','.*KHTTP_IND: *' + this.httpSessionID + ',.*',2000);
-
-console.log(res);
-		res = await this.serialIO.sendAndExpect( 'AT+KHTTPCLOSE=' + this.httpSessionID ,'(.*OK.*|.*CME ERROR:.*)',2000);
-		res = await this.serialIO.sendAndExpect( 'AT+KHTTPDEL=' + this.httpSessionID ,'(.*OK.*|.*CME ERROR:.*)',2000);
-	}
-	*/
 
 	async connectTCP() {
 		var res;
 
-		var cryptoConfig = 1; 
+/*		var cryptoConfig = 1; 
 		if(this.deviceTypeConfNG) cryptoConfig = 6; 
-
+*/
 		var useCert = 0;
 		if(this.config.getValue('use-cert') === 'true')	useCert = 3;
 
-		res = await this.serialIO.sendAndExpect( 'AT+KTCPCFG=1,' + useCert +',"' + this.config.getValue('google-mqtt-server') + '",' + this.config.getValue('google-mqtt-server-port') + ',,,,,'+ cryptoConfig,'.*KTCPCFG: *[0-9]+.*',12000);
+		res = await this.serialIO.sendAndExpect( 'AT+KTCPCFG=1,' + useCert +',"' + this.config.getValue('google-mqtt-server') + '",' + this.config.getValue('google-mqtt-server-port') + ',,,,,'+ this.config.getValue('ksslcrypto-profile'),'.*KTCPCFG: *[0-9]+.*',12000);
 
 
 		this.tcpSessionID = parseInt(res.data.match(/.*KTCPCFG: *([0-9]+).*/)[1]);
@@ -258,20 +223,6 @@ console.log(res);
 		 	return (mqtt.type === 'ACK');
 		},2000);
 		
-//		console.log("Here is the MQTT message - finally: ", mqttInMsg);
-// ------ here the original part starts
-	//	res = await this.serialIO.sendAndExpect( finalBuffer,'.*KTCP_DATA: *' + this.tcpSessionID +',[0-9]+.*',2000, {noNewLine: true});
-
-	//	var recLen = parseInt(res.data.match(/.*KTCP_DATA: *[0-9]+,([0-9]+).*/)[1]);
-	//	this.logger.info("got : " +  recLen + " bytes in downstream");
-	//	res = await this.serialIO.sendAndExpect( 'AT+KTCPRCV=' + this.tcpSessionID + ',' + recLen ,'.*--EOF--Pattern--.*',5000);
-
-	//	var resData = buffer.Buffer.from(res.data,"ascii").slice(0,recLen);
-	//	var mqttInMsg = this.thismqttClient.parseMessage(resData);
-// ---- testing from here
-
-
-// ------ here the original part stops
 
 		if(mqttInMsg.ret !== 0 ) {
 		   throw {mqttInMsg};

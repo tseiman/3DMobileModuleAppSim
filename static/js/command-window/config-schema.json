@@ -153,6 +153,22 @@
 			"placeholder"	: "true",
 			"type"			: "text",
 			"check"			: "^(true|false)$"
+		},
+		{
+			"name"			: "ksslcrypto-setting",
+			"caption" 		: "+KSSLCRYPTO setting",
+			"help"			: "This needs to be adopted to the module",
+			"placeholder"	: "6,8,2,8192,4,4,1,0",
+			"type"			: "text",
+			"check"			: "^[,0-9]+$"
+		},
+		{
+			"name"			: "ksslcrypto-profile",
+			"caption" 		: "Crypto - Profile",
+			"help"			: "This needs to be adopted to the module and to the used +KSSLCRYPTO setting",
+			"placeholder"	: "6",
+			"type"			: "text",
+			"check"			: "^[0-9]+$"
 		}
 
 	]
