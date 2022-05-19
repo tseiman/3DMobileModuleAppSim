@@ -324,13 +324,11 @@ window.atProcedures = this;
 
 		var gnssData = {};
 
-	//	var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
-	var	res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3',180000);
+		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
+		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3',180000);
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSLOC?','.*OK.*',5000);
-				console.log("3asdasdasd");
 
 		var gnssData = GNSSHelper.hl78GnssToJSON(res.recordedLines);
-				console.log("4asdasdasd", gnssData);
 
 
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*OK.*',2000);
@@ -344,7 +342,7 @@ window.atProcedures = this;
 
 	async disableFlightmode() {
 //		await this.init();
-		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','.*OK.*',2000);
+		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',2000);
 //		await new Promise(resolve => setTimeout(resolve, 5000));
 	}
 

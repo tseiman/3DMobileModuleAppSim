@@ -287,7 +287,7 @@ window.connectionManager = this;
 	}
 	async runGNSS() {
 		this.enableTCPCleanup = false;
-//	 await this.atProcedures.disconnectTCP();
+	    await this.atProcedures.disconnectTCP();
 	
 		this.lastGnssData = await this.atProcedures.gnssPoll();
 		this.enableTCPCleanup = true;
