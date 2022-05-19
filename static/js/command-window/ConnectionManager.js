@@ -311,6 +311,7 @@ window.connectionManager = this;
 	}
 	async disableFlightmode() {
 		if(this.config.getValue('fake-flightmode') && this.config.getValue('fake-flightmode') === 'true') return; 
+		await this.atProcedures.wakeupDevice();
 		await this.atProcedures.disableFlightmode();
 	}
 	async init() {

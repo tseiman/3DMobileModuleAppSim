@@ -336,6 +336,15 @@ window.atProcedures = this;
 		return gnssData;
 	}
 
+	async wakeupDevice() {
+		while (true)
+			try {
+				var res =  await this.serialIO.sendAndExpect('AT','.*OK.*',1000);
+				break;
+			} catch(e) {}
+		}
+	}
+
 	async enableFlightmode() {
 		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',10000);
 	}
