@@ -93,7 +93,9 @@ $(document).ready(function() {
 		  											indicator.setState("gnss",Indicator.tentative);
 		  											indicator.setState("tcp",Indicator.tentative); 
 		  											break;
-		  case '0': case '2': case '3': case '4': 	indicator.setState("attached",Indicator.tentative); break;
+		  case '0': case '2': case '3': case '4': 	indicator.setState("attached",Indicator.tentative); 
+		  											indicator.setState("tcp",Indicator.tentative);
+		  											break;
 		  default: 									indicator.setState("attached",Indicator.neutral);
 		}
 	}, null);
