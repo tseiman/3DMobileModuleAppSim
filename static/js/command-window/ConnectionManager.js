@@ -112,19 +112,25 @@ window.connectionManager = this;
 		if(that.pingSteps.includes(that.actualEventStep)) {
 			that.logger.info("execute Ping");
 			clearInterval(that.regularOperationInterval);
-			await that.runPing();
+			try {
+				await that.runPing();
+			} catch (e) {}
 			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 		}
 		if(that.gnssSteps.includes(that.actualEventStep)) {
 			that.logger.info("execute GNSS");
 			clearInterval(that.regularOperationInterval);
-			await that.runGNSS();
+			try {
+				await that.runGNSS();
+			} catch (e) {}
 			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 		}
 		if(that.mqttPosPushSteps.includes(that.actualEventStep)) {
 			that.logger.info("execute MQTT Position Push");
 			clearInterval(that.regularOperationInterval);
-			await that.runMqttPublish();
+			try {
+				await that.runMqttPublish();
+			} catch (e) {}
 			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 		}
 
