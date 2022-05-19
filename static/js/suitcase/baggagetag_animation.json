@@ -154,14 +154,10 @@
 			"cmd" : "DISPLAY_MESSAGE",
 			"message": "Setting Flightmode OFF",
 			"continue": true
-		},
-		{	"type": "command",
-			"cmd" : "FLIGHTMODE_OFF",
-			"continue": false
 		},		
 		{	"type": "command",
 			"cmd" : "DISPLAY_MESSAGE",
-			"message": "Starting cyclic position aquisition and reportig via MQTT",
+			"message": "Flight mode OFF + starting cyclic position aquisition and reportig via MQTT",
 			"continue": true
 		},
 		{	"type": "command",
