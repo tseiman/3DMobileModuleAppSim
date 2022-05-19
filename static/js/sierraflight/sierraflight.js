@@ -87,12 +87,20 @@ $(document).ready(function() {
                         clearTimeout(fakeSet);
                         $(that).attr('selected', true);
                         $(that).addClass('flight-selected');
+                        setTimeout(function () {
+                			$('.flight-selectable').each(function() {
+                        		$(this).removeAttr('selected');
+                        		$(this).removeClass('flight-selected');
+                			});
+                		},60000);
                     },
                     dataType: 'json',
                     contentType : 'application/json',
                     processData: false
                 });
 
+
+   
         });
 
         $('#btn-showhide-pw').click(function () {

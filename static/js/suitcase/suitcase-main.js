@@ -13,7 +13,7 @@ import { SceneLoader } 		from '/js/static/shared/SceneLoader.js';
 import { AnimationManager } from '/js/static/shared/AnimationManager.js';
 import { Progressbar } from '/js/static/shared/Progressbar.js';
 import { LuggageTagRenderer } from '/js/static/suitcase/LuggageTagRenderer.js';
-
+import { BroadcastCom } from '/js/static/shared/BroadcastCom.js';
 
 
 var camera;
@@ -23,6 +23,7 @@ var raycaster, mouse;
 var info = true;
 var autoAnimLock = false;
 
+var broadcastChannel = new BroadcastCom("sierrademo.suitcase", console);
 
 
 window.getCameraState = function() {
@@ -42,6 +43,8 @@ async function callAnimation(animationManager) {
 	if(autoAnimLock) return;
 	autoAnimLock = true;
 	var loadNextAnim = true;
+
+
 
 	while(loadNextAnim) {
 		
@@ -63,6 +66,10 @@ async function callAnimation(animationManager) {
 			await animationManager.animateItem(nextAnim);
 		} else if (nextAnim.type === 'texture') {
 			await animationManager.animateTexture(nextAnim.item,nextAnim.materialName,nextAnim.newTexture);
+		} else if (nextAnim.type === 'command') {
+			var msg = {'type': 'ctrlcmd', 'cmd': nextAnim.cmd};
+			if(nextAnim.message) msg.message = nextAnim.message;
+			broadcastChannel.sendData("sierrademo.command", msg);
 		} else {
 			console.error(`unknown item type to animate: "${nextAnim.type}" for item "${nextAnim.item}"`);
 		}
@@ -72,6 +79,34 @@ async function callAnimation(animationManager) {
 
  $( document ).ready(function() {
 
+
+	broadcastChannel.registerListener(
+		"listener.sierrademo.suitcase",
+		function(msg, self) {
+			console.log("Got a BC message: ", msg);
+			if((!msg.data.type) || (msg.data.type !== 'tagupdate')) return;
+
+			new LuggageTagRenderer({
+					'name'				: "luggageTag",
+					'barcodeString'		: msg.data.timest,
+					'flightWeight'		: (Math.random() * (20 - 5) + 5).toFixed(1),
+					'flightNo'			: msg.data.flightno,
+					'passengerName'		: msg.data.firstName + " " + msg.data.secondName,
+					'destinationShort'	: msg.data.destShort,
+					'destinationLong'	: msg.data.destination,
+					'destinationInfo1'	: msg.data.info1,
+					'destinationInfo2'	: msg.data.info2,
+					'backgroudImage'	: "/pic/static/suitcase/LuggageTag.svg",
+					'callback'			: function(url) {
+						animationManager.animateTexture("suitcase","TagField", url, function(url) {
+							URL.revokeObjectURL(url);
+						});	
+					}
+				});
+
+
+		}
+	);
 
 
 	const scene = new THREE.Scene();
@@ -105,7 +140,7 @@ async function callAnimation(animationManager) {
 
 				console.log('Found clickable:', intersects[0].object.name);
 				// animationManager.animateTexture("suitcase","TagField","/pic/static/suitcase/FlightTag_YYZ.png"	);
-
+				if(controls.enabled)return;
 
 				new LuggageTagRenderer({
 					'name'				: "luggageTag",

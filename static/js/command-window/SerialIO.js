@@ -92,11 +92,14 @@ class SerialIO {
 		this.config  =  config;
 		this.callback = new Map();
 		this.timeOHandler = null; 
+		this.ksleepEnable = false;
+		this.ksleepTimer = null;
+		this.ksleepTimerTime = 5000;
+		this.dtrState = true;
+
 
 		this.logger = logger;
 		this.encoder = new TextEncoder();
-//		this.encoder = new TextEncoderStream();
-		// var outputDone = encoder.readable.pipeTo(port.writable);
 		this.outputStream = this.encoder.writable;
 
 		this.modemAliveCB = modemAliveCB;
@@ -142,8 +145,10 @@ class SerialIO {
 	}
 
 	async open() {
+		var that = this;
 		this.logger.system(`opening UART with ${this.config.baudRate} Baud`);
 		await this.port.open({ baudRate: this.config.baudRate });
+		this.setDTR(true, that);
 		//this.writer = this.port.writable.getWriter();
 		window.serial = this;
 	}
@@ -180,7 +185,7 @@ class SerialIO {
 			      	}
 		      		// if(value !== '') 
       				that.logger.rx(`<<< ${value}`);
-      				console.log(SimpleMQTT.buf2hex(value));
+      			//	console.log(SimpleMQTT.buf2hex(value));
 		      		if(that.modemAliveCB) {
 								that.modemAliveCB();
 							}
@@ -209,6 +214,12 @@ class SerialIO {
 	}
 
 	async send(data) {
+		var that = this;
+		await this.setDTR(true, that);
+		if(this.ksleepEnable) {
+			clearTimeout(this.ksleepTimer);
+			this.ksleepTimer = null;
+		}
 
 		if(typeof data === 'string') {
 			data = new buffer.Buffer(data);
@@ -218,6 +229,11 @@ class SerialIO {
 		const writer = this.port.writable.getWriter();
 		await writer.write(data);
 		writer.releaseLock();
+
+		if(this.ksleepEnable) {
+			clearTimeout(this.ksleepTimer);
+			this.ksleepTimer = setTimeout(() => { that.setDTR(false,that); }, that.ksleepTimerTime);
+		}
 	}
 
 	registerCallback(name,expect,callback,callbackObj) {
@@ -255,7 +271,7 @@ class SerialIO {
 			return;
 		}
 		if(! this.callback.has(name)) {
-			console.error("Callback \"" + name + "\" is not defined, nothing removed !");
+			console.warn("Callback \"" + name + "\" is not defined, nothing removed !");
 			return;
 		}
 	//	console.log("removing callback \"" + name + "\"");
@@ -311,7 +327,28 @@ class SerialIO {
 	  }); 
 	}
 
+	async setDTR(enable,that) {
+		that.port.setSignals({ dataTerminalReady: enable });
+		if(that.dtrState !== enable) await new Promise(resolve => setTimeout(resolve, 100));
+		that.dtrState = enable;
 
+	}
+
+	enableSleepHandler(time) {
+		var that = this;
+		this.ksleepTimerTime = (time < 1000) ? 1000: time;
+		this.ksleepEnable = true;
+		this.ksleepTimer = setTimeout(() => { that.setDTR(false, that); }, this.ksleepTimerTime);
+
+	}
+	async disableSleepHandler() {
+		var that = this;
+		await this.setDTR(true, that);
+		this.ksleepEnable = false;
+		clearTimeout(this.ksleepTimer);
+		this.ksleepTimer = null;
+
+	}
 
 }
 export { SerialIO };

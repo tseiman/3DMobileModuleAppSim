@@ -4,12 +4,14 @@ import { URCHandler } from '/js/static/command-window/URCHandler.js';
 import { Indicator } from '/js/static/command-window/Indicator.js';
 // import { ATProcedures } from '/js/static/command-window/ATProcedures.js';
 import { ConnectionManager } from '/js/static/command-window/ConnectionManager.js';
+import { BroadcastCom } from '/js/static/shared/BroadcastCom.js';
 
 import { Configurator } from '/js/static/command-window/Configurator.js';
 
 
 var serialPresent = false;
 var modemTimeout;
+var logger = new Logger();
 
 jQuery.event.special.touchstart = {
         setup: function( _, ns, handle ){
@@ -18,9 +20,9 @@ jQuery.event.special.touchstart = {
 	};
 
 $(document).ready(function() {
-	var logger = new Logger();
+	
 	logger.system("Starting command window");
-	logger.setMaxLog(200);
+	logger.setMaxLog(800);
 
 	var configurator = new Configurator(logger);
 
@@ -48,6 +50,7 @@ $(document).ready(function() {
 		logger.warn("Web Worker missing - please use a browser with this feature");
 	}
 
+	var broadcastChannel = new BroadcastCom("sierrademo.command",console);
 
 	function modemAliveCB() {
 		clearTimeout(modemTimeout);
@@ -121,12 +124,49 @@ $(document).ready(function() {
 	urcHandler.registerURCHandler("TCP-Con", '^\\\+KTCP_IND: *[0-9],1', function(data) {
 		indicator.setState("tcp",Indicator.ok);
 	}, null);
-	urcHandler.registerURCHandler("TCP-Discon", '^\\\+KTCP_NOTIF: *[1-6],[0-1]?[0-9]', function(data) {
+	urcHandler.registerURCHandler("TCP-Discon", '^\\\+KTCP_NOTIF: *[1-6],(0|2|3|5|6)', function(data) {
 			indicator.setState("tcp",Indicator.tentative);
 	}, null);
+	urcHandler.registerURCHandler("TCP-Con2", '^\\\+KTCP_DATA.*', function(data) {
+		indicator.setState("tcp",Indicator.ok);
+	}, null);
 
-	var connectionManager = new ConnectionManager(serialIO, logger, configurator, urcHandler);
-	window.connectionManager;
+
+
+	var connectionManager = new ConnectionManager(serialIO, logger, configurator, urcHandler, broadcastChannel);
+
+	broadcastChannel.registerListener(
+		"listener.sierrademo.command",
+		function(msg, self) {
+			console.log("Got a BC message on ctrl side: ", msg);
+
+			switch(msg.data.cmd) {
+				case 'CONNECT_MQTT': 
+					connectionManager.runMqttConnect();
+					break;
+				case 'START_CYCLIC_OPERATION': 
+					connectionManager.setupRegularOperation();
+					break;
+				case 'STOP_CYCLIC_OPERATION': 
+					connectionManager.destroyRegularOperation();
+					break;
+				case 'DISPLAY_MESSAGE': 
+					logger.system(msg.data.message);
+					break;
+				case 'FLIGHTMODE_ON': 
+					connectionManager.enableFlightmode();
+					break;
+				case 'FLIGHTMODE_OFF': 
+					connectionManager.disableFlightmode();
+					break;
+				default: logger.warn("Unsupported operation: " + msg.data.cmd);
+			} 
+
+		}
+	);
+
+
+
 
 // command input command suggestion list loader and OnEnterKey handler
 	$.getJSON( "/js/static/command-window/at-commands.json", function( data ) {
@@ -188,7 +228,8 @@ $(document).ready(function() {
 	});
 
 // prevent just closing the window
-	window.onbeforeunload = function() {
+	window.onbeforeunload = async function() {
+		await connectionManager.close();
 		serialIO.close();
 		return "This will interrupt the script and will may bring the modem in an unknown state, UART ports will be closed";
 	}

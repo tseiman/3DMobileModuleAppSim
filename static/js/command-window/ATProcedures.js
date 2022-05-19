@@ -112,10 +112,23 @@ window.atProcedures = this;
 		res =  await this.serialIO.sendAndExpect('ATE0','.*OK.*',2000); // disable echo
 		res =  await this.serialIO.sendAndExpect('AT+CFUN=1','^(.C.?REG: (0|1),(5|1).*|.*OK.*)',12000); // go online
 		await this.serialIO.sleep(1000);
-		res = await this.serialIO.sendAndExpect( 'ATI','.*HL7802.*',2000); // see we're working wiht the right module
+		res = await this.serialIO.sendAndExpect( 'ATI','.*HL78(00|02|10|12).*',2000); // see we're working wiht the right module
+
+		this.deviceType = res.data.match(/.*HL78(00|02|10|12).*/)[1];
+		if(this.deviceType === '12' || this.deviceType === '10') {
+			this.logger.system("This is a new device: HL78" + this.deviceType);
+			this.deviceTypeConfNG = true;
+		} else {
+			this.logger.system("This is a legacy device: HL78" + this.deviceType);
+			this.deviceTypeConfNG = false;
+		}
+
 		res = await this.serialIO.sendAndExpect( 'AT+CMEE=1','.*OK.*',2000); // error reporting on
-		res = await this.serialIO.sendAndExpect( 'AT+CREG?','^.CREG: (0|1),(5|1).*',2000); // are we registered ?
-		res = await this.serialIO.sendAndExpect( 'AT+CGREG?','^.CGREG: (0|1),(5|1).*',2000);
+		res = await this.serialIO.sendAndExpect( 'AT+CREG=1','.*OK.*',2000); 
+		res = await this.serialIO.sendAndExpect( 'AT+CGREG=1','.*OK.*',2000); 
+		res = await this.serialIO.sendAndExpect( 'AT+CEREG=1','.*OK.*',2000); 
+		res = await this.serialIO.sendAndExpect( 'AT+CREG?','^.CREG: (0|1|2),(5|1).*',20000); // are we registered ?
+		res = await this.serialIO.sendAndExpect( 'AT+CGREG?','^.CGREG: (0|1|2),(5|1).*',2000);
 		for(var i = 1; i < 7; ++i) {
 			res = await this.serialIO.sendAndExpect( 'AT+KTCPCLOSE=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
 			res = await this.serialIO.sendAndExpect( 'AT+KTCPDEL=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
@@ -123,6 +136,8 @@ window.atProcedures = this;
 			res = await this.serialIO.sendAndExpect( 'AT+KHTTPDEL=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
 		}
 
+		this.serialIO.enableSleepHandler(2000);
+		res = await this.serialIO.sendAndExpect( 'AT+KSLEEP=0,2,10' ,'.*OK.*',2000);
 		this.afterAttach();
 	}
 
@@ -163,7 +178,13 @@ window.atProcedures = this;
 		var res = await this.serialIO.sendAndExpect( 'AT+KSSLCFG=0,3','.*OK.*',2000);
 	    res = await this.serialIO.sendAndExpect( 'AT+KSSLCFG=1,"edge"','.*OK.*',2000);
 	    res = await this.serialIO.sendAndExpect( 'AT+KSSLCFG=2,0','.*OK.*',2000);
-	    res = await this.serialIO.sendAndExpect( 'AT+KSSLCRYPTO=1,9,3,25456,12,4,1,0','.*OK.*',2000);
+	   
+
+	    if(this.deviceTypeConfNG) {
+			res = await this.serialIO.sendAndExpect( 'AT+KSSLCRYPTO=6,8,2,8192,4,4,1,0','.*OK.*',2000);
+	    } else {
+	    	res = await this.serialIO.sendAndExpect( 'AT+KSSLCRYPTO=1,9,3,25456,12,4,1,0','.*OK.*',2000);
+	    }
 
 		var certData = this.config.getValue("google-certificate"); //.replace(/\n/g, "\r");
 
@@ -171,7 +192,7 @@ window.atProcedures = this;
 	    res = await this.serialIO.sendAndExpect( certData ,'.*OK.*',2000,{noNewLine: true});
 
 	}
-
+/*
 	async setupForHTTP() {
 
 	
@@ -193,7 +214,7 @@ window.atProcedures = this;
 		res = await this.serialIO.sendAndExpect( 'AT+KCNXPROFILE=1','.*OK.*',2000);
 		res = await this.serialIO.sendAndExpect( 'AT+KHTTPCFG=1,"https://suitcase-api.cloud.tseiman.de",443,2','.*KHTTP_IND: *[0-9]+,1',10000);
 
-		this.httpSessionID = parseInt(res.data.match(/.*KHTTP_IND: *([0-9]+),.*/)[1]);
+		this.httpSessionID = parseInt(res.data.match(/.*KHTTP_IND: *([0-9]+),.* /)[1]);
 
 		this.logger.system("extracted HTTPS session ID: " + this.httpSessionID);
 		res = await this.serialIO.sendAndExpect( 'AT+KHTTPGET=' + this.httpSessionID + ',"/suitcase?id=' + this.config.getValue("flightbooking-id") + '"','.*KHTTP_IND: *' + this.httpSessionID + ',.*',2000);
@@ -202,14 +223,19 @@ console.log(res);
 		res = await this.serialIO.sendAndExpect( 'AT+KHTTPCLOSE=' + this.httpSessionID ,'(.*OK.*|.*CME ERROR:.*)',2000);
 		res = await this.serialIO.sendAndExpect( 'AT+KHTTPDEL=' + this.httpSessionID ,'(.*OK.*|.*CME ERROR:.*)',2000);
 	}
+	*/
 
 	async connectTCP() {
 		var res;
-		if(this.config.getValue('use-cert') === 'true') {
-			res = await this.serialIO.sendAndExpect( 'AT+KTCPCFG=1,3,"' + this.config.getValue('google-mqtt-server') + '",' + this.config.getValue('google-mqtt-server-port') + ',,,,,1','.*KTCPCFG: *[0-9]+.*',12000);
-		} else {
-			res = await this.serialIO.sendAndExpect( 'AT+KTCPCFG=1,0,"' + this.config.getValue('google-mqtt-server') + '",' + this.config.getValue('google-mqtt-server-port') + ',,,,,1','.*KTCPCFG: *[0-9]+.*',12000);
-		}
+
+		var cryptoConfig = 1; 
+		if(this.deviceTypeConfNG) cryptoConfig = 6; 
+
+		var useCert = 0;
+		if(this.config.getValue('use-cert') === 'true')	useCert = 3;
+
+		res = await this.serialIO.sendAndExpect( 'AT+KTCPCFG=1,' + useCert +',"' + this.config.getValue('google-mqtt-server') + '",' + this.config.getValue('google-mqtt-server-port') + ',,,,,'+ cryptoConfig,'.*KTCPCFG: *[0-9]+.*',12000);
+
 
 		this.tcpSessionID = parseInt(res.data.match(/.*KTCPCFG: *([0-9]+).*/)[1]);
 		this.logger.system("extracted TCP session ID: " + this.tcpSessionID);
@@ -330,12 +356,14 @@ console.log(res);
 	}
 
 	async disconnectTCP() {
-   		await this.serialIO.sendAndExpect('AT+KTCPCLOSE=' + this.tcpSessionID,'.*',2000).catch((err) => { this.logger.warn(err);});
-    	await this.serialIO.sendAndExpect('AT+KTCPDEL=' + this.tcpSessionID ,'.*',2000).catch((err) => { this.logger.warn(err);});
+   		await this.serialIO.sendAndExpect('AT+KTCPCLOSE=' + this.tcpSessionID,'.*',10000);
+    	await this.serialIO.sendAndExpect('AT+KTCPDEL=' + this.tcpSessionID ,'.*',6000);
 	}
 	async cleanup() {
-
+		this.serialIO.disableSleepHandler();
+    	await this.serialIO.sendAndExpect( 'AT+KSLEEP=2','.*OK.*',2000).catch((err) => { this.logger.warn(err);});
     	await this.serialIO.sendAndExpect( 'ATE1','.*',2000).catch((err) => { this.logger.warn(err);});
+
 	}
 
 	async gnssPoll() {
@@ -349,8 +377,17 @@ console.log(res);
 		var gnssData = GNSSHelper.hl78GnssToJSON(res.recordedLines);
 
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*OK.*',2000);
-		res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','.*OK.*',12000);
+		res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',30000);
 		return gnssData;
+	}
+
+	async enableFlightmode() {
+		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',10000);
+	}
+
+	async disableFlightmode() {
+		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1,1','^.CE?REG: *1.*',30000);
+		await this.init();
 	}
 
 
