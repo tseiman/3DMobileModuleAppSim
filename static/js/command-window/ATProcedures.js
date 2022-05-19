@@ -127,11 +127,11 @@ window.atProcedures = this;
 		res = await this.serialIO.sendAndExpect( 'AT+CEREG=1','.*OK.*',2000); 
 		res = await this.serialIO.sendAndExpect( 'AT+CREG?','^.CREG: (0|1|2),(5|1).*',20000); // are we registered ?
 		res = await this.serialIO.sendAndExpect( 'AT+CGREG?','^.CGREG: (0|1|2),(5|1).*',2000);
+		res = await this.serialIO.sendAndExpect( 'AT+KSREP=1','.*OK.*',2000); 
+
 		for(var i = 1; i < 7; ++i) {
 			res = await this.serialIO.sendAndExpect( 'AT+KTCPCLOSE=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
 			res = await this.serialIO.sendAndExpect( 'AT+KTCPDEL=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
-			res = await this.serialIO.sendAndExpect( 'AT+KHTTPCLOSE=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
-			res = await this.serialIO.sendAndExpect( 'AT+KHTTPDEL=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
 		}
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*',2000); 
 		this.serialIO.enableSleepHandler(2000);
@@ -324,8 +324,8 @@ window.atProcedures = this;
 
 		var gnssData = {};
 
-		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
-		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3',180000);
+	//	var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
+	var	res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3',180000);
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSLOC?','.*OK.*',5000);
 				console.log("3asdasdasd");
 
