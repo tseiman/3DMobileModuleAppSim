@@ -106,31 +106,31 @@ window.connectionManager = this;
 		if(!that.regularOperationRunning) {
 			clearInterval(that.regularOperationInterval);
 			that.regularOperationInterval = null;
-			that.logger.norm("Stopping cyclic operation");
+			that.logger.system("Stopped cyclic operation");
 			return;
 		}
 		if(that.pingSteps.includes(that.actualEventStep)) {
 			that.logger.info("execute Ping");
 			clearInterval(that.regularOperationInterval);
-			try {
+		//	try {
 				await that.runPing();
-			} catch (e) {}
+		//	} catch (e) {}
 			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 		}
 		if(that.gnssSteps.includes(that.actualEventStep)) {
 			that.logger.info("execute GNSS");
 			clearInterval(that.regularOperationInterval);
-			try {
+		//	try {
 				await that.runGNSS();
-			} catch (e) {}
+		//	} catch (e) {}
 			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 		}
 		if(that.mqttPosPushSteps.includes(that.actualEventStep)) {
 			that.logger.info("execute MQTT Position Push");
 			clearInterval(that.regularOperationInterval);
-			try {
+		//	try {
 				await that.runMqttPublish();
-			} catch (e) {}
+		//	} catch (e) {}
 			that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 		}
 
@@ -153,8 +153,8 @@ window.connectionManager = this;
 		this.regularOperationRunning = true;
 
 		if(this.regularOperationInterval !== null) {
-			console.warn("regular operation already running");
-			return;
+			clearInterval(that.regularOperationInterval);
+			that.regularOperationInterval = null;
 		}
 		this.regularOperationInterval = setInterval(this.regularOperation, this.eventCycleStepDelay, this);
 
@@ -203,6 +203,10 @@ window.connectionManager = this;
 
 
 	async runMqttPublish() {
+		if(this.lastGnssData === null) {
+			this.logger.system("Last GNSS was empty skipping");
+			return;
+		}
 		var mqttData = {
 			time 	: parseInt(Date.now() / 1000),
 			id 		: this.config.getValue('findmysuitcase-id'), 
@@ -290,8 +294,9 @@ window.connectionManager = this;
 	async enableFlightmode() {
 		if(this.regularOperationRunning) await this.destroyRegularOperation();
 
+		if(this.config.getValue('fake-flightmode') && this.config.getValue('fake-flightmode') === 'true') return; 
 		if(this.connectionState === CONNECTION_STATES.MQTTCONNECTED) {
-			await this.atProcedures.disconnectMQTT();
+	//		await this.atProcedures.disconnectMQTT();
 			try {
 				await this.atProcedures.disconnectTCP();
 			} catch(e) {}
@@ -299,6 +304,7 @@ window.connectionManager = this;
 		await this.atProcedures.enableFlightmode();
 	}
 	async disableFlightmode() {
+		if(this.config.getValue('fake-flightmode') && this.config.getValue('fake-flightmode') === 'true') return; 
 		await this.atProcedures.disableFlightmode();
 	}
 	async init() {

@@ -135,7 +135,7 @@ window.atProcedures = this;
 			res = await this.serialIO.sendAndExpect( 'AT+KHTTPCLOSE=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
 			res = await this.serialIO.sendAndExpect( 'AT+KHTTPDEL=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
 		}
-
+		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*',2000); 
 		this.serialIO.enableSleepHandler(2000);
 		res = await this.serialIO.sendAndExpect( 'AT+KSLEEP=0,2,10' ,'.*OK.*',2000);
 		this.afterAttach();
@@ -358,6 +358,9 @@ console.log(res);
 	async disconnectTCP() {
    		await this.serialIO.sendAndExpect('AT+KTCPCLOSE=' + this.tcpSessionID,'.*',10000);
     	await this.serialIO.sendAndExpect('AT+KTCPDEL=' + this.tcpSessionID ,'.*',6000);
+    	await this.serialIO.sendAndExpect('AT+KCNXDOWN=1,1','.*OK.*',6000);
+    	
+
 	}
 	async cleanup() {
 		this.serialIO.disableSleepHandler();
@@ -371,10 +374,15 @@ console.log(res);
 		var gnssData = {};
 
 		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
+		console.log("asdasdasd");
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3',180000);
+		console.log("2asdasdasd");
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSLOC?','.*OK.*',5000);
-		
+				console.log("3asdasdasd");
+
 		var gnssData = GNSSHelper.hl78GnssToJSON(res.recordedLines);
+				console.log("4asdasdasd", gnssData);
+
 
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*OK.*',2000);
 		res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',30000);
@@ -386,8 +394,9 @@ console.log(res);
 	}
 
 	async disableFlightmode() {
-		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1,1','^.CE?REG: *1.*',30000);
-		await this.init();
+//		await this.init();
+		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','.*OK.*',2000);
+//		await new Promise(resolve => setTimeout(resolve, 5000));
 	}
 
 

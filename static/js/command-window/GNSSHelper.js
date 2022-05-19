@@ -11,11 +11,14 @@ class GNSSHelper {
 		});
 
 		var lat = gnssLocStr.match(/.*Latitude: *(.*)\n/)[1];
+		if(!lat || lat === "") return null;
 		lat = lat.match(/^ *([0-9]+) *Deg *([0-9]+) *Min *([.0-9]+) *Sec *(N|S)/);
 		var decLat = parseInt(lat[1]) + (parseInt(lat[2]) / 60) + (parseFloat(lat[3]) / 3600);
 		if(lat[4] === 'S') decLat = decLat * (-1);
 
 		var lon = gnssLocStr.match(/.*Longitude: *(.*)\n/)[1];
+		if(!lon || lon === "") return null;
+
 		lon = lon.match(/^ *([0-9]+) *Deg *([0-9]+) *Min *([.0-9]+) *Sec *(W|E)/);
 		var decLon = parseInt(lon[1]) + (parseInt(lon[2]) / 60) + (parseFloat(lon[3]) / 3600);
 		if(lon[4] === 'W') decLon = decLon * (-1);

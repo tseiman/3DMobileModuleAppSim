@@ -155,6 +155,11 @@ $(document).ready(function() {
 					break;
 				case 'FLIGHTMODE_ON': 
 					connectionManager.enableFlightmode();
+					if(configurator.getValue('fake-flightmode') && configurator.getValue('fake-flightmode') === 'true') { 
+						indicator.setState("attached",Indicator.tentative);
+						indicator.setState("tcp",Indicator.tentative);
+						indicator.setState("gnss",Indicator.tentative);
+					}
 					break;
 				case 'FLIGHTMODE_OFF': 
 					connectionManager.disableFlightmode();
