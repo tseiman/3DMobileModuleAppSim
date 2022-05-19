@@ -100,7 +100,7 @@ window.connectionManager = this;
 	//	that.logger.info("execute regular operations - START");
 	//	console.log(that.actualEventStep, that.pingSteps);
 		if(that.connectionState === CONNECTION_STATES.DETACHED) {
-			that.logger.norm("cant execute regular operation - SKIPPING");
+			that.logger.info("cant execute regular operation - SKIPPING");
 		}
 
 		if(!that.regularOperationRunning) {
