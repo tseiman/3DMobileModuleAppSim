@@ -97,13 +97,14 @@ module.exports = {
                 }];
 
             bigquery.dataset(pubsubConf.datasetId).table(pubsubConf.tableId).insert(row);
-        };
+        } catch (e) { console.error(e); }
 
-        subscription.on(`message`, messageHandler);
+    };
 
-        console.log(`Started PubSub Service for subscription: ${pubsubConf.subscriptionName}, topicName: ${pubsubConf.topicName} to BigQuery datasetId: ${pubsubConf.datasetId}, tableId: ${pubsubConf.tableId}`);
+    subscription.on(`message`, messageHandler);
+
+    console.log(`Started PubSub Service for subscription: ${pubsubConf.subscriptionName}, topicName: ${pubsubConf.topicName} to BigQuery datasetId: ${pubsubConf.datasetId}, tableId: ${pubsubConf.tableId}`);
         
-    } catch (e) { console.error(e); }
 
   }
 };
