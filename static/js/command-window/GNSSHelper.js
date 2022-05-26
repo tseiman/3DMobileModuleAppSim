@@ -37,5 +37,26 @@ class GNSSHelper {
 		return gnssData;
 
 	}
+
+
+	static getDefaultGNSSObj() {
+		var gnssData = {};
+		
+		var now = moment(new Date() - 2*3600000);
+		var formatted = now.format('YYYY MM DD HH:mm:ss');
+
+		gnssData.lat 		= "49.283719";		
+		gnssData.lon 		= "-123.120994";
+		gnssData.gpstime 	= formatted;
+		gnssData.fixtype 	= "3D";
+		gnssData.HEPE 		= "0.09 m";
+		gnssData.Altitude 	= "10 m";
+		gnssData.AltUnc 	= "0.0 m";
+		gnssData.Direction 	= "";
+		gnssData.HorSpeed 	= "";
+		gnssData.VerSpeed 	= "";
+
+		return gnssData;
+	}
 }
 export { GNSSHelper };

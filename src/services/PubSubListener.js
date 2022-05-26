@@ -45,63 +45,65 @@ module.exports = {
         var data = JSON.parse(message.data);
         message.ack();
 
-     
-        if(!data.data) {
-            console.error("data record missing: "+ JSON.stringify(data));
-            return;
-        }
-        if(!data.time) {
-            console.error("time record missing: "+ JSON.stringify(data));
-            return;
-        }
-        if(!data.id) {
-            console.error("id record missing: "+ JSON.stringify(data));
-            return;
-        }
-        if(!data.data.gpstime) {
-            console.error("gpstime record missing: "+ JSON.stringify(data));
-            return;
-        }
+        try {
+            if(!data.data) {
+                console.error("data record missing: "+ JSON.stringify(data));
+                return;
+            }
+            if(!data.time) {
+                console.error("time record missing: "+ JSON.stringify(data));
+                return;
+            }
+            if(!data.id) {
+                console.error("id record missing: "+ JSON.stringify(data));
+                return;
+            }
+            if(!data.data.gpstime) {
+                console.error("gpstime record missing: "+ JSON.stringify(data));
+                return;
+            }
 
-        if(!data.data.lat)              data.data.lat           = "";
-        if(!data.data.lon)              data.data.lon           = "";
-        if(!data.data.fixtype)          data.data.fixtype       = "";
-        if(!data.data.HEPE)             data.data.HEPE          = "";
-        if(!data.data.Altitude)         data.data.Altitude      = "";
-        if(!data.data.AltUnc)           data.data.AltUnc        = "";
-        if(!data.data.Direction)        data.data.Direction     = "";
-        if(!data.data.HorSpeed)         data.data.HorSpeed      = "";
-        if(!data.data.VerSpeed)         data.data.VerSpeed      = "";
+            if(!data.data.lat)              data.data.lat           = "";
+            if(!data.data.lon)              data.data.lon           = "";
+            if(!data.data.fixtype)          data.data.fixtype       = "";
+            if(!data.data.HEPE)             data.data.HEPE          = "";
+            if(!data.data.Altitude)         data.data.Altitude      = "";
+            if(!data.data.AltUnc)           data.data.AltUnc        = "";
+            if(!data.data.Direction)        data.data.Direction     = "";
+            if(!data.data.HorSpeed)         data.data.HorSpeed      = "";
+            if(!data.data.VerSpeed)         data.data.VerSpeed      = "";
 
+            
+            var gpsTimeTokenized = data.data.gpstime.match(/^ *([0-9]{4}) *(1?[0-9]) *([1-3]?[0-9]) *([0-2]?[0-9]):([0-5][0-9]):([0-5][0-9])/);
+
+            for(var i = 2; i < 7; ++i) {
+                if(gpsTimeTokenized[i].length < 2 ) gpsTimeTokenized[i] = '0' + gpsTimeTokenized[i];
+            }
+            var strGpsTime = `${gpsTimeTokenized[1]}-${gpsTimeTokenized[2]}-${gpsTimeTokenized[3]} ${gpsTimeTokenized[4]}:${gpsTimeTokenized[5]}:${gpsTimeTokenized[6]}`
+
+            const row = [{
+                    'time'          : data.time,
+                    'ownerid'       : data.id,
+                    'lat'           : parseFloat(data.data.lat),
+                    'lon'           : parseFloat(data.data.lon),
+                    'gpstime'       : strGpsTime,
+                    'fixtype'       : data.data.fixtype,
+                    'HEPE'          : parseFloat(data.data.HEPE),
+                    'Altitude'      : parseFloat(data.data.Altitude),
+                    'AltUnc'        : parseFloat(data.data.AltUnc),
+                    'Direction'     : parseInt(data.data.Direction),
+                    'HorSpeed'      : parseInt(data.data.HorSpeed),
+                    'VerSpeed'      : parseInt(data.data.VerSpeed)
+                }];
+
+            bigquery.dataset(pubsubConf.datasetId).table(pubsubConf.tableId).insert(row);
+        };
+
+        subscription.on(`message`, messageHandler);
+
+        console.log(`Started PubSub Service for subscription: ${pubsubConf.subscriptionName}, topicName: ${pubsubConf.topicName} to BigQuery datasetId: ${pubsubConf.datasetId}, tableId: ${pubsubConf.tableId}`);
         
-        var gpsTimeTokenized = data.data.gpstime.match(/^ *([0-9]{4}) *(1?[0-9]) *([1-3]?[0-9]) *([0-2]?[0-9]):([0-5][0-9]):([0-5][0-9])/);
+    } catch (e) { console.error(e); }
 
-        for(var i = 2; i < 7; ++i) {
-            if(gpsTimeTokenized[i].length < 2 ) gpsTimeTokenized[i] = '0' + gpsTimeTokenized[i];
-        }
-        var strGpsTime = `${gpsTimeTokenized[1]}-${gpsTimeTokenized[2]}-${gpsTimeTokenized[3]} ${gpsTimeTokenized[4]}:${gpsTimeTokenized[5]}:${gpsTimeTokenized[6]}`
-
-        const row = [{
-                'time'          : data.time,
-                'ownerid'       : data.id,
-                'lat'           : parseFloat(data.data.lat),
-                'lon'           : parseFloat(data.data.lon),
-                'gpstime'       : strGpsTime,
-                'fixtype'       : data.data.fixtype,
-                'HEPE'          : parseFloat(data.data.HEPE),
-                'Altitude'      : parseFloat(data.data.Altitude),
-                'AltUnc'        : parseFloat(data.data.AltUnc),
-                'Direction'     : parseInt(data.data.Direction),
-                'HorSpeed'      : parseInt(data.data.HorSpeed),
-                'VerSpeed'      : parseInt(data.data.VerSpeed)
-            }];
-
-        bigquery.dataset(pubsubConf.datasetId).table(pubsubConf.tableId).insert(row);
-    };
-
-    subscription.on(`message`, messageHandler);
-
-    console.log(`Started PubSub Service for subscription: ${pubsubConf.subscriptionName}, topicName: ${pubsubConf.topicName} to BigQuery datasetId: ${pubsubConf.datasetId}, tableId: ${pubsubConf.tableId}`);
-    
   }
 };

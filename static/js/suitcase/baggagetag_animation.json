@@ -88,20 +88,82 @@
 	"animation": [
 		{	"type": "command",
 			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Setting GNSS SIM to Munich Area",
+			"continue": true
+		},
+		{	"type": "urlcall",
+			"url" : "http://hermes.tsei.mdn:8080/stop",
+			"continue": true
+		},
+		{	"type": "sleep",
+			"duration" : 2000,
+			"continue": true
+		},
+		{	"type": "urlcall",
+			"url" : "http://hermes.tsei.mdn:8080/start?lat=48.235189&lon=11.066293&alt=536",
+			"continue": true
+		},
+		{	"type": "sleep",
+			"duration" : 2000,
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Start Cyclic position aqusition and position reporting, connect to MQTT",
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "START_CYCLIC_OPERATION",
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Wait now for results after cyclic check: wait for [space]",
+			"continue": false
+		},
+		{	"type": "urlcall",
+			"url" : "http://hermes.tsei.mdn:8080/stop",
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
 			"message": "Stopping Cyclic position aqusition and position reporting",
 			"continue": true
 		},
 		{	"type": "command",
 			"cmd" : "STOP_CYCLIC_OPERATION",
-			"continue": false
-		}
-		,{	"type": "command",
-			"cmd" : "DISPLAY_MESSAGE",
-			"message": "connect to MQTT",
 			"continue": true
 		},
 		{	"type": "command",
-			"cmd" : "CONNECT_MQTT",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Wait for GNSS Simulator...",
+			"continue": true
+		},
+		{	"type": "sleep",
+			"duration" : 5000,
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "...OK",
+			"continue": true
+		},
+		{	"type": "sleep",
+			"duration" : 1000,
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Setting GNSS SIM to Vancouver",
+			"continue": true
+		},
+		{	"type": "urlcall",
+			"url" : "http://hermes.tsei.mdn:8080/start?lat=49.283719&lon=-123.120994&alt=10",
+			"continue": true
+		},		
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Wait to get luggage tag updated - DemoFlightBooking",
 			"continue": true
 		},
 		{	"item": "camera",
@@ -110,6 +172,11 @@
 			"rotation"	: {"x": -0.23902381090101115, "y": -0.03637480578060653, "z": -0.21081324118020318},
 			"target"	: {"x": 0, "y": 0, "z": 0},
 			"continue": false
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Moving now to destination View",
+			"continue": true
 		},
 		{	"item": "camera",
 			"type": "camera",
@@ -122,7 +189,17 @@
 			"position"	: {"x": -5.419219065876996, "y": 5.48813121716363, "z": 0.6214293065725759},
 			"rotation"	: {"x": -1.458045069731102, "y": -0.7758957277001483, "z": -1.410506236732835},
 			"target"	: {"x": 0, "y": 0, "z": 0},
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Wait for [space] to continue",
 			"continue": false
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Showing planned destination",
+			"continue": true
 		},
 		{	"item": "spline1",
 			"type": "mesh",
@@ -131,12 +208,17 @@
 		},		
 		{	"type": "command",
 			"cmd" : "DISPLAY_MESSAGE",
-			"message": "Setting Flightmode ON",
+			"message": "Setting Flightmode ON - [space] to proceed",
 			"continue": true
 		},
 		{	"type": "command",
 			"cmd" : "FLIGHTMODE_ON",
 			"continue": false
+		},		
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Animate Suitcase to destination",
+			"continue": true
 		},
 		{	"item": "suitcase",
 			"type": "mesh",
@@ -148,25 +230,48 @@
 			"type": "mesh",
 			"position"	: {"x": -1.48, "y": 4.15, "z": -0.1},
 			"rotation"	: {"x": -0.3,"y": -2.5, "z": -0.4},
+			"continue": true
+		},		
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "disable Flight mode - wait for [space] to proceed",
 			"continue": false
-		},		
-		{	"type": "command",
-			"cmd" : "DISPLAY_MESSAGE",
-			"message": "Setting Flightmode OFF",
-			"continue": true
-		},		
-		{	"type": "command",
-			"cmd" : "DISPLAY_MESSAGE",
-			"message": "Flight mode OFF + starting cyclic position aquisition and reportig via MQTT",
-			"continue": true
 		},
 		{	"type": "command",
 			"cmd" : "FLIGHTMODE_OFF",
+			"continue": true
+		},		
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "enable cyclic operation - wait for [space] to proceed",
 			"continue": false
+		},		
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Starting cyclic position aquisition and reportig via MQTT",
+			"continue": true
+		},		
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Wait to get some useful results from GNSS",
+			"continue": true
 		},
 		{	"type": "command",
 			"cmd" : "START_CYCLIC_OPERATION",
 			"continue": false
+		},
+		{	"type": "command",
+			"cmd" : "DISPLAY_MESSAGE",
+			"message": "Stopping Cyclic position aqusition and position reporting, connect to MQTT",
+			"continue": true
+		},
+		{	"type": "urlcall",
+			"url" : "http://hermes.tsei.mdn:8080/stop",
+			"continue": true
+		},
+		{	"type": "command",
+			"cmd" : "STOP_CYCLIC_OPERATION",
+			"continue": true
 		},
 		{	"item": "spline1",
 			"type": "mesh",
@@ -195,15 +300,6 @@
 			"position"	: {"x": 0, "y": 0, "z": 10},
 			"rotation"	: {"x": 0, "y": 0, "z": 0},
 			"target"	: {"x": 0, "y": 0, "z": 0}
-		},
-		{	"type": "command",
-			"cmd" : "DISPLAY_MESSAGE",
-			"message": "Stopping Cyclic position aqusition and position reporting, connect to MQTT",
-			"continue": true
-		},
-		{	"type": "command",
-			"cmd" : "STOP_CYCLIC_OPERATION",
-			"continue": true
 		},
 		{	"type": "command",
 			"cmd" : "CONNECT_MQTT",

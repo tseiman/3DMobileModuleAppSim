@@ -325,11 +325,15 @@ window.atProcedures = this;
 		var gnssData = {};
 
 		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
-		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3',180000);
-		res = await this.serialIO.sendAndExpect( 'AT+GNSSLOC?','.*OK.*',5000);
+		var gnssData = GNSSHelper.getDefaultGNSSObj();
 
-		var gnssData = GNSSHelper.hl78GnssToJSON(res.recordedLines);
 
+		try {
+			res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3', parseInt(this.config.getValue('gnssstart-timeout')));
+			res = await this.serialIO.sendAndExpect( 'AT+GNSSLOC?','.*OK.*',5000);
+			var gnssData = GNSSHelper.hl78GnssToJSON(res.recordedLines);
+		} catch (e) {}
+		
 
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*OK.*',2000);
 		res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',30000);
@@ -337,12 +341,16 @@ window.atProcedures = this;
 	}
 
 	async wakeupDevice() {
+		var repeat = 0;
 		while (true) {
 			try {
 				var res =  await this.serialIO.sendAndExpect('AT','.*OK.*',1000);
 				break;
 			} catch(e) {}
+			if(repeat> 100) throw "Modem not waking up";
+			++repeat;
 		}
+		var res =  await this.serialIO.sendAndExpect('ATE0','.*OK.*',2000);
 	}
 
 	async enableFlightmode() {

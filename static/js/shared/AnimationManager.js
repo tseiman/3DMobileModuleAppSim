@@ -21,6 +21,10 @@ class AnimationManager {
 		this.animationSequence = animation;
 	}
 
+	get animation() {
+		return this.animationSequence;
+	}
+
 	getNextAnimation() {
 		if(!this.animationSequence[this.animationStep]) { return false; }
 		var result = this.animationSequence[this.animationStep];

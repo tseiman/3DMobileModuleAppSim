@@ -31,6 +31,7 @@ module.exports = {
     { 'name': 'tree jsm'        , 'url': '/js/three/jsm/'         , 'folder' : '../../node_modules/three/examples/jsm'},
     { 'name': 'jquery'          , 'url': '/js/jquery/'            , 'folder' : '../../node_modules/jquery/dist'},
     { 'name': 'jsbarcode'       , 'url': '/js/jsbarcode/'         , 'folder' : '../../node_modules/jsbarcode/dist'},
+    { 'name': 'jsoneditor'      , 'url': '/jsoneditor/'           , 'folder' : '../../node_modules/jsoneditor/dist'},
     { 'name': 'semantic'        , 'url': '/semantic/static/'      , 'folder' : '../../static/semantic/dist'}, 
     { 'name': 'semantic-dist'   , 'url': '/dist/'                 , 'folder' : '../../static/semantic/dist'},
     { 'name': 'moment'          , 'url': '/js/moment/'            , 'folder' : '../../node_modules/moment/min'},

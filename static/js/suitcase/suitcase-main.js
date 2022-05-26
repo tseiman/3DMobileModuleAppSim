@@ -16,6 +16,7 @@ import { LuggageTagRenderer } from '/js/static/suitcase/LuggageTagRenderer.js';
 import { BroadcastCom } from '/js/static/shared/BroadcastCom.js';
 
 
+
 var camera;
 var controls;
 
@@ -66,6 +67,23 @@ async function callAnimation(animationManager) {
 			await animationManager.animateItem(nextAnim);
 		} else if (nextAnim.type === 'texture') {
 			await animationManager.animateTexture(nextAnim.item,nextAnim.materialName,nextAnim.newTexture);
+		} else if (nextAnim.type === 'urlcall') {
+
+			try {
+				const response = await fetch(
+					nextAnim.url,
+					{
+						method: 'GET',
+						mode: 'no-cors'
+					}
+				);
+
+				console.log(response);
+			} catch (e) {
+				console.warn(e);
+			}
+		} else if (nextAnim.type === 'sleep') {	
+			await new Promise(r => setTimeout(r, nextAnim.duration));
 		} else if (nextAnim.type === 'command') {
 			var msg = {'type': 'ctrlcmd', 'cmd': nextAnim.cmd};
 			if(nextAnim.message) msg.message = nextAnim.message;
@@ -109,7 +127,7 @@ async function callAnimation(animationManager) {
 	);
 
 
-	const scene = new THREE.Scene();
+	var scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight , 0.001, 1000 );
 
 	var mainCanvas = document.getElementById("mainCanvas")
@@ -212,19 +230,6 @@ window.controls = controls;
 
 
 
-	$.getJSON( "/js/static/suitcase/baggagetag_animation.json", async function( data ) {
-		var progressbar = new Progressbar('#progressbar');
-		window.progressbar = progressbar;
-		var loadStepsPercent = 100 / data.load.length;
-		var loadedPercent = 0;
-		data.load.forEach(function(item) {
-			var newItem = sceneLoader.load(item);
-			loadedPercent += loadStepsPercent;
-			progressbar.set(loadedPercent);
-		});
-		animationManager.animation = data.animation;
-		setTimeout(function() {progressbar.destroy();},500);
-	});
 
    	 $(document).on('keydown', function(e){ //console.log(e.shiftKey)} );
 
@@ -249,6 +254,10 @@ window.controls = controls;
    	 $(document).on('keyup', function(e){ //console.log(e.shiftKey)} );
 		if(! e.shiftKey) { 
     		controls.enabled = true;
+    	}
+
+    	if(e.which === 32) { 
+    		e.preventDefault();
     	}
    	 }); // on keyup
 	 camera.position.z = 10;
@@ -280,9 +289,81 @@ window.controls = controls;
 	if(noinfo) info = false;
 
 
+	const container = document.getElementById("jsoneditor");
+    const options = {search: true, mode: 'code', modes: ['code', 'form'] };
+    const editor = new JSONEditor(container, options);
+
+
+	var localScript = window.localStorage.getItem("suitcase-script");
+
+	if (localScript && (localScript !== null) && (localScript !== "") && (localScript !== "{}") ) {
+			var progressbar = new Progressbar('#progressbar');
+			var animationData = JSON.parse(localScript);
+			animationManager.animation = animationData.animation;
+		    editor.set(animationData)
+			window.progressbar = progressbar;
+			var loadStepsPercent = 100 / animationData.load.length;
+			var loadedPercent = 0;
+		    animationData.load.forEach(function(item) {
+				var newItem = sceneLoader.load(item);
+				loadedPercent += loadStepsPercent;
+				progressbar.set(loadedPercent);
+			});
+			setTimeout(function() {progressbar.destroy();},500);
+	} else {
+
+		$.getJSON( "/js/static/suitcase/baggagetag_animation.json", async function( data ) {
+			var progressbar = new Progressbar('#progressbar');
+			window.progressbar = progressbar;
+			var loadStepsPercent = 100 / data.load.length;
+			var loadedPercent = 0;
+			data.load.forEach(function(item) {
+				var newItem = sceneLoader.load(item);
+				loadedPercent += loadStepsPercent;
+				progressbar.set(loadedPercent);
+			});
+			animationManager.animation = data.animation;
+		    editor.set(data)
+			setTimeout(function() {progressbar.destroy();},500);
+		});
+	 }
+
+
+
 // open the modem - app window
 	$( "#btn-ctrl-window" ).click(function() {
 		window.open('/app/suitcase-demo-control','control-window','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,fullscreen=yes');
+	});
+
+	$( "#btn-code-window" ).click(function() {
+		$('#script-code-modal').modal('show');
+	});
+
+
+	$( "#btn-script-ok" ).click(function() {
+
+		scene = new THREE.Scene();
+		sceneLoader = new SceneLoader(scene,itemLoadedCallback);
+
+		var progressbar = new Progressbar('#progressbar');
+		var animationData = editor.get();
+
+		window.localStorage.setItem("suitcase-script", JSON.stringify(animationData));
+
+		animationManager.animation = animationData.animation;
+
+		window.progressbar = progressbar;
+
+		var loadStepsPercent = 100 / animationData.load.length;
+		var loadedPercent = 0;
+	    animationData.load.forEach(function(item) {
+			var newItem = sceneLoader.load(item);
+			loadedPercent += loadStepsPercent;
+			progressbar.set(loadedPercent);
+		});
+		setTimeout(function() {progressbar.destroy();},500);
+
+
 	});
 
 });

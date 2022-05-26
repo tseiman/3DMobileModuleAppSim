@@ -24,6 +24,7 @@ $(document).ready(function() {
 	logger.system("Starting command window");
 	logger.setMaxLog(800);
 
+
 	var configurator = new Configurator(logger);
 
 // setup the indicator on the screen
@@ -37,6 +38,11 @@ $(document).ready(function() {
 		"indicator"
 	);
 
+	$(document).on('keyup', function(e){ 
+		if(e.which === 32) { 
+			e.preventDefault();
+		}
+	}); // on keyup
 
 // checking serial API
 	if (! "serial" in navigator) {

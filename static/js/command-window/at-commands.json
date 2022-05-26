@@ -33,6 +33,14 @@
 			"description": "reboots the modem and gets online after"
 		},
 		{
+			"title": "AT+CFUN=0",
+			"description": "changes into flight mode"
+		},
+		{
+			"title": "AT+CFUN=1",
+			"description": "goes online"
+		},
+		{
 			"title": "ATI9",
 			"description": "Informs about the modem FW version etc."
 		},
@@ -71,6 +79,10 @@
 		{
 			"title": "AT+KTCPDEL=1",
 			"description": "Delete a TCP configuration"
+		},
+		{
+			"title": "AT+KSSLCRYPTO?",
+			"description": "Requests TLS crypto profiles"
 		}
 
 	]
