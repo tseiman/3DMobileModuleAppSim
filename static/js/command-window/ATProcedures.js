@@ -107,26 +107,29 @@ window.atProcedures = this;
 	}
 
 	async init() {
+		this.deviceType2G = true;
 		var res =  await this.serialIO.sendAndExpect('AT','.*',2000); // Just clear any crap from UART
 		res =  await this.serialIO.sendAndExpect('AT','.*',2000);
 		res =  await this.serialIO.sendAndExpect('ATE0','.*OK.*',2000); // disable echo
 		res =  await this.serialIO.sendAndExpect('AT+CFUN=1','^(.C.?REG: (0|1),(5|1).*|.*OK.*)',12000); // go online
 		await this.serialIO.sleep(1000);
 		res = await this.serialIO.sendAndExpect( 'ATI','.*HL78(00|02|10|12).*',2000); // see we're working wiht the right module
-/*
+
 		this.deviceType = res.data.match(/.*HL78(00|02|10|12).*-----FIXME-----/)[1];
+		if(this.deviceType === '00' || this.deviceType === '10') {
 			this.logger.system("This is a new device: HL78" + this.deviceType);
+			this.deviceType2G = false;
 		} else {
-			this.logger.system("This is a legacy device: HL78" + this.deviceType);
-			this.deviceTypeConfNG = false;
+			this.logger.system("This is a 2G device: HL78" + this.deviceType);
+			this.deviceType2G = true;
 		}
-*/
+
 		res = await this.serialIO.sendAndExpect( 'AT+CMEE=1','.*OK.*',2000); // error reporting on
 		res = await this.serialIO.sendAndExpect( 'AT+CREG=1','.*OK.*',2000); 
-		res = await this.serialIO.sendAndExpect( 'AT+CGREG=1','.*',2000); 
+		if(!this.deviceType2G) res = await this.serialIO.sendAndExpect( 'AT+CGREG=1','.*OK.*',2000); 
 		res = await this.serialIO.sendAndExpect( 'AT+CEREG=1','.*OK.*',2000); 
 		res = await this.serialIO.sendAndExpect( 'AT+CREG?','^.CREG: (0|1|2),(5|1).*',20000); // are we registered ?
-		res = await this.serialIO.sendAndExpect( 'AT+CGREG?','^.CGREG: (0|1|2),(5|1).*',2000);
+		if(!this.deviceType2G) res = await this.serialIO.sendAndExpect( 'AT+CGREG?','^.CGREG: (0|1|2),(5|1).*',2000);
 		res = await this.serialIO.sendAndExpect( 'AT+KSREP=1','.*OK.*',2000); 
 
 		for(var i = 1; i < 7; ++i) {
