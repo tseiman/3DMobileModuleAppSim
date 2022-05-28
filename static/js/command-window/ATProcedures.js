@@ -126,10 +126,10 @@ window.atProcedures = this;
 
 		res = await this.serialIO.sendAndExpect( 'AT+CMEE=1','.*OK.*',2000); // error reporting on
 		res = await this.serialIO.sendAndExpect( 'AT+CREG=1','.*OK.*',2000); 
-		if(!this.deviceType2G) res = await this.serialIO.sendAndExpect( 'AT+CGREG=1','.*OK.*',2000); 
+		if(this.deviceType2G) res = await this.serialIO.sendAndExpect( 'AT+CGREG=1','.*OK.*',2000); 
 		res = await this.serialIO.sendAndExpect( 'AT+CEREG=1','.*OK.*',2000); 
 		res = await this.serialIO.sendAndExpect( 'AT+CREG?','^.CREG: (0|1|2),(5|1).*',20000); // are we registered ?
-		if(!this.deviceType2G) res = await this.serialIO.sendAndExpect( 'AT+CGREG?','^.CGREG: (0|1|2),(5|1).*',2000);
+		if(this.deviceType2G) res = await this.serialIO.sendAndExpect( 'AT+CGREG?','^.CGREG: (0|1|2),(5|1).*',2000);
 		res = await this.serialIO.sendAndExpect( 'AT+KSREP=1','.*OK.*',2000); 
 
 		for(var i = 1; i < 7; ++i) {
