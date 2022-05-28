@@ -115,7 +115,7 @@ window.atProcedures = this;
 		await this.serialIO.sleep(1000);
 		res = await this.serialIO.sendAndExpect( 'ATI','.*HL78(00|02|10|12).*',2000); // see we're working wiht the right module
 
-		this.deviceType = res.data.match(/.*HL78(00|02|10|12).*-----FIXME-----/)[1];
+		this.deviceType = res.data.match(/.*HL78(00|02|10|12).*/)[1];
 		if(this.deviceType === '00' || this.deviceType === '10') {
 			this.logger.system("This is a new device: HL78" + this.deviceType);
 			this.deviceType2G = false;
