@@ -27,6 +27,14 @@
 			"check"			: ".+"
 		},
 		{
+			"name"			: "force-2g",
+			"caption" 		: "Force 2G only",
+			"help"			: "Only 2G will be selectable by the modem",
+			"placeholder"	: "false",
+			"type"			: "text",
+			"check"			: "^(true|false)$"
+		},
+		{
 			"name"			: "google-mqtt-server",
 			"caption" 		: "Google MQTT Server",
 			"help"			: "google MQTT server FQND",

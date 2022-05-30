@@ -117,7 +117,7 @@ window.atProcedures = this;
 
 		this.deviceType = res.data.match(/.*HL78(00|02|10|12).*/)[1];
 		if(this.deviceType === '00' || this.deviceType === '10') {
-			this.logger.system("This is a new device: HL78" + this.deviceType);
+			this.logger.system("This is a LTE only device: HL78" + this.deviceType);
 			this.deviceType2G = false;
 		} else {
 			this.logger.system("This is a 2G device: HL78" + this.deviceType);
@@ -137,6 +137,30 @@ window.atProcedures = this;
 			res = await this.serialIO.sendAndExpect( 'AT+KTCPDEL=' + i ,'(.*OK.*|.*CME ERROR:.*)',2000);
 		}
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*',2000); 
+
+		if(this.config.getValue("force-2g") === 'true') {
+			res = await this.serialIO.sendAndExpect( 'AT+KSELACQ=0,1,3','.*OK.*',2000); 
+		} else {
+			res = await this.serialIO.sendAndExpect( 'AT+KSELACQ=0,3','.*OK.*',2000); 
+		}
+		res = await this.serialIO.sendAndExpect( 'AT+KSRAT=0','.*OK.*',2000); 
+
+		res = await this.serialIO.sendAndExpect( 'AT+KSRAT?','^.KSRAT: *([0-9]).*',2000); 
+		this.currentRAT = parseInt(res.data.match(/^.KSRAT: *([0-9]).*/)[1]);
+
+		switch(this.currentRAT) {
+			case 0:
+				this.logger.system("We're on Cat-M1");
+				break;
+			case 1:
+				this.logger.system("We're on NB-IoT (should not happen)");
+				break;
+			case 2:
+			default:
+				this.logger.system("We're on 2G !!");
+				break;
+		}
+
 		this.serialIO.enableSleepHandler(2000);
 		res = await this.serialIO.sendAndExpect( 'AT+KSLEEP=' + this.config.getValue("ksleep-mode") ,'.*OK.*',2000);
 		this.afterAttach();
