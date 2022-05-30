@@ -153,7 +153,7 @@ window.atProcedures = this;
 			case 0:
 				this.logger.system("We're on Cat-M1");
 				if(this.config.getValue("force-2g") === 'true') {
-					res = await this.serialIO.sendAndExpect( 'AT+CFUN=1,1','.*',2000); 
+					res = await this.serialIO.sendAndExpect( 'AT+CFUN=1,1','.KSUP:.*',40156); 
 					alert("Forced 2G but we're on Cat-M1 - reloading !");
 					location.reload();
 				}
