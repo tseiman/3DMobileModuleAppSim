@@ -351,9 +351,29 @@ window.atProcedures = this;
 
 		var gnssData = {};
 
-		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
-		var gnssData = GNSSHelper.getDefaultGNSSObj();
 
+		var res;
+
+		if(this.currentRAT === 2) {
+			this.logger.system("Executing 2G workarround to get CFUN: 0");
+			var repeat = 0;
+			while (true) {
+				try {
+					res =  await this.serialIO.sendAndExpect('AT+CFUN=0','.*OK.*',1000);
+					break;
+				} catch(e) {}
+				if(repeat> 100) throw "Modem not going to CFUN:0 mode";
+				++repeat;
+			}
+		} else {
+			res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
+		}
+		
+
+
+
+
+		var gnssData = GNSSHelper.getDefaultGNSSObj();
 
 		try {
 			res = await this.serialIO.sendAndExpect( 'AT+GNSSSTART=0','.*GNSSEV: *3,3', parseInt(this.config.getValue('gnssstart-timeout')));
@@ -381,7 +401,24 @@ window.atProcedures = this;
 	}
 
 	async enableFlightmode() {
-		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',10000);
+
+		var res;
+		if(this.currentRAT === 2) {
+			this.logger.system("Executing 2G workarround to get CFUN: 0");
+			var repeat = 0;
+			while (true) {
+				try {
+					res =  await this.serialIO.sendAndExpect('AT+CFUN=0','.*OK.*',1000);
+					break;
+				} catch(e) {}
+				if(repeat> 100) throw "Modem not going to CFUN:0 mode";
+				++repeat;
+			}
+		} else {
+			res = await this.serialIO.sendAndExpect( 'AT+CFUN=0','.*OK.*',22000);
+		}
+
+
 	}
 
 	async disableFlightmode() {
