@@ -139,9 +139,10 @@ window.atProcedures = this;
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*',2000); 
 
 		if(this.config.getValue("force-2g") === 'true') {
-			res = await this.serialIO.sendAndExpect( 'AT+KSELACQ=0,1,3','.*OK.*',2000); 
-		} else {
+			this.logger.system("Forcing 2G !!!");
 			res = await this.serialIO.sendAndExpect( 'AT+KSELACQ=0,3','.*OK.*',2000); 
+		} else {
+			res = await this.serialIO.sendAndExpect( 'AT+KSELACQ=0,1,3','.*OK.*',2000); 
 		}
 		res = await this.serialIO.sendAndExpect( 'AT+KSRAT=0','.*OK.*',2000); 
 
