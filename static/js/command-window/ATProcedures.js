@@ -365,7 +365,7 @@ window.atProcedures = this;
 			var repeat = 0;
 			while (true) {
 				try {
-					res =  await this.serialIO.sendAndExpect('AT+CFUN=0','.*OK.*',500);
+					res =  await this.serialIO.sendAndExpect('AT+CFUN=0','.*OK.*',800);
 					break;
 				} catch(e) {}
 				if(repeat> 100) throw "Modem not going to CFUN:0 mode";
@@ -415,7 +415,7 @@ window.atProcedures = this;
 			var repeat = 0;
 			while (true) {
 				try {
-					res =  await this.serialIO.sendAndExpect('AT+CFUN=0','.*OK.*',500);
+					res =  await this.serialIO.sendAndExpect('AT+CFUN=0','.*OK.*',800);
 					break;
 				} catch(e) {}
 				if(repeat> 100) throw "Modem not going to CFUN:0 mode";
