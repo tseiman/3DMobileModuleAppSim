@@ -153,7 +153,7 @@ window.atProcedures = this;
 			case 0:
 				this.logger.system("We're on Cat-M1");
 				if(this.config.getValue("force-2g") === 'true') {
-					this.logger.warn("Forced 2G but we're on Cat-M1 - reloading !");
+					alert("Forced 2G but we're on Cat-M1 - reloading !");
 					location.reload();
 				}
 				break;
