@@ -152,6 +152,10 @@ window.atProcedures = this;
 		switch(this.currentRAT) {
 			case 0:
 				this.logger.system("We're on Cat-M1");
+				if(this.config.getValue("force-2g") === 'true') {
+					this.logger.warn("Forced 2G but we're on Cat-M1 - reloading !");
+					location.reload();
+				}
 				break;
 			case 1:
 				this.logger.system("We're on NB-IoT (should not happen)");
