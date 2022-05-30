@@ -429,7 +429,7 @@ window.atProcedures = this;
 
 	async disableFlightmode() {
 //		await this.init();
-		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',2000);
+		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',30000);
 //		await new Promise(resolve => setTimeout(resolve, 5000));
 	}
 
