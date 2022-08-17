@@ -129,7 +129,7 @@ async function callAnimation(animationManager) {
   renderer.receiveShadow = true;
   renderer.shadowMap.type = THREE.VSMShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
- // renderer.gammaOutput = true;
+ renderer.gammaOutput = true;
     // renderer.gammaFactor = 2.2;
     renderer.physicallyCorrectLights = true;
 
