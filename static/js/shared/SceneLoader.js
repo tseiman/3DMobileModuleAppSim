@@ -48,18 +48,18 @@ class SceneLoader {
 						node.distance=100;
 						node.shadow.camera.near = 0.2;
 						node.shadow.camera.far = 1;
-						node.shadow.mapSize.width = 64; 
-						node.shadow.mapSize.height = 64; 
+				//		node.shadow.mapSize.width = 64; 
+				//		node.shadow.mapSize.height = 64; 
                     }
         		});
-       			gltf.scene.traverse( function ( node ) {
+ /*      			gltf.scene.traverse( function ( node ) {
 
                     if (node.isLight && node.type==="PointLight") {
 						node.shadow.mapSize.width = 128; 
 						node.shadow.mapSize.height = 128; 
                     }
         		});
-
+*/
 
 
 				that.scene.add( gltf.scene );
