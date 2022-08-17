@@ -52,7 +52,13 @@ class SceneLoader {
 						node.shadow.mapSize.height = 64; 
                     }
         		});
+       			gltf.scene.traverse( function ( node ) {
 
+                    if (node.isLight && node.type==="PointLight") {
+						node.shadow.mapSize.width = 128; 
+						node.shadow.mapSize.height = 128; 
+                    }
+        		});
 
 
 
