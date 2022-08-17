@@ -17,6 +17,12 @@
 			"name": "light2",
 			"type": "fragment",
 			"file": "electricitymeter/Light2.js"
+		},
+		{
+			"ignore": true,
+			"name": "Test",
+			"type": "fragment",
+			"file": "electricitymeter/Test.js"
 		},	
 		{
 			"name": "electricitymeter_house",

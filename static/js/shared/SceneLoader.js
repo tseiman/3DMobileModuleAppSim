@@ -41,17 +41,16 @@ class SceneLoader {
 				} 
 
 
-        gltf.scene.traverse( function ( child ) {
+       			gltf.scene.traverse( function ( node ) {
+ 					if ( node.isMesh || node.isLight ) node.castShadow = true;
+                    if ( node.isMesh || node.isLight ) node.receiveShadow = true;
+                    if (node.isLight && node.type==="PointLight") {
+						node.distance=100;
+						node.shadow.camera.near = 0.2;
+						node.shadow.camera.far = 1;
+                    }
+        		});
 
-          if ( child.isMesh ) {
-
-            child.material.flatShading = THREE.SmoothShading;
-            child.castShadow = true;
-            child.receiveShadow = true;
-
-          }
-
-        });
 
 				that.scene.add( gltf.scene );
 

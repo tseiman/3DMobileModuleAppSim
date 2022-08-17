@@ -26,7 +26,6 @@ var autoAnimLock = false;
 
 var broadcastChannel = new BroadcastCom("sierrademo.electricitymeter", console);
 
-
 window.getCameraState = function() {
 	return {"pos" : camera.position, "rotation": camera.rotation, "target": controls.target};
 }
@@ -97,6 +96,8 @@ async function callAnimation(animationManager) {
 
  $( document ).ready(function() {
 
+	console.log("THREE version: r"+	 THREE.REVISION);
+
 
 	broadcastChannel.registerListener(
 		"listener.sierrademo.electricitymeter",
@@ -109,7 +110,8 @@ async function callAnimation(animationManager) {
 
 
 	var scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight , 0.001, 1000 );
+	camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight , 0.1, 100 );
+
 
 	var mainCanvas = document.getElementById("mainCanvas")
 	const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, autoSize: true ,canvas: mainCanvas });
@@ -121,12 +123,15 @@ async function callAnimation(animationManager) {
  // renderer.toneMapping = THREE.ACESFilmicToneMapping;
  //  renderer.toneMappingExposure = 1;
   // renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.toneMapping = THREE.ReinhardToneMapping;
-  renderer.toneMappingExposure = 1;
+// renderer.toneMapping = THREE.ReinhardToneMapping;
+ // renderer.toneMappingExposure = 1;
   renderer.shadowMap.enabled = true;
   renderer.receiveShadow = true;
-  renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.shadowMap.type = THREE.VSMShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
+ // renderer.gammaOutput = true;
+    // renderer.gammaFactor = 2.2;
+    renderer.physicallyCorrectLights = true;
 
 	document.body.appendChild( renderer.domElement );
 
@@ -220,7 +225,9 @@ window.controls = controls;
 	}
 	var sceneLoader = new SceneLoader(scene,itemLoadedCallback);
 window.scene = scene;
-
+window.camera = camera;
+window.renderer = renderer;
+window.THREE = THREE;
 
 /*
    	 $(document).on('keydown', function(e){ //console.log(e.shiftKey)} );
