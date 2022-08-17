@@ -19,7 +19,7 @@ var flightdata = {
 $(document).ready(function() {
         let locationURL = (new URL(window.location));
         let domain = locationURL.host.match(/^[-_a-zA-Z0-9]*(\.[-_\.a-zA-Z0-9]*)(:.*)?$/i)[1];
-        let apiURL = `${location.protocol}//suitcase-api${domain}/bookflight`;
+        let apiURL = `${location.protocol}//suitcase-api${domain}:${location.port}/bookflight`;
 
 
         for (const [key, value] of Object.entries(flightdata)) {

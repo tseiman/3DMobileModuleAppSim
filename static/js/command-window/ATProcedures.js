@@ -389,8 +389,8 @@ window.atProcedures = this;
 		
 
 		res = await this.serialIO.sendAndExpect( 'AT+GNSSSTOP','.*OK.*',2000);
-		res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',30000);
-		res = await this.serialIO.sendAndExpect( 'ATE0','.*OK.*',30000);
+		res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',60392);
+		res = await this.serialIO.sendAndExpect( 'ATE0','.*OK.*',2000);
 		return gnssData;
 	}
 
@@ -429,8 +429,8 @@ window.atProcedures = this;
 	}
 
 	async disableFlightmode() {
-		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',30000);
-		res = await this.serialIO.sendAndExpect( 'ATE0','.*OK.*',30000);
+		var res = await this.serialIO.sendAndExpect( 'AT+CFUN=1','^.CE?REG: *1.*',60432);
+		res = await this.serialIO.sendAndExpect( 'ATE0','.*OK.*',2000);
 	}
 
 

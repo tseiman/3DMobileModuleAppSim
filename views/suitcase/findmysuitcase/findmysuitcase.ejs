@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!--
+	Awesome Responsive Template
+	templatestock.co
+-->
+<html>
+<head>
+	<title>FindMySuitcaseDemo.com</title>
+
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/fnt/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/css/static/findmysuitcase-style.css">
+	<link rel="stylesheet" type="text/css" href="/leaflet/leaflet.css"/>
+
+	<script src="/js/jquery/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/leaflet/leaflet.js"></script>
+	<script src="/js/static/findmysuitcase/findsuitcase.js"></script>
+
+<!-- 
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+   crossorigin=""/>
+
+ <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+   integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+   crossorigin=""></script>
+-->
+</head>
+<body>
+<!-- Header -->
+<div class="header-div">
+
+<nav class="navbar navbar-default">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header logo-div bounceInLeft wow" data-wow-duration="2s">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button><img src="/pic/static/sierra-logo-h_whitetext.png" class="navbar-brand-img"/>
+      <a class="navbar-brand" href="#">FindMySuitcaseDemo.com</a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse top-right-menu-ul bounceInRight wow" id="bs-example-navbar-collapse-1" data-wow-duration="4s">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#Services">Services</a></li>
+        <li><a href="#Call-to-Action">Call to Action</a></li>
+        <li><a href="#Price">Price</a></li>
+        <li><a href="#About">Shop</a></li>
+        <li><button id="btn-user" class="loginbutton"><i class="fa fa-user"></i></button></li>
+
+      </ul>
+    </div><!-- End navbar-collapse -->
+  </div><!-- End container -->
+</nav>
+
+<div class="container wow bounceInDown" data-wow-duration="5s">
+	<div class="row">
+		<div class="col-md-offset-2 col-md-8 text-center slide-text">
+		<!--	<h1>Your Suitcase</h1>
+			<p></p> -->
+		</div><!-- End col-md-8-->
+		<div class="col-md-offset-2"></div><!-- End col-md-offset-2 -->
+	</div><!-- End Row -->
+</div><!-- End Contanier -->
+
+</div><!-- End header-div -->
+
+<div class="header-div-content">
+	
+</div>
+
+<!-- Feature -->
+
+<div class="more-feature-div">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+					<div id="map"></div>
+
+			</div><!-- End col-md-6-->
+			<div class="col-md-6">
+				<div class="more-features-div">
+					<h3 class="more-features-div-heading">Suitcase Positon<button class="mainpage-btn" id="btn-refresh"><i class="fa fa-refresh"></i></button></h3>
+					<div class="more-features-div-description">
+		          <table class="position-items">
+		          	<tbody>
+        				<tr><td class="pos-caption">Position:</td>		<td id="text-pos">n/a</td></tr>
+        				<tr><td class="pos-caption">Altitude:</td>		<td id="text-altitude">n/a</td></tr>
+        				<tr><td class="pos-caption">Last update:</td>	<td id="text-lastupdate">n/a</td></tr>
+								</tbody>
+        			</table>
+	        </div>
+				</div>
+
+
+			</div><!-- End col-md-6-->
+		</div><!-- End row -->
+	</div><!-- ENd container -->
+</div>
+
+<!-- End Feature -->
+
+
+
+
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+    	<div class="row">
+            <div class="col-sm-12 footer-social">
+            	<a href="#"><i class="fa fa-facebook"></i></a>
+		    	<a href="#"><i class="fa fa-dribbble"></i></span></a>
+		        <a href="#"><i class="fa fa-twitter"></i></a>            	
+            	<a href="#"><i class="fa fa-instagram"></i></a>
+            	<a href="#"><i class="fa fa-google-plus"></i></a>
+            	<a href="#"><i class="fa fa-pinterest"></i></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 footer-copyright">
+            	© Import Template by <a href="http://templatestock.co">Template Stock</a>.
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- End Footer -->
+
+<div class="modal" tabindex="-1" role="dialog" id="modal-login">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Username and Password for demo flight page</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="inputUsername">Username</label>
+            <input type="text" class="form-control" autocomplete="username" id="inputUsername" placeholder="Enter Username">
+          </div>
+<!--          <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" autocomplete="current-password" id="inputPassword" placeholder="Password">
+          </div> -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btn-save-pw">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

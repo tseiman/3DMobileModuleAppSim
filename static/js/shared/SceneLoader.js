@@ -39,6 +39,20 @@ class SceneLoader {
 				if(typeof item.opacity !== 'undefined') {
 					that.setOpacity( gltf.scene , item.opacity);
 				} 
+
+
+        gltf.scene.traverse( function ( child ) {
+
+          if ( child.isMesh ) {
+
+            child.material.flatShading = THREE.SmoothShading;
+            child.castShadow = true;
+            child.receiveShadow = true;
+
+          }
+
+        });
+
 				that.scene.add( gltf.scene );
 
 				if(that.loadedCallback) {

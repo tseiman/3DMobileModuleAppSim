@@ -46,7 +46,7 @@ module.exports = {
 
       let fileExists = new Promise((resolve, reject) => {
           // check if file exists
-          fs.stat("views/sierraflight/" + res.filename + ".ejs", (err, stats) => {
+          fs.stat("views/suitcase/sierraflight/" + res.filename + ".ejs", (err, stats) => {
               if (err) {
                   return reject(err);
               }
@@ -56,7 +56,7 @@ module.exports = {
 
       fileExists.then((stats) => {
           res.stats = stats;
-          res.render('sierraflight/' + res.filename);
+          res.render('suitcase/sierraflight/' + res.filename);
 
       }).catch((err) => {
           console.error(err);

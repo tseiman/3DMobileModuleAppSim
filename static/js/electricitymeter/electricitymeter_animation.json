@@ -1,0 +1,30 @@
+{ 
+	"title": "Demo Application: Electricity Meter",
+	"scenesetup": "electricitymeter_animation",
+	"load": [
+		{
+			"name": "ambientlight",
+			"type": "fragment",
+			"file": "electricitymeter/AmbientLight.js"
+		},
+		{
+			"name": "light1",
+			"type": "fragment",
+			"file": "electricitymeter/Light1.js"
+		},
+		{
+			"ignore": true,
+			"name": "light2",
+			"type": "fragment",
+			"file": "electricitymeter/Light2.js"
+		},	
+		{
+			"name": "electricitymeter_house",
+			"type": "gltf",
+			"file": "/blender/static/electricitymeter_house.gltf",
+			"position": {"x": 0,"y": 0, "z": 0}, 
+			"rotation": {"x": 0,"y": 0, "z": 0}
+		}
+	],
+	"animation": []
+}
