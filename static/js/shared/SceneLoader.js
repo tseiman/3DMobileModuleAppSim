@@ -48,6 +48,7 @@ class SceneLoader {
 						node.distance=100;
 						node.shadow.camera.near = 0.2;
 						node.shadow.camera.far = 1;
+						node.shadow.bias = -0.0001;
 //						node.shadow.mapSize.width = 1024; 
 //						node.shadow.mapSize.height = 1024; 
                     }
