@@ -14,7 +14,8 @@ import { AnimationManager } from '/js/static/shared/AnimationManager.js';
 import { Progressbar } from '/js/static/shared/Progressbar.js';
 // import { LuggageTagRenderer } from '/js/static/suitcase/LuggageTagRenderer.js';
 import { BroadcastCom } from '/js/static/shared/BroadcastCom.js';
-
+import { CSS2DRenderer, CSS2DObject } from '/js/three/jsm/renderers/CSS2DRenderer.js';
+import { EMeterController } from '/js/static/electricitymeter/EMeterController.js';
 
 
 var camera;
@@ -115,166 +116,75 @@ async function callAnimation(animationManager) {
 
 	var mainCanvas = document.getElementById("mainCanvas")
 	const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, autoSize: true ,canvas: mainCanvas });
+//	const renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
-//	renderer.setClearColor(0x808080);
 	renderer.setPixelRatio(window.devicePixelRatio);
-//	renderer.shadowMap.enabled = true;
-// renderer.shadowMap = THREE.PCFShadowMap;
- // renderer.toneMapping = THREE.ACESFilmicToneMapping;
- //  renderer.toneMappingExposure = 1;
-  // renderer.outputEncoding = THREE.sRGBEncoding;
-// renderer.toneMapping = THREE.ReinhardToneMapping;
- // renderer.toneMappingExposure = 1;
-  renderer.shadowMap.enabled = true;
-  renderer.receiveShadow = true;
-  renderer.shadowMap.type = THREE.VSMShadowMap;
-renderer.outputEncoding = THREE.sRGBEncoding;
- renderer.gammaOutput = true;
-    // renderer.gammaFactor = 2.2;
+	renderer.shadowMap.enabled = true;
+	renderer.receiveShadow = true;
+	renderer.shadowMap.type = THREE.VSMShadowMap;
+	renderer.outputEncoding = THREE.sRGBEncoding;
+	renderer.gammaOutput = true;
     renderer.physicallyCorrectLights = true;
 
 	document.body.appendChild( renderer.domElement );
-
-  	raycaster = new THREE.Raycaster();
-  	mouse = new THREE.Vector2();
-
-  /*	renderer.domElement.addEventListener('click', mousedown, false);
-
-// const axesHelper = new THREE.AxesHelper( 5 );
-// scene.add( axesHelper );
-  	function mousedown(event) {
-
-		event.preventDefault();
+  //	raycaster = new THREE.Raycaster();
+  //	mouse = new THREE.Vector2();
 
 
-		raycaster.setFromCamera(mouse, camera);
-		var intersects = raycaster.intersectObjects(scene.children, true);
-
-		if (intersects.length > 0) {
-			if(intersects[0].object.userData.clickable && intersects[0].object.name === 'LuggageTagPlane') {
-
-				console.log('Found clickable:', intersects[0].object.name);
-				// animationManager.animateTexture("suitcase","TagField","/pic/static/suitcase/FlightTag_YYZ.png"	);
-				if(controls.enabled)return;
-
-				new LuggageTagRenderer({
-					'name'				: "luggageTag",
-					'barcodeString'		: new Date().valueOf(),
-					'flightWeight'		: 15,
-					'flightNo'			: "XY 1234",
-					'passengerName'		: "Jean Doe",
-					'destinationShort'	: "YYZ",
-					'destinationLong'	: "Toronto",
-					'destinationInfo1'	: "43.6766°N, 79.6305°W",
-					'destinationInfo2'	: "569FT  UTC -4:00HR",
-					'backgroudImage'	: "/pic/static/suitcase/LuggageTag.svg",
-					'callback'			: function(url) {
-						animationManager.animateTexture("suitcase","TagField", url, function(url) {
-							URL.revokeObjectURL(url);
-						});	
-					}
-				});
 
 
-			}
-		}
-
-	//  this is to give a position on the earth sphere to build the animation
-		var mouseSphereClick = {
-		  x: ((event.clientX - 1) / window.innerWidth ) * 2 - 1,
-		  y: -((event.clientY - 1) / window.innerHeight) * 2 + 1
-		};
-		var vector = new THREE.Vector3();
-		vector.set(mouseSphereClick.x, mouseSphereClick.y, 0.5);
-		vector.unproject(camera);
-		raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
-		let target = raycaster.intersectObjects([animationManager.getItem("earth")]);
-		if(target[0]) {
-			console.log(target[0].point);
-		}
-
-	}
-
- // 	renderer.domElement.addEventListener('mouseup', mouseup, false);
-
-  //	function mouseup() {
-//		controls.enabled = true;
-//	}
-
-*/
-
-//	renderer.outputEncoding = THREE.sRGBEncoding;
-	document.body.appendChild( renderer.domElement );
+	let labelRenderer = new CSS2DRenderer();
+	labelRenderer.setSize( window.innerWidth, window.innerHeight );
+	labelRenderer.domElement.style.position = 'absolute';
+	labelRenderer.domElement.style.top = '0px';
+	// labelRenderer.domElement.style.pointerEvents = 'none';
+	document.body.appendChild( labelRenderer.domElement );
 
 	controls = new OrbitControls( camera , renderer.domElement);
-//	controls.minDistance = 4.8;
-window.controls = controls;
-//	controls.maxZoom = 1;
 	
+	 camera.position.z = 4;
+	 camera.position.y = 10;
 
 	controls.update();
 
 	var animationManager = new AnimationManager(camera, controls);
 	animationManager.pushNewItem("camera",camera);
- window.animationManager = animationManager;
 	//controls.addEventListener( 'change', function(){ onCameraChange(camera); } ); // use if there is no animation loop
+
+
+	var eMeterController = new EMeterController(scene);
+	eMeterController.startMeter();
 
 	function itemLoadedCallback(item) {
 		animationManager.pushNewItem(item.name,item.item);
 
 	}
-	var sceneLoader = new SceneLoader(scene,itemLoadedCallback);
+	var sceneLoader = new SceneLoader(scene, itemLoadedCallback, eMeterController);
+window.sceneLoader = sceneLoader;
 window.scene = scene;
 window.camera = camera;
 window.renderer = renderer;
 window.THREE = THREE;
-
-/*
-   	 $(document).on('keydown', function(e){ //console.log(e.shiftKey)} );
-
-   	
-   	 	if(info) return;
-   	 	if(e.which == 78) { // 'n' = next pressed
-
-    	} else if(e.which == 32) {
-   	 		callAnimation(animationManager);
-
-    		// var luggageTagGroup = animationManager.getItem("suitcase").children.filter(obj => { return obj.name === 'LuggageTag'});
-    		// luggageTagGroup.on( 'click',function(ev){console.log("juhuuuuuu", ev); }  );
-    		// console.log(luggageTagGroup);
+window.animationManager = animationManager;
+window.eMeterController = eMeterController;
 
 
-    	} else if( e.shiftKey) { 
-    		controls.enabled = false;
-
-    	}
-
-   	 }); // on keydown
-   	 $(document).on('keyup', function(e){ //console.log(e.shiftKey)} );
-		if(! e.shiftKey) { 
-    		controls.enabled = true;
-    	}
-
-    	if(e.which === 32) { 
-    		e.preventDefault();
-    	}
-   	 }); // on keyup
-
-   	 */
-	 camera.position.z = 10;
 
 
 
 // animation function
 
+
 	function animate() {
 		requestAnimationFrame( animate );
 		TWEEN.update();
 		renderer.render( scene, camera );
+		labelRenderer.render( scene, camera );
+
 	};
 
 	animate(); 
-window.TWEEN = TWEEN;
+
 
 // the info overlay which can be omitted by url param ?noinfo=true
 
@@ -297,6 +207,9 @@ window.TWEEN = TWEEN;
 
 	var localScript = window.localStorage.getItem("electricitymeter-script");
 
+
+
+
 	if (localScript && (localScript !== null) && (localScript !== "") && (localScript !== "{}") ) {
 			var progressbar = new Progressbar('#progressbar');
 			var animationData = JSON.parse(localScript);
@@ -305,24 +218,29 @@ window.TWEEN = TWEEN;
 			window.progressbar = progressbar;
 			var loadStepsPercent = 100 / animationData.load.length;
 			var loadedPercent = 0;
-		    animationData.load.forEach(function(item) {
-				var newItem = sceneLoader.load(item);
-				loadedPercent += loadStepsPercent;
-				progressbar.set(loadedPercent);
-			});
+
+			for (const item of animationData.load) { async (item) => {
+					var newItem = await sceneLoader.load(item);
+					loadedPercent += loadStepsPercent;
+					progressbar.set(loadedPercent);
+				}
+			}
+
+
 			setTimeout(function() {progressbar.destroy();},500);
 	} else {
+
 
 		$.getJSON( "/js/static/electricitymeter/electricitymeter_animation.json", async function( data ) {
 			var progressbar = new Progressbar('#progressbar');
 			window.progressbar = progressbar;
 			var loadStepsPercent = 100 / data.load.length;
 			var loadedPercent = 0;
-			data.load.forEach(function(item) {
-				var newItem = sceneLoader.load(item);
+			for (const item of data.load) {
+				var newItem = await sceneLoader.load(item);
 				loadedPercent += loadStepsPercent;
 				progressbar.set(loadedPercent);
-			});
+			}
 			animationManager.animation = data.animation;
 		    editor.set(data)
 			setTimeout(function() {progressbar.destroy();},500);

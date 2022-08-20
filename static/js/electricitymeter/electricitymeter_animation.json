@@ -3,6 +3,14 @@
 	"scenesetup": "electricitymeter_animation",
 	"load": [
 		{
+			"ignore": false,
+			"name": "electricitymeter_house",
+			"type": "gltf",
+			"file": "/blender/static/electricitymeter_house.gltf",
+			"position": {"x": 0,"y": 0, "z": 0}, 
+			"rotation": {"x": 0,"y": 0, "z": 0}
+		},
+		{
 			"name": "ambientlight",
 			"type": "fragment",
 			"file": "electricitymeter/AmbientLight.js"
@@ -13,23 +21,14 @@
 			"file": "electricitymeter/Light1.js"
 		},
 		{
-			"ignore": true,
-			"name": "light2",
+			"name": "Switches",
 			"type": "fragment",
-			"file": "electricitymeter/Light2.js"
+			"file": "electricitymeter/Switches.js"
 		},
 		{
-			"ignore": true,
-			"name": "Test",
+			"name": "Effects3D",
 			"type": "fragment",
-			"file": "electricitymeter/Test.js"
-		},	
-		{
-			"name": "electricitymeter_house",
-			"type": "gltf",
-			"file": "/blender/static/electricitymeter_house.gltf",
-			"position": {"x": 0,"y": 0, "z": 0}, 
-			"rotation": {"x": 0,"y": 0, "z": 0}
+			"file": "electricitymeter/Effects3D.js"
 		}
 	],
 	"animation": []

@@ -1,6 +1,6 @@
 class Progressbar {
 	constructor(element) {
-		console.log("new progree");
+		console.log("Instanciated Progressbar");
 		this.element = $(element);
 		this.elementName = element.replace(/#/g, '');
 
