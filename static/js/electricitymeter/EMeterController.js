@@ -9,7 +9,7 @@ class EMeterController {
 	 	this.power = 0;
 
 	 	let consumption = window.localStorage.getItem("electricitymeter-consumption");
-	 	this.consumption =  (parseFloat(consumption) !== 'NaN') ? parseFloat(consumption) : 0;
+	 	this.consumption =  isNaN(parseFloat(consumption)) ? 0 : parseFloat(consumption);
 
 
 	}
