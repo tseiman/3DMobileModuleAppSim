@@ -29,6 +29,11 @@
 			"name": "Effects3D",
 			"type": "fragment",
 			"file": "electricitymeter/Effects3D.js"
+		},
+		{
+			"name": "ExtraThings",
+			"type": "fragment",
+			"file": "electricitymeter/ExtraThings.js"
 		}
 	],
 	"animation": []

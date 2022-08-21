@@ -27,7 +27,7 @@ module.exports = {
     { 'name': 'javascript'      , 'url': '/js/static/'            , 'folder' : '../../static/js'},
     { 'name': 'css'             , 'url': '/css/static/'           , 'folder' : '../../static/css'},
     { 'name': 'jquery'          , 'url': '/js/jquery/'            , 'folder' : '../../node_modules/jquery/dist'},
-    { 'name': 'font-awesome'    , 'url': '/fnt/font-awesome/'     , 'folder' : '../../node_modules/font-awesome/'},
+    { 'name': 'font-awesome'    , 'url': '/fnt/font-awesome/'     , 'folder' : '../../node_modules/@fortawesome/fontawesome-free/'},
     { 'name': 'moment'          , 'url': '/js/moment/'            , 'folder' : '../../node_modules/moment/min'},
     { 'name': 'bootstrap'       , 'url': '/bootstrap/'            , 'folder' : '../../node_modules/bootstrap/dist'}
   ]; 

@@ -25,7 +25,15 @@ class EMeterController {
 	toggleDevicePower(deviceName) {
 		let dev = this.deviceRegistry[deviceName];
 		dev.state = !dev.state;
-		dev.uiObject.visible = dev.state;
+
+		if(dev.type==='light') dev.uiObject.visible = dev.state;
+		if(dev.state) {
+			console.log("switch on " + "#label_" + dev.name );
+			$( "#label_" + dev.name ).find("i").removeClass( "switch-offstate" ).addClass( "switch-onstate" );
+		} else {
+			console.log("switch off " + "#label_" + dev.name );
+			$( "#label_" + dev.name ).find("i").removeClass( "switch-onstate" ).addClass( "switch-offstate" );
+		}
 	}
 	
 	_toFixedIfNecessary( value, dp ){

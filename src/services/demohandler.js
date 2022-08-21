@@ -36,7 +36,7 @@ module.exports = {
     { 'name': 'semantic-dist'   , 'url': '/dist/'                 , 'folder' : '../../static/semantic/dist'},
     { 'name': 'moment'          , 'url': '/js/moment/'            , 'folder' : '../../node_modules/moment/min'},
     { 'name': 'lato'            , 'url': '/fnt/lato-font/'        , 'folder' : '../../node_modules/lato-font/'},
-    { 'name': 'font-awesome'    , 'url': '/fnt/font-awesome/'     , 'folder' : '../../node_modules/font-awesome/'},
+    { 'name': 'font-awesome5'   , 'url': '/fnt/font-awesome/'    , 'folder' : '../../node_modules/@fortawesome/fontawesome-free/'},
     { 'name': 'jose'            , 'url': '/js/jose/'              , 'folder' : '../../node_modules/jose/dist/browser'},
     { 'name': 'buffer'          , 'url': '/js/buffer/'            , 'folder' : '../../node_modules/buffer'}
   ]; 

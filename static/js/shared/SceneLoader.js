@@ -9,7 +9,7 @@ class SceneLoader {
 		this.loadedCallback = loadedCallback;
 		this.context = (typeof context === 'undefined')? null : context ;
 		this.fragments = {};
-
+		this.subLoadNotificationCallback = null;
 	}
 
 
@@ -20,6 +20,38 @@ class SceneLoader {
 	      child.material.transparent = true;
 	    }
 	  });
+	}
+
+
+	async iterateLoadable(loadable, progressbar) {
+		var that = this;
+		var loadStepsPercent = 100 / loadable.length;
+		var loadedPercent = 0;
+
+		for (const item of loadable) { 
+
+			var actualLeftLoadStepPercent = loadStepsPercent;
+			var tmpLoadedPercent = loadedPercent;
+
+			that.setSubLoadNotification((subPercent) => {
+				var newLoadedPercent = subPercent * loadStepsPercent / 100; // OK
+				actualLeftLoadStepPercent = loadStepsPercent - newLoadedPercent;
+				progressbar.set(loadedPercent + newLoadedPercent);
+			});
+			var newItem = await that.load(item);
+
+			loadedPercent += loadStepsPercent;
+			progressbar.set(loadedPercent);
+
+		}
+
+
+		setTimeout(function() {progressbar.destroy();},500);
+
+	}
+
+	setSubLoadNotification(cb) {
+		this.subLoadNotificationCallback = cb;
 	}
 
 
@@ -67,7 +99,8 @@ class SceneLoader {
 					resolve("done");
 				}, 	
 				function ( xhr ) {
-					console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+				//	console.log( (xhr.loaded / xhr.total * 100) + '% loaded');
+					if(that.subLoadNotificationCallback !== null) that.subLoadNotificationCallback(xhr.loaded / xhr.total * 100);
 				},
 				function ( error ) { 
 					console.error( error ); 
@@ -87,7 +120,11 @@ class SceneLoader {
 
 			const MyClassObj = await import("/js/static/" + item.file); 
 			var MyClass = MyClassObj.default;
-			var newObj = new MyClass(that.scene, that.context);
+			var newObj = new MyClass(that.scene, that.context,
+				(subPercent) => {
+					if(that.subLoadNotificationCallback !== null) that.subLoadNotificationCallback(subPercent);
+				}
+			);
 			that.fragments[item.name] = newObj;
    			var newSceneObj = newObj.load();
    			that.loadedCallback({'name': item.name, 'item': newSceneObj});

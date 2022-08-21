@@ -208,43 +208,27 @@ window.eMeterController = eMeterController;
 	var localScript = window.localStorage.getItem("electricitymeter-script");
 
 
-
+	var progressbar = new Progressbar('#progressbar');
 
 	if (localScript && (localScript !== null) && (localScript !== "") && (localScript !== "{}") ) {
-			var progressbar = new Progressbar('#progressbar');
-			var animationData = JSON.parse(localScript);
-			animationManager.animation = animationData.animation;
-		    editor.set(animationData)
-			window.progressbar = progressbar;
-			var loadStepsPercent = 100 / animationData.load.length;
-			var loadedPercent = 0;
 
-			for (const item of animationData.load) { async (item) => {
-					var newItem = await sceneLoader.load(item);
-					loadedPercent += loadStepsPercent;
-					progressbar.set(loadedPercent);
-				}
-			}
+		console.log("loading from local script !");
+		var animationData = JSON.parse(localScript);
+		animationManager.animation = animationData.animation;
+	    editor.set(animationData)
 
+		sceneLoader.iterateLoadable(animationData.load, progressbar);
 
-			setTimeout(function() {progressbar.destroy();},500);
+			
 	} else {
-
+		console.log("loading remote script !");
 
 		$.getJSON( "/js/static/electricitymeter/electricitymeter_animation.json", async function( data ) {
-			var progressbar = new Progressbar('#progressbar');
-			window.progressbar = progressbar;
-			var loadStepsPercent = 100 / data.load.length;
-			var loadedPercent = 0;
-			for (const item of data.load) {
-				var newItem = await sceneLoader.load(item);
-				loadedPercent += loadStepsPercent;
-				progressbar.set(loadedPercent);
-			}
+			sceneLoader.iterateLoadable(data.load, progressbar);
 			animationManager.animation = data.animation;
-		    editor.set(data)
-			setTimeout(function() {progressbar.destroy();},500);
+		    editor.set(data)			
 		});
+		
 	 }
 
 
