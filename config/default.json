@@ -16,6 +16,7 @@
     "region"         : "europe-west1",
     "userTableId"    : "userDB",
     "bookedFlightsTableId"       : "bookedFlights",
+    "emeterTableId"  : "powerConsumption",
     "iotRegistryID"  : "HL78LugageDemo"
    }                // END of apiconf configuration
 

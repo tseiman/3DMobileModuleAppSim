@@ -161,6 +161,9 @@ $(document).ready(function() {
 				case 'DISPLAY_MESSAGE': 
 					logger.system(msg.data.message);
 					break;
+				case 'ARBITRARY_DATA_MESSAGE': 
+					connectionManager.pushArbitraryData(msg.data);
+					break;
 				case 'FLIGHTMODE_ON': 
 					connectionManager.enableFlightmode();
 					if(configurator.getValue('fake-flightmode') && configurator.getValue('fake-flightmode') === 'true') { 

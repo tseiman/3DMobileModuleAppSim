@@ -36,6 +36,8 @@ class ConnectionManager {
 		this.enableTCPCleanup = true;
 		this.actualEventStep =0;
 
+		this.arbitraryData = [];
+
 		this.regularOperationRunning = false;
 
 		var that = this;
@@ -95,6 +97,10 @@ window.connectionManager = this;
 
 	}
 
+	async pushArbitraryData(data) {
+		console.log("pushArbitraryData:", data); 
+		this.runMqttPublish(data);
+	}
 
 	async regularOperation(that) {
 	//	that.logger.info("execute regular operations - START");
@@ -129,9 +135,11 @@ window.connectionManager = this;
 			if(that.mqttPosPushSteps.includes(that.actualEventStep)) {
 				that.logger.info("execute MQTT Position Push");
 				clearInterval(that.regularOperationInterval);
-			//	try {
-					await that.runMqttPublish();
-			//	} catch (e) {}
+				if(this.lastGnssData === null) {
+					this.logger.system("Last GNSS was empty skipping");
+				} else {
+					await that.runMqttPublish(this.lastGnssData);
+				}
 				that.regularOperationInterval = setInterval(that.regularOperation, that.eventCycleStepDelay,that);
 			}
 		} catch (e) { 
@@ -164,6 +172,7 @@ window.connectionManager = this;
 		this.regularOperationInterval = setInterval(this.regularOperation, this.eventCycleStepDelay, this);
 
 	}
+
 	destroyRegularOperation() {
 		if(!this.regularOperationRunning) { 
 			this.logger.info("regular operation it curently not running");
@@ -207,16 +216,17 @@ window.connectionManager = this;
 	}
 
 
-	async runMqttPublish() {
-		if(this.lastGnssData === null) {
-			this.logger.system("Last GNSS was empty skipping");
+	async runMqttPublish(data) {
+		if(this.lastGnssData === null || data.length) {
+			this.logger.system("Last GNSS or arbitrary data was empty skipping");
 			return;
 		}
 		var mqttData = {
 			time 	: parseInt(Date.now() / 1000),
 			id 		: this.config.getValue('findmysuitcase-id'), 
-			data 	: this.lastGnssData
+			data 	: data
 		};
+
 
 		var topic = "/devices/" + this.config.getValue('googleIoTClientID') + "/events";
 
@@ -309,6 +319,8 @@ window.connectionManager = this;
 		}
 		await this.atProcedures.enableFlightmode();
 	}
+
+
 	async disableFlightmode() {
 		if(this.config.getValue('fake-flightmode') && this.config.getValue('fake-flightmode') === 'true') return; 
 		await this.atProcedures.wakeupDevice();

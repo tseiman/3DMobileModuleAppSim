@@ -1,12 +1,21 @@
 
 const EMETER_MEASSURE_CYCLE = 1000;
 
+const EMETER_MEASSURE_AVG_SPAN = 20;
+import { BroadcastCom } from '/js/static/shared/BroadcastCom.js';
+
+
+const broadcastChannel = new BroadcastCom("sierrademo.suitcase", console);
+
 class EMeterController {
 	constructor (scene) {
 		this.scene = scene;
 		this.deviceRegistry = {};
 	 	this.meterProc = null;
 	 	this.power = 0;
+
+	 	this.sumForAveragePower = 0;
+	 	this.averagePowerCalcSteps = 0;
 
 	 	let consumption = window.localStorage.getItem("electricitymeter-consumption");
 	 	this.consumption =  isNaN(parseFloat(consumption)) ? 0 : parseFloat(consumption);
@@ -50,6 +59,18 @@ class EMeterController {
 		} 
 		this.power = curPower;
 		this.consumption += curPower / (3600000 / EMETER_MEASSURE_CYCLE);
+
+		if(this.averagePowerCalcSteps >= EMETER_MEASSURE_AVG_SPAN) { // every EMETER_MEASSURE_AVG_SPAN we send the data to the command window
+			var averagePower = this.sumForAveragePower / EMETER_MEASSURE_AVG_SPAN;
+			var msg = {'cmd': 'ARBITRARY_DATA_MESSAGE', 'data': {'consumption': this.consumption, 'averagePower' : averagePower, 'avgspan': EMETER_MEASSURE_CYCLE * EMETER_MEASSURE_AVG_SPAN /1000}};
+			broadcastChannel.sendData("sierrademo.command", msg);
+			this.averagePowerCalcSteps = 0;
+			this.sumForAveragePower = 0;
+		}
+		this.sumForAveragePower += this.power;
+		++this.averagePowerCalcSteps;
+
+
 		window.localStorage.setItem("electricitymeter-consumption", this.consumption);
 		$('#powermeter').text(`Current Power: ${Math.round(this.power)}W`);
 		$('#consumption').text(`Consumption: ${this._toFixedIfNecessary(this.consumption / 1000,4)}kWh`);

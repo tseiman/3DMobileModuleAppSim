@@ -153,7 +153,7 @@ async function callAnimation(animationManager) {
 
 
 	var eMeterController = new EMeterController(scene);
-	eMeterController.startMeter();
+	
 
 	function itemLoadedCallback(item) {
 		animationManager.pushNewItem(item.name,item.item);
@@ -265,6 +265,24 @@ window.eMeterController = eMeterController;
 			progressbar.set(loadedPercent);
 		});
 		setTimeout(function() {progressbar.destroy();},500);
+
+
+	});
+
+
+
+	$( "#btn-play" ).click(function() {
+
+		if($( "#btn-play" ).attr("run") === 'false') {
+			$( "#btn-play" ).attr("run",'true');
+			$( "#btn-play i" ).removeClass("fa-circle-play").addClass("fa-circle-pause");
+			eMeterController.startMeter();
+		} else {
+			eMeterController.stopMeter();
+			$( "#btn-play" ).attr("run",'false');
+			$( "#btn-play i" ).removeClass("fa-circle-pause").addClass("fa-circle-play");
+		}
+
 
 
 	});
