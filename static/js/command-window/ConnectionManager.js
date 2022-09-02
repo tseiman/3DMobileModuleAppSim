@@ -98,8 +98,8 @@ window.connectionManager = this;
 	}
 
 	async pushArbitraryData(data) {
-		console.log("pushArbitraryData:", data); 
-		this.runMqttPublish(data);
+		console.log("pushArbitraryData:", data.data); 
+		this.runMqttPublish(data, "powerConsumption");
 	}
 
 	async regularOperation(that) {
@@ -216,7 +216,7 @@ window.connectionManager = this;
 	}
 
 
-	async runMqttPublish(data) {
+	async runMqttPublish(data, dest) {
 		if(this.lastGnssData === null || data.length) {
 			this.logger.system("Last GNSS or arbitrary data was empty skipping");
 			return;
@@ -224,7 +224,8 @@ window.connectionManager = this;
 		var mqttData = {
 			time 	: parseInt(Date.now() / 1000),
 			id 		: this.config.getValue('findmysuitcase-id'), 
-			data 	: data
+			data 	: data,
+			dest 	: typeof dest !== 'undefined': dest : "gnssPush", 
 		};
 
 

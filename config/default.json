@@ -7,8 +7,16 @@
     "enable"         : false,
     "subscriptionName": "devicetocloud-sub2",       
     "topicName"       : "devicetocloud",
-    "datasetId"       : "locationReports",
-    "tableId"         : "locationReportsTable"
+    "destinations": {
+      "gnssPush": {
+        "datasetId"       : "locationReports",
+        "tableId"         : "locationReportsTable"
+      },
+      "powerConsumption": {
+        "datasetId"       : "locationReports",
+        "tableId"         : "locationReportsTable"        
+      }
+    }
   },               // END of pubsub configuration
   "apiconf": {                 // PubSub listener config
     "enable"         : false,

@@ -20,18 +20,6 @@ module.exports = {
     const pubsubClient = new PubSub();
     const bigquery = new BigQuery();
 
-    async function createSubscription() {
-      // Creates a new subscription
-      await pubsubClient.topic(pubsubConf.topicName).createSubscription(pubsubConf.subscriptionName);
-      console.log(`Subscription ${pubsubConf.subscriptionName} created.`);
-    }
-
-    async function doesSubscriptionExist() {
-      const subscriptions = await pubsubClient.getSubscriptions();
-      const subscriptionExist = subscriptions.find((sub) => sub.name === pubsubConf.subscriptionName);
-      return (subscriptions && subscriptionExist);
-    }
-
     if(!doesSubscriptionExist()) {
         console.log("subscription does not exist");
         createSubscription().catch(console.error);
@@ -39,25 +27,26 @@ module.exports = {
 
     const subscription = pubsubClient.subscription(pubsubConf.subscriptionName);
 
+// ----------------------------------
+// ----------------------------------
 
-    const messageHandler = message => {
-        console.log(`message received ${message.id} Data: ${message.data}`);
-        var data = JSON.parse(message.data);
-        message.ack();
+    async function createSubscription() {
+      // Creates a new subscription
+      await pubsubClient.topic(pubsubConf.topicName).createSubscription(pubsubConf.subscriptionName);
+      console.log(`Subscription ${pubsubConf.subscriptionName} created.`);
+    }
+// ----------------------------------
 
+    async function doesSubscriptionExist() {
+      const subscriptions = await pubsubClient.getSubscriptions();
+      const subscriptionExist = subscriptions.find((sub) => sub.name === pubsubConf.subscriptionName);
+      return (subscriptions && subscriptionExist);
+    }
+
+// ----------------------------------
+    function storeGnssPush(data,message) {
         try {
-            if(!data.data) {
-                console.error("data record missing: "+ JSON.stringify(data));
-                return;
-            }
-            if(!data.time) {
-                console.error("time record missing: "+ JSON.stringify(data));
-                return;
-            }
-            if(!data.id) {
-                console.error("id record missing: "+ JSON.stringify(data));
-                return;
-            }
+            
             if(!data.data.gpstime) {
                 console.error("gpstime record missing: "+ JSON.stringify(data));
                 return;
@@ -96,14 +85,47 @@ module.exports = {
                     'VerSpeed'      : parseInt(data.data.VerSpeed)
                 }];
 
-            bigquery.dataset(pubsubConf.datasetId).table(pubsubConf.tableId).insert(row);
+            var dbConfig = pubsubConf.destinations.gnssPush;
+            console.log(`Storing data to: to BigQuery datasetId: ${dbConfig.datasetId}, tableId: ${dbConfig.tableId}`);
+            bigquery.dataset(dbConfig.datasetId).table(dbConfig.tableId).insert(row);
         } catch (e) { console.error(e); }
+    }
+// ----------------------------------
+
+    const messageHandler = message => {
+        console.log(`message received ${message.id} Data: ${message.data}`);
+        var data = JSON.parse(message.data);
+        message.ack();
+
+        if(!data.data) {
+            console.error("data record missing: "+ JSON.stringify(data));
+            return;
+        }
+        if(!data.time) {
+            console.error("time record missing: "+ JSON.stringify(data));
+            return;
+        }
+        if(!data.id) {
+            console.error("id record missing: "+ JSON.stringify(data));
+            return;
+        }
+        if(!data.dest) {
+            console.error("destination record missing: "+ JSON.stringify(data));
+            return;
+        }
+
+        if(message.dest === 'gnssPush') {
+            storeGnssPush(data, message);            
+        } else {
+            console.error("Not implemented destination: " + message.dest)
+        }
 
     };
-
+// ----------------------------------
+// ----------------------------------
     subscription.on(`message`, messageHandler);
 
-    console.log(`Started PubSub Service for subscription: ${pubsubConf.subscriptionName}, topicName: ${pubsubConf.topicName} to BigQuery datasetId: ${pubsubConf.datasetId}, tableId: ${pubsubConf.tableId}`);
+    console.log(`Started PubSub Service for subscription: ${pubsubConf.subscriptionName}, topicName: ${pubsubConf.topicName}`); //to BigQuery datasetId: ${pubsubConf.datasetId}, tableId: ${pubsubConf.tableId}`);
         
 
   }
