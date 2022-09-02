@@ -225,7 +225,7 @@ window.connectionManager = this;
 			time 	: parseInt(Date.now() / 1000),
 			id 		: this.config.getValue('findmysuitcase-id'), 
 			data 	: data,
-			dest 	: typeof dest !== 'undefined': dest : "gnssPush", 
+			dest 	: typeof dest !== 'undefined'? dest : "gnssPush", 
 		};
 
 
