@@ -45,7 +45,38 @@ module.exports = {
 
 // ----------------------------------
     function storePowerConsumptionPush(data,message) {
-        console.error("Data", data, "message", message);
+        if(!data.time) {
+            console.error("time record missing: "+ JSON.stringify(data)); return;
+        }
+        if(!data.id) {
+            console.error("id record missing: "+ JSON.stringify(data)); return;
+        }
+        if(!data.data) {
+            console.error("data record missing: "+ JSON.stringify(data)); return;
+        }
+        if(!data.data.data) {
+            console.error("data.data record missing: "+ JSON.stringify(data)); return;
+        }
+        if(!data.data.data.consumption) {
+            console.error("data.data.consumption record missing: "+ JSON.stringify(data)); return;
+        }
+        if(!data.data.data.averagePower) {
+            console.error("data.data.averagePower record missing: "+ JSON.stringify(data)); return;
+        }
+        if(!data.data.data.avgspan) {
+            console.error("data.data.avgspan record missing: "+ JSON.stringify(data)); return;
+        }
+
+        const row = [{
+            'timestamp'     : data.time,
+            'ownerid'       : data.id,
+            'consumption'   : parseFloat(data.data.data.consumption),
+            'averagePower'  : parseFloat(data.data.data.averagePower),
+            'avgspan'       : parseInt(data.data.data.avgspan)
+        }];
+        var dbConfig = pubsubConf.destinations.powerConsumption;
+        console.log(`Storing data to: to BigQuery datasetId: ${dbConfig.datasetId}, tableId: ${dbConfig.tableId}`);
+        bigquery.dataset(dbConfig.datasetId).table(dbConfig.tableId).insert(row);
     }
 
 // ----------------------------------
