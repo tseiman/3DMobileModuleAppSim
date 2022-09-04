@@ -44,6 +44,11 @@ module.exports = {
     }
 
 // ----------------------------------
+    function storePowerConsumptionPush(data,message) {
+        console.error("Data", data, "message", message);
+    }
+
+// ----------------------------------
     function storeGnssPush(data,message) {
         try {
             
@@ -114,10 +119,12 @@ module.exports = {
             return;
         }
 
-        if(message.dest === 'gnssPush') {
-            storeGnssPush(data, message);            
+        if(data.dest === 'gnssPush') {
+            storeGnssPush(data, message);
+        } else if (data.dest === 'powerConsumption') {
+            storePowerConsumptionPush(data, message);
         } else {
-            console.error("Not implemented destination: " + message.dest)
+            console.error("Not implemented destination: " + data.dest)
         }
 
     };
